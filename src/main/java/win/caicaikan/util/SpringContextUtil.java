@@ -1,4 +1,4 @@
-package xyz.caicaikan.util;
+package win.caicaikan.util;
 
 import java.util.Map;
 

@@ -21,7 +21,7 @@
 	">
 	
 	<!-- 启用spring扫描 -->
-	<context:component-scan base-package="cn.himma" />
+	<context:component-scan base-package="win.caicaikan" />
 	<!-- 启用spring注解 -->
 	<context:annotation-config />
 	
@@ -33,14 +33,10 @@
 	  </property>
 	</bean>
 	
-	<!-- <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-    	<property name="corePoolSize" value="4" />
-    	<property name="maxPoolSize" value="12" />
-	</bean> -->
 	
 	<task:executor id="executor" pool-size="5-10" keep-alive="60" queue-capacity="2" rejection-policy="ABORT" />
 	<task:scheduler id="scheduler" pool-size="10" />
 	<task:annotation-driven executor="executor" scheduler="scheduler" />
 	
-	<bean id="SpringContextUtil" class="xyz.caicaikan.util.SpringContextUtil" />
+	<bean id="SpringContextUtil" class="win.caicaikan.util.SpringContextUtil" />
 </beans>
