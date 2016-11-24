@@ -27,6 +27,7 @@ public class LotterySsqService extends BaseService {
 		return doGet(req, LotterySsq.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Result<List<LotterySsq>> convertDocumentToResult(Document document) {
 		if (document == null) {
@@ -40,9 +41,9 @@ public class LotterySsqService extends BaseService {
 			LotterySsq lotterySsq = new LotterySsq();
 			lotterySsq.setTermNo(row.child(0).child(0).ownText());
 			lotterySsq.setOpenDate(row.child(1).ownText().replaceAll("（.）", ""));
-			lotterySsq.setRedNumbers(row.child(2).getElementsByAttributeValue("class", "redBalls").get(0).ownText().trim().replace("</em><em>", ",")
+			lotterySsq.setRedNumbers(row.child(2).getElementsByAttributeValue("class", "redBalls").get(0).html().trim().replace("</em><em>", ",")
 					.replace("<em>", "").replace("</em>", ""));
-			lotterySsq.setBlueNumber(row.child(2).getElementsByAttributeValue("class", "blueBalls").get(0).ownText().trim().replace("<em>", "")
+			lotterySsq.setBlueNumber(row.child(2).getElementsByAttributeValue("class", "blueBalls").get(0).html().trim().replace("<em>", "")
 					.replace("</em>", ""));
 			lotterySsq.setFirstPrizeCount(row.child(3).getElementsByAttributeValue("class", "NotNumber").get(0).ownText());
 			lotterySsq.setFirstPrizeAmount(row.child(3).getElementsByAttributeValue("class", "cash").get(0).ownText());
