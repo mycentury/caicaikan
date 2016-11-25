@@ -14,14 +14,19 @@ import win.caicaikan.BaseTest;
  * @Date 2016年11月22日
  * @ClassName LotterySsqTaskTest
  */
-public class LotterySsqTaskTest extends BaseTest {
+public class LotterySsqHistoryTaskTest extends BaseTest {
 
 	@Autowired
-	private LotterySsqTask lotterySsqTask;
+	private LotterySsqHistoryTask lotterySsqHistoryTask;
 
 	@Test
 	public void testExecute() {
-		lotterySsqTask.execute();
+		lotterySsqHistoryTask.execute();
+	}
+
+	@Test
+	public void testSynchronizeHistoryData() {
+		lotterySsqHistoryTask.synchronizeHistoryData();
 	}
 
 }

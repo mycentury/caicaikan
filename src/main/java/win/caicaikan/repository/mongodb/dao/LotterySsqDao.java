@@ -15,5 +15,4 @@ import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
  * @ClassName BaseDao
  */
 public interface LotterySsqDao extends MongoRepository<LotterySsqEntity, String> {
-
 }

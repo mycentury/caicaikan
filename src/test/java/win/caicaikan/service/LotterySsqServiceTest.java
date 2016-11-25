@@ -22,7 +22,7 @@ public class LotterySsqServiceTest extends BaseTest {
 
 	/**
 	 * Test method for
-	 * {@link win.caicaikan.service.LotterySsqService#getSsqInfoByLotteryReq(win.caicaikan.api.req.LotteryReq)}.
+	 * {@link win.caicaikan.service.LotterySsqService#getSsqInfoByLotteryReq(win.caicaikan.api.req.HistoryLotteryReq)}.
 	 */
 	@Test
 	public void testGetSsqInfoByLotteryReq() {
@@ -31,7 +31,7 @@ public class LotterySsqServiceTest extends BaseTest {
 		req.setQueryType("range");
 		req.setStart("2003000");
 		req.setEnd("2003200");
-		doubleColorBallService.getSsqInfoByLotteryReq(req);
+		doubleColorBallService.getSsqHistoryByLotteryReq(req);
 	}
 
 }

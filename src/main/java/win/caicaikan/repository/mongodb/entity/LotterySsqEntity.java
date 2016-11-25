@@ -17,7 +17,7 @@ public class LotterySsqEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	@Id
 	private String termNo;
-	private String openDate;
+	private String openTime;
 	private String redNumbers;
 	private String blueNumber;
 	private String firstPrizeCount;
@@ -33,12 +33,12 @@ public class LotterySsqEntity extends BaseEntity {
 		this.termNo = termNo;
 	}
 
-	public String getOpenDate() {
-		return openDate;
+	public String getOpenTime() {
+		return openTime;
 	}
 
-	public void setOpenDate(String openDate) {
-		this.openDate = openDate;
+	public void setOpenTime(String openTime) {
+		this.openTime = openTime;
 	}
 
 	public String getRedNumbers() {
@@ -87,5 +87,12 @@ public class LotterySsqEntity extends BaseEntity {
 
 	public void setSecondPrizeAmount(String secondPrizeAmount) {
 		this.secondPrizeAmount = secondPrizeAmount;
+	}
+
+	@Override
+	public String toString() {
+		return "LotterySsqEntity [termNo=" + termNo + ", openTime=" + openTime + ", redNumbers=" + redNumbers + ", blueNumber=" + blueNumber
+				+ ", firstPrizeCount=" + firstPrizeCount + ", firstPrizeAmount=" + firstPrizeAmount + ", secondPrizeCount=" + secondPrizeCount
+				+ ", secondPrizeAmount=" + secondPrizeAmount + ", toString()=" + super.toString() + "]";
 	}
 }

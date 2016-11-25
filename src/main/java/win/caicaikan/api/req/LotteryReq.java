@@ -18,15 +18,19 @@ public class LotteryReq implements Serializable {
 	 */
 	private String lotteryType;
 	/**
-	 * 查询类型（按日期range_date，按期号range）
+	 * 查询类型（按日期range_date{"yyyy-MM-dd"}，按期号range{"yyyy+no"}）
 	 */
 	private String queryType;
 	/**
-	 * 起始期号
+	 * 查询期数
+	 */
+	private String count = "5 ";
+	/**
+	 * 起始期号(或日期)
 	 */
 	private String start;
 	/**
-	 * 结束期号
+	 * 结束期号(或日期)
 	 */
 	private String end;
 
@@ -46,6 +50,14 @@ public class LotteryReq implements Serializable {
 		this.queryType = queryType;
 	}
 
+	public String getCount() {
+		return count;
+	}
+
+	public void setCount(String count) {
+		this.count = count;
+	}
+
 	public String getStart() {
 		return start;
 	}
@@ -62,4 +74,8 @@ public class LotteryReq implements Serializable {
 		this.end = end;
 	}
 
+	@Override
+	public String toString() {
+		return "LotteryReq [lotteryType=" + lotteryType + ", queryType=" + queryType + ", count=" + count + ", start=" + start + ", end=" + end + "]";
+	}
 }

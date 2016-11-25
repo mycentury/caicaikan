@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 public abstract class TaskTemplete {
 	private static final Logger logger = Logger.getLogger(TaskTemplete.class);
 
-	public final void execute() {
+	protected void execute() {
 		Date startDate = new Date();
 		String taskName = null;
 		try {
