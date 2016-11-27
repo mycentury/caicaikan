@@ -4,7 +4,6 @@
 package win.caicaikan.task;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -245,11 +244,25 @@ public class LotteryPredictTask extends TaskTemplete {
 			blueMap.put(key, value);
 		}
 
-		List<String> redNumList = new ArrayList<String>();
-		int[][] redNums = new int[SsqConstant.RED_NUMBERS.length][2];
-		List<Entry<String, Integer>> entries = MapUtil.sortToListByValue(redMap, MapUtil.DESC);
-		for (Entry<String, Integer> entry : entries) {
-
+		StringBuilder numbers = new StringBuilder();
+		List<Entry<String, Integer>> redEntries = MapUtil.sortToListByValue(redMap, MapUtil.DESC);
+		for (int i =0 ;i<redEntries.size();i++) {
+			Entry<String, Integer> entry = redEntries.get(i);
+			numbers.append(entry.getKey());
+			if (i>=8) {
+				break;
+			}
+			numbers.append(",");
+		}
+		numbers.append("+");
+		List<Entry<String, Integer>> blueEntries = MapUtil.sortToListByValue(blueMap, MapUtil.DESC);
+		for (int i =0 ;i<blueEntries.size();i++) {
+			Entry<String, Integer> entry = blueEntries.get(i);
+			numbers.append(entry.getKey());
+			if (i>=3) {
+				break;
+			}
+			numbers.append(",");
 		}
 
 		System.out.println(A1_red);
@@ -282,7 +295,7 @@ public class LotteryPredictTask extends TaskTemplete {
 		System.out.println(C3_blue);
 		System.out.println(C4_blue);
 		System.out.println(C5_blue);
-		return null;
+		return numbers.toString();
 	}
 
 	private Map<String, Integer> initMapKeysWithValue(String[] keys, int value) {
