@@ -19,14 +19,15 @@ import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
 import win.caicaikan.service.LotterySsqService;
 
 /**
- * @Desc 双色球及时任务：用于获取当天晚上开奖信息
+ * @Desc 双色球及时任务：用于获取当天晚上开奖信息本期同步
  * @author wewenge.yan
  * @Date 2016年11月21日
  * @ClassName DoubleColorBallTask
  */
 @Service
 public class LotterySsqCurrentTask extends TaskTemplete {
-	private static final Logger logger = Logger.getLogger(LotterySsqCurrentTask.class);
+	private static final Logger logger = Logger
+			.getLogger(LotterySsqCurrentTask.class);
 	@Autowired
 	private LotterySsqService lotterySsqService;
 	@Autowired
@@ -37,7 +38,9 @@ public class LotterySsqCurrentTask extends TaskTemplete {
 		LotteryReq req = new LotteryReq();
 		req.setLotteryType(LotteryType.SSQ.getCode());
 		try {
-			Result<List<LotterySsqEntity>> result = lotterySsqService.getSsqCurrentByLotteryReq(req);
+			// 本期同步
+			Result<List<LotterySsqEntity>> result = lotterySsqService
+					.getSsqCurrentByLotteryReq(req);
 			if (CollectionUtils.isEmpty(result.getData())) {
 				logger.error("getSsqCurrentByLotteryReq获取数据失败");
 				return;
@@ -48,6 +51,7 @@ public class LotterySsqCurrentTask extends TaskTemplete {
 				}
 				lotterySsqDao.insert(result.getData());
 			}
+
 		} catch (Exception e) {
 			logger.error(e);
 		}

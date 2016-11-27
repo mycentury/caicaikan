@@ -6,12 +6,17 @@ package win.caicaikan.repository.mongodb.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * @Desc
  * @author wewenge.yan
  * @Date 2016年11月22日
  * @ClassName BaseEntity
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Date updateTime;
@@ -35,6 +40,7 @@ public class BaseEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "BaseEntity [updateTime=" + updateTime + ", createTime=" + createTime + "]";
+		return "BaseEntity [updateTime=" + updateTime + ", createTime="
+				+ createTime + "]";
 	}
 }

@@ -110,7 +110,7 @@
 			<version>${hessian.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>net.hubs1.base</groupId>
+			<groupId>com.hessian</groupId>
 			<artifactId>hessian-ui</artifactId>
 			<version>0.0.8</version>
 		</dependency>

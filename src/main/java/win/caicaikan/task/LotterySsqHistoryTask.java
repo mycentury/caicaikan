@@ -31,10 +31,11 @@ import win.caicaikan.util.DateUtil;
  */
 @Service
 public class LotterySsqHistoryTask extends TaskTemplete {
-	private static final Logger logger = Logger.getLogger(LotterySsqHistoryTask.class);
+	private static final Logger logger = Logger
+			.getLogger(LotterySsqHistoryTask.class);
 	private static final int START_YEAR = 2003;
 	private static final String END_NO = "200";
-	private static final String START_NO = "000";
+	private static final String START_NO = "001";
 	@Autowired
 	private LotterySsqService lotterySsqService;
 	@Autowired
@@ -50,7 +51,8 @@ public class LotterySsqHistoryTask extends TaskTemplete {
 		Criteria criteria = Criteria.where("firstPrizeCount").is("");
 		criteria.orOperator(Criteria.where("secondPrizeCount").is(""));
 		Query query = new Query().addCriteria(criteria);
-		List<LotterySsqEntity> list = mongoTemplate.find(query, LotterySsqEntity.class);
+		List<LotterySsqEntity> list = mongoTemplate.find(query,
+				LotterySsqEntity.class);
 		if (CollectionUtils.isEmpty(list)) {
 			return;
 		}
@@ -58,7 +60,8 @@ public class LotterySsqHistoryTask extends TaskTemplete {
 			String termNo = list.get(i).getTermNo();
 			req.setStart(termNo);
 			req.setEnd(termNo);
-			Result<List<LotterySsqEntity>> result = lotterySsqService.getSsqHistoryByLotteryReq(req);
+			Result<List<LotterySsqEntity>> result = lotterySsqService
+					.getSsqHistoryByLotteryReq(req);
 			lotterySsqDao.save(result.getData());
 		}
 	}
@@ -77,7 +80,8 @@ public class LotterySsqHistoryTask extends TaskTemplete {
 		for (int i = START_YEAR; i <= currentYear; i++) {
 			req.setStart(i + START_NO);
 			req.setEnd(i + END_NO);
-			Result<List<LotterySsqEntity>> result = lotterySsqService.getSsqHistoryByLotteryReq(req);
+			Result<List<LotterySsqEntity>> result = lotterySsqService
+					.getSsqHistoryByLotteryReq(req);
 			lotterySsqDao.save(result.getData());
 		}
 	}
