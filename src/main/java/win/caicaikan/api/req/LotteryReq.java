@@ -24,7 +24,7 @@ public class LotteryReq implements Serializable {
 	/**
 	 * 查询期数
 	 */
-	private String count = "5 ";
+	private String count = "5";
 	/**
 	 * 起始期号(或日期)
 	 */
