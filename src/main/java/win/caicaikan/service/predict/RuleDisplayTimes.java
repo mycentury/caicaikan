@@ -3,7 +3,14 @@
  */
 package win.caicaikan.service.predict;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
+
+import win.caicaikan.constant.Rule;
+import win.caicaikan.repository.mongodb.entity.LotteryPredictEntity;
+import win.caicaikan.repository.mongodb.entity.LotteryRuleEntity;
 
 /**
  * @Desc
@@ -13,27 +20,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RuleDisplayTimes extends RuleTemplate {
+
 	@Override
-	String doBefore() {
-		// TODO Auto-generated method stub
-		return null;
+	public Rule getRule() {
+		return Rule.SSQ_0_001;
 	}
 
 	@Override
-	String doAfter() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public List<LotteryPredictEntity> excuteRule(LotteryRuleEntity entity) throws Throwable {
+		List<LotteryPredictEntity> result = new ArrayList<LotteryPredictEntity>();
 
-	@Override
-	String run() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	String getRuleId() {
-		// TODO Auto-generated method stub
-		return null;
+		return result;
 	}
 }

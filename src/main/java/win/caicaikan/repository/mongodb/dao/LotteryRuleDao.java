@@ -14,6 +14,6 @@ import win.caicaikan.repository.mongodb.entity.LotteryRuleEntity;
  * @Date 2016年9月10日
  * @ClassName BaseDao
  */
-public interface LotteryRuleDao extends
-		MongoRepository<LotteryRuleEntity, String> {
+public interface LotteryRuleDao extends MongoRepository<LotteryRuleEntity, String> {
+	LotteryRuleEntity findById(String ruleNo);
 }
