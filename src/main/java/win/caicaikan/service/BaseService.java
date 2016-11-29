@@ -8,12 +8,12 @@ import java.util.List;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.gson.Gson;
+
 import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.api.res.LotteryCurrentRes;
 import win.caicaikan.api.res.Result;
 import win.caicaikan.repository.mongodb.entity.BaseEntity;
-
-import com.google.gson.Gson;
 
 /**
  * @Desc
