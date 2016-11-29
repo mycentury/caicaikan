@@ -34,35 +34,13 @@ import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
  *
  */
 @Controller
-@RequestMapping("api")
-public class LotteryApiController {
+public class IndexController {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	
-	/**
-	 * http://localhost:8280/api/query?start=2016130&end=2016140
-	 * @param request
-	 * @param req
-	 * @return
-	 */
-	@RequestMapping(value = "query", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody Result<List<LotterySsqEntity>> queryLottery(HttpServletRequest request, LotteryReq req) {
-		Query query = new Query();
-		if (StringUtils.isEmpty(req.getStart()) || StringUtils.isEmpty(req.getEnd())) {
-			query = query.with(new Sort(new Sort.Order(Sort.Direction.DESC, "termNo"))).limit(1);
-		} else {
-			query = new Query().addCriteria(Criteria.where("termNo").gt(req.getStart()).lt(req.getEnd())).with(
-					new Sort(new Sort.Order(Sort.Direction.ASC, "termNo")));
-		}
-		List<LotterySsqEntity> data = mongoTemplate.find(query, LotterySsqEntity.class);
-		Result<List<LotterySsqEntity>> result = new Result<List<LotterySsqEntity>>();
-		if (CollectionUtils.isEmpty(data)) {
-			result.setMessage("empty");
-		}else {
-			result.setData(data);
-			result.setMessage("success");
-		}
-		return result;
+	@RequestMapping(value = "/")
+	public String queryLottery(HttpServletRequest request) {
+		return "index";
 	}
 }

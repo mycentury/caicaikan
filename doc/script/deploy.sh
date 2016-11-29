@@ -24,7 +24,7 @@ echo sleep 10
 sleep 10
 
 cd $TOMCAT_HOME
-./tomcatstop.sh
+./stop.sh
 
 cd $APPS_HOME
 rm $DIST_NAME -rf
@@ -35,7 +35,7 @@ jar xvf $WAR_NAME
 rm $WAR_NAME -f
 
 cd $TOMCAT_HOME
-./tomcatstart.sh
+./start.sh
 
 
 echo
