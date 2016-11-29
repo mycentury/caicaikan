@@ -23,10 +23,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class LotteryRuleEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	/**
-	 * 规则编号
+	 * lotteryType-ruleType-ruleNo
 	 */
 	@Id
-	private String ruleNo;
+	private String id;
 	/**
 	 * 彩种
 	 */
@@ -35,6 +35,10 @@ public class LotteryRuleEntity extends BaseEntity {
 	 * 规则类型：0-基础，1-衍生（复合）
 	 */
 	private String ruleType;
+	/**
+	 * 规则编号
+	 */
+	private String ruleNo;
 	/**
 	 * 规则名称
 	 */
@@ -51,4 +55,12 @@ public class LotteryRuleEntity extends BaseEntity {
 	 * 启用状态：1-启用，0-禁用
 	 */
 	private int status;
+	/**
+	 * 执行状态
+	 */
+	private String excuteStatus;
+
+	public void generateId() {
+		this.id = this.lotteryType + "-" + this.ruleType + "-" + this.ruleNo;
+	}
 }
