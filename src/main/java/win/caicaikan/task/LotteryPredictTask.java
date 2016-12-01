@@ -246,20 +246,20 @@ public class LotteryPredictTask extends TaskTemplete {
 
 		StringBuilder numbers = new StringBuilder();
 		List<Entry<String, Integer>> redEntries = MapUtil.sortToListByValue(redMap, MapUtil.DESC);
-		for (int i =0 ;i<redEntries.size();i++) {
+		for (int i = 0; i < redEntries.size(); i++) {
 			Entry<String, Integer> entry = redEntries.get(i);
 			numbers.append(entry.getKey());
-			if (i>=8) {
+			if (i >= 8) {
 				break;
 			}
 			numbers.append(",");
 		}
 		numbers.append("+");
 		List<Entry<String, Integer>> blueEntries = MapUtil.sortToListByValue(blueMap, MapUtil.DESC);
-		for (int i =0 ;i<blueEntries.size();i++) {
+		for (int i = 0; i < blueEntries.size(); i++) {
 			Entry<String, Integer> entry = blueEntries.get(i);
 			numbers.append(entry.getKey());
-			if (i>=3) {
+			if (i >= 3) {
 				break;
 			}
 			numbers.append(",");

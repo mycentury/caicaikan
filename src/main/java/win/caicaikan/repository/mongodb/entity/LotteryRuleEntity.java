@@ -56,6 +56,14 @@ public class LotteryRuleEntity extends BaseEntity {
 	 */
 	private int status;
 	/**
+	 * 红球选取个数
+	 */
+	private int redCount;
+	/**
+	 * 蓝球选取个数
+	 */
+	private int blueCount;
+	/**
 	 * 执行状态
 	 */
 	private String excuteStatus;
