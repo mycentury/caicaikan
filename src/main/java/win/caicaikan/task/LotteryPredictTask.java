@@ -22,8 +22,10 @@ import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.constant.LotteryType;
 import win.caicaikan.constant.SsqConstant;
 import win.caicaikan.repository.mongodb.dao.LotteryPredictDao;
+import win.caicaikan.repository.mongodb.dao.LotteryRuleDao;
 import win.caicaikan.repository.mongodb.dao.LotterySsqDao;
 import win.caicaikan.repository.mongodb.entity.LotteryPredictEntity;
+import win.caicaikan.repository.mongodb.entity.LotteryRuleEntity;
 import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
 import win.caicaikan.util.DateUtil;
 import win.caicaikan.util.MapUtil;
@@ -42,6 +44,16 @@ public class LotteryPredictTask extends TaskTemplete {
 	private LotterySsqDao lotterySsqDao;
 	@Autowired
 	private LotteryPredictDao lotteryPredictDao;
+	@Autowired
+	private LotteryRuleDao lotteryRuleDao;
+
+	protected List<LotteryRuleEntity> queryRule() throws Throwable {
+		return lotteryRuleDao.findAll();
+	}
+
+	protected void saveResult(List<LotteryPredictEntity> result) throws Throwable {
+		lotteryPredictDao.insert(result);
+	}
 
 	@Override
 	public void run() throws Throwable {
@@ -75,7 +87,6 @@ public class LotteryPredictTask extends TaskTemplete {
 	 * @规则A：出次均衡，权重：50%（1、所有：70%，2、1000：16%，3、500：8%，4、200：4%,5、100:2%）
 	 * @规则B：遗漏均衡，权重40%（1、所有：70%，2、1000：16%，3、500：8%，4、200：4%,5、100:2%）
 	 * @规则C：连出均衡，权重10%（1、所有：70%，2、1000：16%，3、500：8%，4、200：4%,5、100:2%）
-	 * 
 	 * @param list
 	 * @return
 	 */
@@ -214,12 +225,9 @@ public class LotteryPredictTask extends TaskTemplete {
 		list.clear();
 		Map<String, Integer> redMap = new HashMap<String, Integer>();
 		for (String key : SsqConstant.RED_NUMBERS) {
-			int red_A = A1_red.get(key) * 70 + A2_red.get(key) * 16 + A3_red.get(key) * 8
-					+ A4_red.get(key) * 4 + A5_red.get(key) * 2;
-			int red_B = B1_red.get(key) * 70 + B2_red.get(key) * 16 + B3_red.get(key) * 8
-					+ B4_red.get(key) * 4 + B5_red.get(key) * 2;
-			int red_C = C1_red.get(key) * 70 + C2_red.get(key) * 16 + C3_red.get(key) * 8
-					+ C4_red.get(key) * 4 + C5_red.get(key) * 2;
+			int red_A = A1_red.get(key) * 70 + A2_red.get(key) * 16 + A3_red.get(key) * 8 + A4_red.get(key) * 4 + A5_red.get(key) * 2;
+			int red_B = B1_red.get(key) * 70 + B2_red.get(key) * 16 + B3_red.get(key) * 8 + B4_red.get(key) * 4 + B5_red.get(key) * 2;
+			int red_C = C1_red.get(key) * 70 + C2_red.get(key) * 16 + C3_red.get(key) * 8 + C4_red.get(key) * 4 + C5_red.get(key) * 2;
 			// 连出次数越大，本次几率越小
 			if (!lastEntity.getRedNumbers().contains(key)) {
 				red_C = 0;
@@ -230,12 +238,9 @@ public class LotteryPredictTask extends TaskTemplete {
 
 		Map<String, Integer> blueMap = new HashMap<String, Integer>();
 		for (String key : SsqConstant.BLUE_NUMBERS) {
-			int blue_A = A1_blue.get(key) * 70 + A2_blue.get(key) * 16 + A3_blue.get(key) * 8
-					+ A4_blue.get(key) * 4 + A5_blue.get(key) * 2;
-			int blue_B = B1_blue.get(key) * 70 + B2_blue.get(key) * 16 + B3_blue.get(key) * 8
-					+ B4_blue.get(key) * 4 + B5_blue.get(key) * 2;
-			int blue_C = C1_blue.get(key) * 70 + C2_blue.get(key) * 16 + C3_blue.get(key) * 8
-					+ C4_blue.get(key) * 4 + C5_blue.get(key) * 2;
+			int blue_A = A1_blue.get(key) * 70 + A2_blue.get(key) * 16 + A3_blue.get(key) * 8 + A4_blue.get(key) * 4 + A5_blue.get(key) * 2;
+			int blue_B = B1_blue.get(key) * 70 + B2_blue.get(key) * 16 + B3_blue.get(key) * 8 + B4_blue.get(key) * 4 + B5_blue.get(key) * 2;
+			int blue_C = C1_blue.get(key) * 70 + C2_blue.get(key) * 16 + C3_blue.get(key) * 8 + C4_blue.get(key) * 4 + C5_blue.get(key) * 2;
 			// 连出次数越大，本次几率越小
 			if (!lastEntity.getRedNumbers().contains(key)) {
 				blue_C = 0;
@@ -246,20 +251,20 @@ public class LotteryPredictTask extends TaskTemplete {
 
 		StringBuilder numbers = new StringBuilder();
 		List<Entry<String, Integer>> redEntries = MapUtil.sortToListByValue(redMap, MapUtil.DESC);
-		for (int i =0 ;i<redEntries.size();i++) {
+		for (int i = 0; i < redEntries.size(); i++) {
 			Entry<String, Integer> entry = redEntries.get(i);
 			numbers.append(entry.getKey());
-			if (i>=8) {
+			if (i >= 8) {
 				break;
 			}
 			numbers.append(",");
 		}
 		numbers.append("+");
 		List<Entry<String, Integer>> blueEntries = MapUtil.sortToListByValue(blueMap, MapUtil.DESC);
-		for (int i =0 ;i<blueEntries.size();i++) {
+		for (int i = 0; i < blueEntries.size(); i++) {
 			Entry<String, Integer> entry = blueEntries.get(i);
 			numbers.append(entry.getKey());
-			if (i>=3) {
+			if (i >= 3) {
 				break;
 			}
 			numbers.append(",");
