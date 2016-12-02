@@ -3,7 +3,6 @@
  */
 package win.caicaikan.service.predict;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,9 +31,9 @@ public class RuleDisplayTimes extends RuleTemplate {
 	}
 
 	@Override
-	public List<LotteryPredictEntity> excute(List<LotterySsqEntity> list, LotteryRuleEntity entity)
+	public LotteryPredictEntity excute(List<LotterySsqEntity> list, LotteryRuleEntity entity)
 			throws Throwable {
-		List<LotteryPredictEntity> result = new ArrayList<LotteryPredictEntity>();
+		LotteryPredictEntity result = new LotteryPredictEntity();
 		Map<Integer, Integer> periodsAndweights = entity.getPeriodsAndweights();
 		Map<String, Integer> redMap = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
 		Map<String, Integer> blueMap = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, 0);
@@ -66,7 +65,7 @@ public class RuleDisplayTimes extends RuleTemplate {
 		for (int i = 0; i < redEntries.size(); i++) {
 			Entry<String, Integer> entry = redEntries.get(i);
 			numbers.append(entry.getKey());
-			if (i >= entity.getRedCount()-1) {
+			if (i >= entity.getRedCount() - 1) {
 				break;
 			}
 			numbers.append(",");
@@ -76,7 +75,7 @@ public class RuleDisplayTimes extends RuleTemplate {
 		for (int i = 0; i < blueEntries.size(); i++) {
 			Entry<String, Integer> entry = blueEntries.get(i);
 			numbers.append(entry.getKey());
-			if (i >= 3) {
+			if (i >= entity.getBlueCount() - 1) {
 				break;
 			}
 			numbers.append(",");

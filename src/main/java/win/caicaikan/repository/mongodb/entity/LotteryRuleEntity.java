@@ -67,6 +67,10 @@ public class LotteryRuleEntity extends BaseEntity {
 	 * 执行状态
 	 */
 	private String excuteStatus;
+	/**
+	 * 成功率
+	 */
+	private String rate;
 
 	public void generateId() {
 		this.id = this.lotteryType + "-" + this.ruleType + "-" + this.ruleNo;
