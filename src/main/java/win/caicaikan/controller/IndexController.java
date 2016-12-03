@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -24,8 +25,9 @@ public class IndexController {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	@RequestMapping(value = "/")
-	public String queryLottery(HttpServletRequest request) {
+	@RequestMapping(value = { "/", "/index" })
+	public String queryLottery(HttpServletRequest request, ModelMap map) {
+		map.put("words", "<p>Hello,World!</p>");
 		return "index";
 	}
 }
