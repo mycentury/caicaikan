@@ -1,10 +1,45 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8" />
-<title>Insert title here</title>
+<title>彩彩看</title>
 </head>
-<body>
-	<input th:value="bbb" value="aaa" />
+<body style="padding-top: 70px;">
+
+	<!-- BEGIN HEADER -->
+	<div th:include="common/header :: header" th:remove="tag"></div>
+	<!-- END HEADER -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="#">Home</a></li>
+			<li><a href="#">Library</a></li>
+			<li class="active">Data</li>
+		</ol>
+
+		<h1 th:text="${words}" text="aaa"></h1>
+		<h2 th:text="${words}" text="aaa"></h2>
+		<h3 th:text="${words}" text="aaa"></h3>
+		<h4 th:text="${words}" text="aaa"></h4>
+		<h5 th:text="${words}" text="aaa"></h5>
+		<h6 th:text="${words}" text="aaa"></h6>
+		<h7 th:text="${words}" text="aaa"></h7>
+
+		<nav>
+			<ul class="pagination">
+				<li><a href="#">&laquo;</a></li>
+				<li><a href="#">1</a></li>
+				<li><a href="#">2</a></li>
+				<li><a href="#">3</a></li>
+				<li><a href="#">4</a></li>
+				<li><a href="#">5</a></li>
+				<li><a href="#">&raquo;</a></li>
+			</ul>
+		</nav>
+	</div>
+
+	<!-- BEGIN CSS_JS -->
+	<div th:include="common/css_js :: css_js" th:remove="tag"></div>
+	<!-- END CSS_JS -->
 </body>
 </html>

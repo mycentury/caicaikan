@@ -21,9 +21,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class LotteryPredictEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	@Id
-	private String id;// termNo-ruleNo
 	private String termNo;
-	private String ruleNo;
 	private String type;
 	private String numbers;
 	private String rightNumbers;

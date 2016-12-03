@@ -60,17 +60,13 @@ public class LotteryRuleEntity extends BaseEntity {
 	 */
 	private int redCount;
 	/**
-	 * 蓝球选取个数
+	 * 启用状态：1-启用，0-禁用
 	 */
 	private int blueCount;
 	/**
 	 * 执行状态
 	 */
 	private String excuteStatus;
-	/**
-	 * 成功率
-	 */
-	private String rate;
 
 	public void generateId() {
 		this.id = this.lotteryType + "-" + this.ruleType + "-" + this.ruleNo;

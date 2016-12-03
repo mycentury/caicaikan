@@ -5,13 +5,14 @@ BACKUP_HOME=/home/app/backup
 APPS_HOME=/home/app/apps
 TOMCAT_HOME=/home/app/tomcats/tomcat8280_caicaikan
 DIST_HOME=/home/app/deploy
-WAR_NAME=caicaikan.war
+WAR_NAME=$1
 DIST_NAME=caicaikan
 
-if test -z $1; then
-   echo "default war name $WAR_NAME"
-else
-   WAR_NAME=$1
+if test -z $1
+then
+   echo "Require War Name parm"
+   cd $DIST_HOME
+   WAR_NAME=`ls $DIST_NAME*.war -t | head -n 1`
 fi
 
 echo "Begin to unpack $WAR_NAME and  dist $DIST_NAME"
