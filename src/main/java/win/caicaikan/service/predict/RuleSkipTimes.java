@@ -4,6 +4,7 @@
 package win.caicaikan.service.predict;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import win.caicaikan.constant.LotteryType;
 import win.caicaikan.constant.Rule;
-import win.caicaikan.constant.SsqConstant;
 import win.caicaikan.repository.mongodb.entity.LotteryPredictEntity;
 import win.caicaikan.repository.mongodb.entity.LotteryRuleEntity;
 import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
@@ -22,40 +22,37 @@ import win.caicaikan.util.MapUtil;
  * @Desc
  * @author wewenge.yan
  * @Date 2016年11月21日
- * @ClassName RuleDisplayTimes
+ * @ClassName RuleDoubleTimes
  */
 @Service
-public class RuleDisplayTimes extends RuleTemplate {
+public class RuleSkipTimes extends RuleTemplate {
 
 	@Override
 	public Rule getRule() {
-		return Rule.SSQ_0_001;
+		return Rule.SSQ_0_003;
 	}
 
 	@Override
 	public LotteryPredictEntity excute(List<LotterySsqEntity> list, LotteryRuleEntity entity)
 			throws Throwable {
 		Map<Integer, Integer> periodsAndweights = entity.getPeriodsAndweights();
-		Map<String, Integer> redMap = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
-		Map<String, Integer> blueMap = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, 0);
+		Map<String, Integer> redMap = new HashMap<String, Integer>();
+		Map<String, Integer> blueMap = new HashMap<String, Integer>();
 		for (int i = 0; i < list.size(); i++) {
 			LotterySsqEntity lotterySsqEntity = list.get(i);
 			String[] redNumbers = lotterySsqEntity.getRedNumbers().split(",");
 			for (String redNumber : redNumbers) {
 				for (Entry<Integer, Integer> entry : periodsAndweights.entrySet()) {
-					Integer key = entry.getKey();
-					Integer value = entry.getValue();
-					if (i < key || key == 0) {
-						redMap.put(redNumber, redMap.get(redNumber) + value);
+					if ((i < entry.getKey() || entry.getKey() == 0)
+							&& redMap.get(redNumber) == null) {
+						redMap.put(redNumber, i);
 					}
 				}
 			}
 			String blueNumber = lotterySsqEntity.getBlueNumber().split(" ")[0];
 			for (Entry<Integer, Integer> entry : periodsAndweights.entrySet()) {
-				Integer key = entry.getKey();
-				Integer value = entry.getValue();
-				if (i < key || key == 0) {
-					blueMap.put(blueNumber, blueMap.get(blueNumber) + value);
+				if ((i < entry.getKey() || entry.getKey() == 0) && blueMap.get(blueNumber) == null) {
+					redMap.put(blueNumber, i);
 				}
 			}
 
@@ -94,7 +91,6 @@ public class RuleDisplayTimes extends RuleTemplate {
 		result.setPrimaryKey(lotteryType, ruleNo, termNo);
 		result.setCreateTime(new Date());
 		result.setUpdateTime(new Date());
-
 		return result;
 	}
 }

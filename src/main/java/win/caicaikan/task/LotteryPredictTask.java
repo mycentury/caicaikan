@@ -71,8 +71,7 @@ public class LotteryPredictTask extends TaskTemplete {
 			}
 			String numbers = this.calculateByRules(list);
 			LotteryPredictEntity entity = new LotteryPredictEntity();
-			entity.setTermNo(termNo);
-			entity.setType(LotteryType.SSQ.getCode());
+			entity.setPrimaryKey(LotteryType.SSQ.getCode(), "999", termNo);
 			entity.setNumbers(numbers);
 			Date now = new Date();
 			entity.setCreateTime(now);
@@ -225,9 +224,12 @@ public class LotteryPredictTask extends TaskTemplete {
 		list.clear();
 		Map<String, Integer> redMap = new HashMap<String, Integer>();
 		for (String key : SsqConstant.RED_NUMBERS) {
-			int red_A = A1_red.get(key) * 70 + A2_red.get(key) * 16 + A3_red.get(key) * 8 + A4_red.get(key) * 4 + A5_red.get(key) * 2;
-			int red_B = B1_red.get(key) * 70 + B2_red.get(key) * 16 + B3_red.get(key) * 8 + B4_red.get(key) * 4 + B5_red.get(key) * 2;
-			int red_C = C1_red.get(key) * 70 + C2_red.get(key) * 16 + C3_red.get(key) * 8 + C4_red.get(key) * 4 + C5_red.get(key) * 2;
+			int red_A = A1_red.get(key) * 70 + A2_red.get(key) * 16 + A3_red.get(key) * 8
+					+ A4_red.get(key) * 4 + A5_red.get(key) * 2;
+			int red_B = B1_red.get(key) * 70 + B2_red.get(key) * 16 + B3_red.get(key) * 8
+					+ B4_red.get(key) * 4 + B5_red.get(key) * 2;
+			int red_C = C1_red.get(key) * 70 + C2_red.get(key) * 16 + C3_red.get(key) * 8
+					+ C4_red.get(key) * 4 + C5_red.get(key) * 2;
 			// 连出次数越大，本次几率越小
 			if (!lastEntity.getRedNumbers().contains(key)) {
 				red_C = 0;
@@ -238,9 +240,12 @@ public class LotteryPredictTask extends TaskTemplete {
 
 		Map<String, Integer> blueMap = new HashMap<String, Integer>();
 		for (String key : SsqConstant.BLUE_NUMBERS) {
-			int blue_A = A1_blue.get(key) * 70 + A2_blue.get(key) * 16 + A3_blue.get(key) * 8 + A4_blue.get(key) * 4 + A5_blue.get(key) * 2;
-			int blue_B = B1_blue.get(key) * 70 + B2_blue.get(key) * 16 + B3_blue.get(key) * 8 + B4_blue.get(key) * 4 + B5_blue.get(key) * 2;
-			int blue_C = C1_blue.get(key) * 70 + C2_blue.get(key) * 16 + C3_blue.get(key) * 8 + C4_blue.get(key) * 4 + C5_blue.get(key) * 2;
+			int blue_A = A1_blue.get(key) * 70 + A2_blue.get(key) * 16 + A3_blue.get(key) * 8
+					+ A4_blue.get(key) * 4 + A5_blue.get(key) * 2;
+			int blue_B = B1_blue.get(key) * 70 + B2_blue.get(key) * 16 + B3_blue.get(key) * 8
+					+ B4_blue.get(key) * 4 + B5_blue.get(key) * 2;
+			int blue_C = C1_blue.get(key) * 70 + C2_blue.get(key) * 16 + C3_blue.get(key) * 8
+					+ C4_blue.get(key) * 4 + C5_blue.get(key) * 2;
 			// 连出次数越大，本次几率越小
 			if (!lastEntity.getRedNumbers().contains(key)) {
 				blue_C = 0;

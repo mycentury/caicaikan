@@ -68,7 +68,10 @@ public class LotteryRuleEntity extends BaseEntity {
 	 */
 	private String excuteStatus;
 
-	public void generateId() {
-		this.id = this.lotteryType + "-" + this.ruleType + "-" + this.ruleNo;
+	public void setPrimaryKey(String lotteryType, String ruleType, String ruleNo) {
+		this.lotteryType = lotteryType;
+		this.ruleType = ruleType;
+		this.ruleNo = ruleNo;
+		this.id = lotteryType + "-" + ruleType + "-" + ruleNo;
 	}
 }

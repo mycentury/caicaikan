@@ -11,8 +11,8 @@ package win.caicaikan.constant;
  */
 public enum Rule {
 	SSQ_0_001("ssq", "0", "001", "出次平衡", "出现次数平均"),
-	SSQ_0_002("ssq", "0", "002", "出次平衡", "出现次数平均"),
-	SSQ_0_003("ssq", "0", "003", "出次平衡", "出现次数平均");
+	SSQ_0_002("ssq", "0", "002", "连出平衡", "连出次数平均"),
+	SSQ_0_003("ssq", "0", "003", "遗漏平衡", "遗漏次数平均");
 
 	private String lotteryType;
 	private String ruleType;
@@ -27,7 +27,8 @@ public enum Rule {
 	 * @param ruleName
 	 * @param ruleDesc
 	 */
-	private Rule(String lotteryType, String ruleType, String ruleNo, String ruleName, String ruleDesc) {
+	private Rule(String lotteryType, String ruleType, String ruleNo, String ruleName,
+			String ruleDesc) {
 		this.lotteryType = lotteryType;
 		this.ruleType = ruleType;
 		this.ruleNo = ruleNo;
