@@ -16,10 +16,10 @@ import win.caicaikan.util.DateUtil;
 public abstract class RuleTemplate {
 	private static final String START_NO = "001";
 
-	abstract LotteryPredictEntity excute(List<LotterySsqEntity> list, LotteryRuleEntity entity)
-			throws Throwable;
+	public abstract LotteryPredictEntity excute(List<LotterySsqEntity> list,
+			LotteryRuleEntity entity) throws Throwable;
 
-	abstract Rule getRule();
+	public abstract Rule getRule();
 
 	protected Map<String, Integer> initMapKeysWithValue(String[] keys, int value) {
 		Map<String, Integer> map = new HashMap<String, Integer>();

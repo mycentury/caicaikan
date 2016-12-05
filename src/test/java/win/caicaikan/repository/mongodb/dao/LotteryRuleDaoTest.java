@@ -53,7 +53,7 @@ public class LotteryRuleDaoTest extends BaseTest {
 		map.put(100, 2);
 		entity.setPeriodsAndweights(map);
 		entity.setExcuteStatus(ExcuteStatusType.STOP.name());
-		entity.setRedCount(8);
+		entity.setRedCount(10);
 		entity.setBlueCount(3);
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());
@@ -74,7 +74,7 @@ public class LotteryRuleDaoTest extends BaseTest {
 		map.put(100, -1);
 		entity.setPeriodsAndweights(map);
 		entity.setExcuteStatus(ExcuteStatusType.STOP.name());
-		entity.setRedCount(8);
+		entity.setRedCount(10);
 		entity.setBlueCount(3);
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());
@@ -95,7 +95,7 @@ public class LotteryRuleDaoTest extends BaseTest {
 		map.put(100, 1);
 		entity.setPeriodsAndweights(map);
 		entity.setExcuteStatus(ExcuteStatusType.STOP.name());
-		entity.setRedCount(8);
+		entity.setRedCount(10);
 		entity.setBlueCount(3);
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());

@@ -92,6 +92,7 @@ public class RuleDisplayTimes extends RuleTemplate {
 		String ruleNo = getRule().getRuleNo();
 		String termNo = getNextTermNo(list.get(0));
 		result.setPrimaryKey(lotteryType, ruleNo, termNo);
+		result.setNumbers(numbers.toString());
 		result.setCreateTime(new Date());
 		result.setUpdateTime(new Date());
 
