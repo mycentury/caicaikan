@@ -33,8 +33,7 @@ public class RuleDisplayTimes extends RuleTemplate {
 	}
 
 	@Override
-	public LotteryPredictEntity excute(List<LotterySsqEntity> list, LotteryRuleEntity entity)
-			throws Throwable {
+	public LotteryPredictEntity excute(List<LotterySsqEntity> list, LotteryRuleEntity entity) throws Throwable {
 		Map<Integer, Integer> periodsAndweights = entity.getPeriodsAndweights();
 		Map<String, Integer> redMap = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
 		Map<String, Integer> blueMap = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, 0);
@@ -43,9 +42,9 @@ public class RuleDisplayTimes extends RuleTemplate {
 			String[] redNumbers = lotterySsqEntity.getRedNumbers().split(",");
 			for (String redNumber : redNumbers) {
 				for (Entry<Integer, Integer> entry : periodsAndweights.entrySet()) {
-					Integer key = entry.getKey();
+					Integer key = (entry.getKey() == 0 || entry.getKey() > list.size()) ? list.size() : entry.getKey();
 					Integer value = entry.getValue();
-					if (i < key || key == 0) {
+					if (i < key) {
 						redMap.put(redNumber, redMap.get(redNumber) + value);
 					}
 				}
@@ -54,7 +53,7 @@ public class RuleDisplayTimes extends RuleTemplate {
 			for (Entry<Integer, Integer> entry : periodsAndweights.entrySet()) {
 				Integer key = entry.getKey();
 				Integer value = entry.getValue();
-				if (i < key || key == 0) {
+				if (i < key) {
 					blueMap.put(blueNumber, blueMap.get(blueNumber) + value);
 				}
 			}

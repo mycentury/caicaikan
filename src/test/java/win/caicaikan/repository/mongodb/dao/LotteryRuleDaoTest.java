@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import win.caicaikan.BaseTest;
-import win.caicaikan.constant.ExcuteStatusType;
+import win.caicaikan.constant.ExcuteStatus;
 import win.caicaikan.constant.LotteryType;
 import win.caicaikan.constant.Rule;
 import win.caicaikan.constant.RuleType;
@@ -52,7 +52,7 @@ public class LotteryRuleDaoTest extends BaseTest {
 		map.put(200, 4);
 		map.put(100, 2);
 		entity.setPeriodsAndweights(map);
-		entity.setExcuteStatus(ExcuteStatusType.STOP.name());
+		entity.setExcuteStatus(ExcuteStatus.STOP.name());
 		entity.setRedCount(10);
 		entity.setBlueCount(3);
 		entity.setCreateTime(new Date());
@@ -73,7 +73,7 @@ public class LotteryRuleDaoTest extends BaseTest {
 		map.put(200, -2);
 		map.put(100, -1);
 		entity.setPeriodsAndweights(map);
-		entity.setExcuteStatus(ExcuteStatusType.STOP.name());
+		entity.setExcuteStatus(ExcuteStatus.STOP.name());
 		entity.setRedCount(10);
 		entity.setBlueCount(3);
 		entity.setCreateTime(new Date());
@@ -94,7 +94,7 @@ public class LotteryRuleDaoTest extends BaseTest {
 		map.put(200, 2);
 		map.put(100, 1);
 		entity.setPeriodsAndweights(map);
-		entity.setExcuteStatus(ExcuteStatusType.STOP.name());
+		entity.setExcuteStatus(ExcuteStatus.STOP.name());
 		entity.setRedCount(10);
 		entity.setBlueCount(3);
 		entity.setCreateTime(new Date());

@@ -36,13 +36,12 @@ public class RuleSkipTimes extends RuleTemplate {
 	}
 
 	@Override
-	public LotteryPredictEntity excute(List<LotterySsqEntity> list, LotteryRuleEntity entity)
-			throws Throwable {
+	public LotteryPredictEntity excute(List<LotterySsqEntity> list, LotteryRuleEntity entity) throws Throwable {
 		Map<Integer, Integer> periodsAndweights = entity.getPeriodsAndweights();
 		Map<String, Integer> redMap = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
 		Map<String, Integer> blueMap = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, 0);
 		for (Entry<Integer, Integer> entry : periodsAndweights.entrySet()) {
-			int max = entry.getKey() == 0 ? list.size() : entry.getKey();
+			int max = entry.getKey() == 0 || entry.getKey() > list.size() ? list.size() : entry.getKey();
 			Map<String, Integer> tempRedMap = initMapKeysWithValue(SsqConstant.RED_NUMBERS, max);
 			Map<String, Integer> tempBlueMap = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, max);
 			for (int i = 0; i < list.size(); i++) {
