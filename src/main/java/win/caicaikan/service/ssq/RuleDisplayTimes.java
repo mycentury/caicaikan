@@ -43,9 +43,9 @@ public class RuleDisplayTimes extends RuleTemplate {
 			String[] redNumbers = lotterySsqEntity.getRedNumbers().split(",");
 			for (String redNumber : redNumbers) {
 				for (Entry<Integer, Integer> entry : periodsAndweights.entrySet()) {
-					Integer key = entry.getKey();
+					Integer key = (entry.getKey() == 0 || entry.getKey() > list.size()) ? list.size() : entry.getKey();
 					Integer value = entry.getValue();
-					if (i < key || key == 0) {
+					if (i < key) {
 						redMap.put(redNumber, redMap.get(redNumber) + value);
 					}
 				}
@@ -54,7 +54,7 @@ public class RuleDisplayTimes extends RuleTemplate {
 			for (Entry<Integer, Integer> entry : periodsAndweights.entrySet()) {
 				Integer key = entry.getKey();
 				Integer value = entry.getValue();
-				if (i < key || key == 0) {
+				if (i < key) {
 					blueMap.put(blueNumber, blueMap.get(blueNumber) + value);
 				}
 			}
