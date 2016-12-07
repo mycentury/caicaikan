@@ -13,20 +13,20 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import win.caicaikan.BaseTest;
-import win.caicaikan.constant.ExcuteStatusType;
+import win.caicaikan.constant.ExcuteStatus;
 import win.caicaikan.constant.LotteryType;
 import win.caicaikan.constant.Rule;
 import win.caicaikan.constant.RuleType;
 import win.caicaikan.constant.StatusType;
-import win.caicaikan.repository.mongodb.entity.LotteryRuleEntity;
+import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
 
 /**
  * @author yanwenge
  */
-public class LotteryRuleDaoTest extends BaseTest {
+public class PredictRuleDaoTest extends BaseTest {
 
 	@Autowired
-	private LotteryRuleDao dao;
+	private PredictRuleDao predictRuleDao;
 
 	/**
 	 * Test method for
@@ -35,11 +35,11 @@ public class LotteryRuleDaoTest extends BaseTest {
 	 */
 	@Test
 	public void testInsertIterableOfS() {
-		LotteryRuleEntity entity = null;
+		PredictRuleEntity entity = null;
 		Map<Integer, Integer> map = null;
-		List<LotteryRuleEntity> list = new ArrayList<LotteryRuleEntity>();
+		List<PredictRuleEntity> list = new ArrayList<PredictRuleEntity>();
 		// SSQ-0-001
-		entity = new LotteryRuleEntity();
+		entity = new PredictRuleEntity();
 		entity.setPrimaryKey(LotteryType.SSQ.getCode(), RuleType.BASE.getCode(),
 				Rule.SSQ_0_001.getRuleNo());
 		entity.setRuleName("出次均衡");
@@ -52,7 +52,7 @@ public class LotteryRuleDaoTest extends BaseTest {
 		map.put(200, 4);
 		map.put(100, 2);
 		entity.setPeriodsAndweights(map);
-		entity.setExcuteStatus(ExcuteStatusType.STOP.name());
+		entity.setExcuteStatus(ExcuteStatus.STOP.name());
 		entity.setRedCount(10);
 		entity.setBlueCount(3);
 		entity.setCreateTime(new Date());
@@ -60,7 +60,7 @@ public class LotteryRuleDaoTest extends BaseTest {
 		list.add(entity);
 
 		// SSQ-0-002
-		entity = new LotteryRuleEntity();
+		entity = new PredictRuleEntity();
 		entity.setPrimaryKey(LotteryType.SSQ.getCode(), RuleType.BASE.getCode(),
 				Rule.SSQ_0_002.getRuleNo());
 		entity.setRuleName("连出均衡");
@@ -73,7 +73,7 @@ public class LotteryRuleDaoTest extends BaseTest {
 		map.put(200, -2);
 		map.put(100, -1);
 		entity.setPeriodsAndweights(map);
-		entity.setExcuteStatus(ExcuteStatusType.STOP.name());
+		entity.setExcuteStatus(ExcuteStatus.STOP.name());
 		entity.setRedCount(10);
 		entity.setBlueCount(3);
 		entity.setCreateTime(new Date());
@@ -81,7 +81,7 @@ public class LotteryRuleDaoTest extends BaseTest {
 		list.add(entity);
 
 		// SSQ-0-003
-		entity = new LotteryRuleEntity();
+		entity = new PredictRuleEntity();
 		entity.setPrimaryKey(LotteryType.SSQ.getCode(), RuleType.BASE.getCode(),
 				Rule.SSQ_0_003.getRuleNo());
 		entity.setRuleName("遗漏均衡");
@@ -94,13 +94,13 @@ public class LotteryRuleDaoTest extends BaseTest {
 		map.put(200, 2);
 		map.put(100, 1);
 		entity.setPeriodsAndweights(map);
-		entity.setExcuteStatus(ExcuteStatusType.STOP.name());
+		entity.setExcuteStatus(ExcuteStatus.STOP.name());
 		entity.setRedCount(10);
 		entity.setBlueCount(3);
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());
 		list.add(entity);
 
-		dao.save(list);
+		predictRuleDao.save(list);
 	}
 }

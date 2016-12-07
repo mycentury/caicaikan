@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.repository.mongodb.entity;
+package win.caicaikan.repository.mongodb.entity.ssq;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,29 +9,29 @@ import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import win.caicaikan.repository.mongodb.entity.BaseEntity;
+
 /**
  * @Desc
  * @author wewenge.yan
  * @Date 2016年11月22日
- * @ClassName SsqLotteryEntity
+ * @ClassName PredictEntity
  */
-@Document(collection = "lottery_predict")
+@Document(collection = "ssq_predict")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class LotteryPredictEntity extends BaseEntity {
+public class SsqPredictEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	@Id
-	private String id;// lotteryType-ruleNo-termNo
-	private String lotteryType;// 彩种
+	private String id;// ruleNo-termNo
 	private String ruleNo;
 	private String termNo;
 	private String numbers;
 	private String rightNumbers;
 
-	public void setPrimaryKey(String lotteryType, String ruleNo, String termNo) {
-		this.lotteryType = lotteryType;
+	public void setPrimaryKey(String ruleNo, String termNo) {
 		this.ruleNo = ruleNo;
 		this.termNo = termNo;
-		this.id = lotteryType + "-" + ruleNo + "-" + termNo;
+		this.id = ruleNo + "-" + termNo;
 	}
 }

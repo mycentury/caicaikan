@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.service.predict;
+package win.caicaikan.service.ssq;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -12,12 +12,12 @@ import java.util.Map.Entry;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import win.caicaikan.constant.LotteryType;
 import win.caicaikan.constant.Rule;
 import win.caicaikan.constant.SsqConstant;
-import win.caicaikan.repository.mongodb.entity.LotteryPredictEntity;
-import win.caicaikan.repository.mongodb.entity.LotteryRuleEntity;
-import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
+import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
+import win.caicaikan.service.RuleTemplate;
 import win.caicaikan.util.MapUtil;
 
 /**
@@ -36,7 +36,7 @@ public class RuleSkipTimes extends RuleTemplate {
 	}
 
 	@Override
-	public LotteryPredictEntity excute(List<LotterySsqEntity> list, LotteryRuleEntity entity)
+	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity)
 			throws Throwable {
 		Map<Integer, Integer> periodsAndweights = entity.getPeriodsAndweights();
 		Map<String, Integer> redMap = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
@@ -46,7 +46,7 @@ public class RuleSkipTimes extends RuleTemplate {
 			Map<String, Integer> tempRedMap = initMapKeysWithValue(SsqConstant.RED_NUMBERS, max);
 			Map<String, Integer> tempBlueMap = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, max);
 			for (int i = 0; i < list.size(); i++) {
-				LotterySsqEntity lotterySsqEntity = list.get(i);
+				SsqResultEntity lotterySsqEntity = list.get(i);
 				String[] redNumbers = lotterySsqEntity.getRedNumbers().split(",");
 				for (String redNumber : redNumbers) {
 					if (!Arrays.asList(SsqConstant.RED_NUMBERS).contains(redNumber)) {
@@ -56,7 +56,7 @@ public class RuleSkipTimes extends RuleTemplate {
 						tempRedMap.put(redNumber, i);
 					}
 				}
-				String blueNumber = lotterySsqEntity.getBlueNumber().split(" ")[0];
+				String blueNumber = lotterySsqEntity.getBlueNumbers().split(" ")[0];
 				if ((i < max) && tempBlueMap.get(blueNumber) == max) {
 					tempBlueMap.put(blueNumber, i);
 				}
@@ -100,11 +100,10 @@ public class RuleSkipTimes extends RuleTemplate {
 			numbers = new StringBuilder(numbers.substring(0, numbers.length() - 1));
 		}
 
-		LotteryPredictEntity result = new LotteryPredictEntity();
-		String lotteryType = LotteryType.SSQ.getCode();
+		SsqPredictEntity result = new SsqPredictEntity();
 		String ruleNo = getRule().getRuleNo();
 		String termNo = getNextTermNo(list.get(0));
-		result.setPrimaryKey(lotteryType, ruleNo, termNo);
+		result.setPrimaryKey(ruleNo, termNo);
 		result.setNumbers(numbers.toString());
 		result.setCreateTime(new Date());
 		result.setUpdateTime(new Date());

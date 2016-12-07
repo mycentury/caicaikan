@@ -20,12 +20,6 @@ import org.springframework.stereotype.Service;
  * @Date 2016年11月22日
  * @ClassName HttpService
  */
-/**
- * @Desc
- * @author wewenge.yan
- * @Date 2016年11月22日
- * @ClassName HttpService
- */
 @Service
 public class HttpService {
 	/**

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.task;
+package win.caicaikan.task.ssq;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -20,12 +20,13 @@ import org.springframework.util.CollectionUtils;
 import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.constant.LotteryType;
 import win.caicaikan.constant.SsqConstant;
-import win.caicaikan.repository.mongodb.dao.LotteryPredictDao;
-import win.caicaikan.repository.mongodb.dao.LotteryRuleDao;
-import win.caicaikan.repository.mongodb.dao.LotterySsqDao;
-import win.caicaikan.repository.mongodb.entity.LotteryPredictEntity;
-import win.caicaikan.repository.mongodb.entity.LotteryRuleEntity;
-import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
+import win.caicaikan.repository.mongodb.dao.PredictRuleDao;
+import win.caicaikan.repository.mongodb.dao.ssq.SsqPredictDao;
+import win.caicaikan.repository.mongodb.dao.ssq.SsqResultDao;
+import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
+import win.caicaikan.task.TaskTemplete;
 import win.caicaikan.util.DateUtil;
 import win.caicaikan.util.MapUtil;
 
@@ -33,25 +34,25 @@ import win.caicaikan.util.MapUtil;
  * @Desc 双色球及时任务：用于下期预测
  * @author wewenge.yan
  * @Date 2016年11月21日
- * @ClassName DoubleColorBallTask
+ * @ClassName SsqPredictDefaultTask
  */
 @Service
-public class LotteryPredictDefaultTask extends TaskTemplete {
+public class SsqPredictDefaultTask extends TaskTemplete {
 	private static final String START_NO = "001";
-	private static final Logger logger = Logger.getLogger(LotteryPredictDefaultTask.class);
+	private static final Logger logger = Logger.getLogger(SsqPredictDefaultTask.class);
 	@Autowired
-	private LotterySsqDao lotterySsqDao;
+	private SsqResultDao ssqResultDao;
 	@Autowired
-	private LotteryPredictDao lotteryPredictDao;
+	private SsqPredictDao ssqPredictDao;
 	@Autowired
-	private LotteryRuleDao lotteryRuleDao;
+	private PredictRuleDao predictRuleDao;
 
-	protected List<LotteryRuleEntity> queryRule() throws Throwable {
-		return lotteryRuleDao.findAll();
+	protected List<PredictRuleEntity> queryRule() throws Throwable {
+		return predictRuleDao.findAll();
 	}
 
-	protected void saveResult(List<LotteryPredictEntity> result) throws Throwable {
-		lotteryPredictDao.insert(result);
+	protected void saveResult(List<SsqPredictEntity> result) throws Throwable {
+		ssqPredictDao.insert(result);
 	}
 
 	@Override
@@ -65,22 +66,22 @@ public class LotteryPredictDefaultTask extends TaskTemplete {
 		req.setLotteryType(LotteryType.SSQ.getCode());
 		try {
 			Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "termNo"));
-			List<LotterySsqEntity> list = lotterySsqDao.findAll(sort);
+			List<SsqResultEntity> list = ssqResultDao.findAll(sort);
 			if (CollectionUtils.isEmpty(list)) {
 				return;
 			}
 			String termNo = this.getNextTermNo(list.get(0));
-			if (lotterySsqDao.exists(termNo)) {
+			if (ssqResultDao.exists(termNo)) {
 				return;
 			}
 			String numbers = this.calculateByRules(list);
-			LotteryPredictEntity entity = new LotteryPredictEntity();
-			entity.setPrimaryKey(LotteryType.SSQ.getCode(), "999", termNo);
+			SsqPredictEntity entity = new SsqPredictEntity();
+			entity.setPrimaryKey("999", termNo);
 			entity.setNumbers(numbers);
 			Date now = new Date();
 			entity.setCreateTime(now);
 			entity.setUpdateTime(now);
-			lotteryPredictDao.save(entity);
+			ssqPredictDao.save(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -93,7 +94,7 @@ public class LotteryPredictDefaultTask extends TaskTemplete {
 	 * @param list
 	 * @return
 	 */
-	private String calculateByRules(List<LotterySsqEntity> list) {
+	private String calculateByRules(List<SsqResultEntity> list) {
 		// 规则A：出次均衡
 		Map<String, Integer> A1_red = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
 		Map<String, Integer> A2_red = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
@@ -117,7 +118,7 @@ public class LotteryPredictDefaultTask extends TaskTemplete {
 		Map<String, Integer> B4_blue = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, 200);
 		Map<String, Integer> B5_blue = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, 100);
 		// 规则C：连出均衡
-		LotterySsqEntity lastEntity = null;
+		SsqResultEntity lastEntity = null;
 		Map<String, Integer> C1_red = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
 		Map<String, Integer> C2_red = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
 		Map<String, Integer> C3_red = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
@@ -130,7 +131,7 @@ public class LotteryPredictDefaultTask extends TaskTemplete {
 		Map<String, Integer> C5_blue = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, 0);
 
 		for (int i = 0; i < list.size(); i++) {
-			LotterySsqEntity entity = list.get(i);
+			SsqResultEntity entity = list.get(i);
 			String[] redNumbers = entity.getRedNumbers().split(",");
 			for (String num : redNumbers) {
 				A1_red.put(num, A1_red.get(num) + 1);
@@ -178,12 +179,12 @@ public class LotteryPredictDefaultTask extends TaskTemplete {
 				}
 			}
 			// 蓝球去除幸运球
-			String num = entity.getBlueNumber().trim().substring(0, 2);
+			String num = entity.getBlueNumbers().trim().substring(0, 2);
 			A1_blue.put(num, A1_blue.get(num) + 1);
 			if (B1_blue.get(num) == 2000) {
 				B1_blue.put(num, i);
 			}
-			if (lastEntity != null && lastEntity.getBlueNumber().equals(num)) {
+			if (lastEntity != null && lastEntity.getBlueNumbers().split(",")[0].equals(num)) {
 				C1_blue.put(num, C1_blue.get(num) + 1);
 			}
 			if (i < 1000) {
@@ -191,7 +192,7 @@ public class LotteryPredictDefaultTask extends TaskTemplete {
 				if (B2_blue.get(num) == 1000) {
 					B2_blue.put(num, i);
 				}
-				if (lastEntity != null && lastEntity.getBlueNumber().equals(num)) {
+				if (lastEntity != null && lastEntity.getBlueNumbers().split(",")[0].equals(num)) {
 					C2_blue.put(num, C2_blue.get(num) + 1);
 				}
 			}
@@ -200,7 +201,7 @@ public class LotteryPredictDefaultTask extends TaskTemplete {
 				if (B3_blue.get(num) == 500) {
 					B3_blue.put(num, i);
 				}
-				if (lastEntity != null && lastEntity.getBlueNumber().equals(num)) {
+				if (lastEntity != null && lastEntity.getBlueNumbers().split(",")[0].equals(num)) {
 					C3_blue.put(num, C3_blue.get(num) + 1);
 				}
 			}
@@ -209,7 +210,7 @@ public class LotteryPredictDefaultTask extends TaskTemplete {
 				if (B4_blue.get(num) == 200) {
 					B4_blue.put(num, i);
 				}
-				if (lastEntity != null && lastEntity.getBlueNumber().equals(num)) {
+				if (lastEntity != null && lastEntity.getBlueNumbers().split(",")[0].equals(num)) {
 					C4_blue.put(num, C4_blue.get(num) + 1);
 				}
 			}
@@ -218,7 +219,7 @@ public class LotteryPredictDefaultTask extends TaskTemplete {
 				if (B5_blue.get(num) == 100) {
 					B5_blue.put(num, i);
 				}
-				if (lastEntity != null && lastEntity.getBlueNumber().equals(num)) {
+				if (lastEntity != null && lastEntity.getBlueNumbers().split(",")[0].equals(num)) {
 					C5_blue.put(num, C5_blue.get(num) + 1);
 				}
 			}
@@ -320,7 +321,7 @@ public class LotteryPredictDefaultTask extends TaskTemplete {
 		return map;
 	}
 
-	private String getNextTermNo(LotterySsqEntity entity) throws ParseException {
+	private String getNextTermNo(SsqResultEntity entity) throws ParseException {
 		Date thisDate = DateUtil._SECOND.parse(entity.getOpenTime());
 		int yearOfThisTerm = DateUtil.getYear(thisDate);
 		int week = DateUtil.getWeek(thisDate);

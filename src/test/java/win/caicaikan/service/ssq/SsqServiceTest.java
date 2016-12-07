@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.service;
+package win.caicaikan.service.ssq;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import win.caicaikan.BaseTest;
 import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.constant.LotteryType;
+import win.caicaikan.service.ssq.SsqService;
 
 /**
  * @Desc
@@ -16,13 +17,13 @@ import win.caicaikan.constant.LotteryType;
  * @Date 2016年11月22日
  * @ClassName DoubleColorBallServiceTest
  */
-public class LotterySsqServiceTest extends BaseTest {
+public class SsqServiceTest extends BaseTest {
 	@Autowired
-	private LotterySsqService doubleColorBallService;
+	private SsqService ssqService;
 
 	/**
 	 * Test method for
-	 * {@link win.caicaikan.service.LotterySsqService#getSsqInfoByLotteryReq(win.caicaikan.api.req.HistoryLotteryReq)}.
+	 * {@link win.caicaikan.service.ssq.SsqService#getSsqInfoByLotteryReq(win.caicaikan.api.req.HistoryLotteryReq)}.
 	 */
 	@Test
 	public void testGetSsqInfoByLotteryReq() {
@@ -31,7 +32,7 @@ public class LotterySsqServiceTest extends BaseTest {
 		req.setQueryType("range");
 		req.setStart("2003000");
 		req.setEnd("2003200");
-		doubleColorBallService.getSsqHistoryByLotteryReq(req);
+		ssqService.getSsqHistoryByLotteryReq(req);
 	}
 
 }

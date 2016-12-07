@@ -7,8 +7,7 @@ import org.apache.log4j.Logger;
 /**
  * 任务调度 耗时统计 模板方法模式
  * 
- * @author QinJia.Liu
- * @Date 2016年7月12日
+ * @author yanwenge
  */
 public abstract class TaskTemplete {
 	private static final Logger logger = Logger.getLogger(TaskTemplete.class);
@@ -25,7 +24,8 @@ public abstract class TaskTemplete {
 			logger.error(taskName + " execute error", e);
 		} finally {
 			long second = (new Date().getTime() - startDate.getTime()) / 1000;
-			logger.info("任务【" + taskName + "】 END,耗时:" + second / 3600 + "h" + (second / 60) % 60 + "m" + second % 60 + "s");
+			logger.info("任务【" + taskName + "】 END,耗时:" + second / 3600 + "h" + (second / 60) % 60
+					+ "m" + second % 60 + "s");
 		}
 	}
 

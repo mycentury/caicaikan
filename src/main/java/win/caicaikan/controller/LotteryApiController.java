@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.api.res.Result;
-import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 
 /**
  * @Desc
@@ -47,7 +47,7 @@ public class LotteryApiController {
 	 * @return
 	 */
 	@RequestMapping(value = "query", method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody Result<List<LotterySsqEntity>> queryLottery(HttpServletRequest request, LotteryReq req) {
+	public @ResponseBody Result<List<SsqResultEntity>> queryLottery(HttpServletRequest request, LotteryReq req) {
 		Query query = new Query();
 		if (StringUtils.isEmpty(req.getStart()) || StringUtils.isEmpty(req.getEnd())) {
 			query = query.with(new Sort(new Sort.Order(Sort.Direction.DESC, "termNo"))).limit(1);
@@ -55,8 +55,8 @@ public class LotteryApiController {
 			query = new Query().addCriteria(Criteria.where("termNo").gt(req.getStart()).lt(req.getEnd())).with(
 					new Sort(new Sort.Order(Sort.Direction.ASC, "termNo")));
 		}
-		List<LotterySsqEntity> data = mongoTemplate.find(query, LotterySsqEntity.class);
-		Result<List<LotterySsqEntity>> result = new Result<List<LotterySsqEntity>>();
+		List<SsqResultEntity> data = mongoTemplate.find(query, SsqResultEntity.class);
+		Result<List<SsqResultEntity>> result = new Result<List<SsqResultEntity>>();
 		if (CollectionUtils.isEmpty(data)) {
 			result.setMessage("empty");
 		}else {

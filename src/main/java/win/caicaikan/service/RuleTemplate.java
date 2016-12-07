@@ -1,4 +1,4 @@
-package win.caicaikan.service.predict;
+package win.caicaikan.service;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.Map;
 
 import win.caicaikan.constant.Rule;
-import win.caicaikan.repository.mongodb.entity.LotteryPredictEntity;
-import win.caicaikan.repository.mongodb.entity.LotteryRuleEntity;
-import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
+import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.util.DateUtil;
 
 public abstract class RuleTemplate {
 	private static final String START_NO = "001";
 
-	public abstract LotteryPredictEntity excute(List<LotterySsqEntity> list,
-			LotteryRuleEntity entity) throws Throwable;
+	public abstract SsqPredictEntity excute(List<SsqResultEntity> list,
+			PredictRuleEntity entity) throws Throwable;
 
 	public abstract Rule getRule();
 
@@ -29,7 +29,7 @@ public abstract class RuleTemplate {
 		return map;
 	}
 
-	protected String getNextTermNo(LotterySsqEntity entity) throws ParseException {
+	protected String getNextTermNo(SsqResultEntity entity) throws ParseException {
 		Date thisDate = DateUtil._SECOND.parse(entity.getOpenTime());
 		int yearOfThisTerm = DateUtil.getYear(thisDate);
 		int week = DateUtil.getWeek(thisDate);

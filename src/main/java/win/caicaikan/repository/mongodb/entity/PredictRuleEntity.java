@@ -15,12 +15,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @Desc 权值计算规则
  * @author wewenge.yan
  * @Date 2016年11月22日
- * @ClassName SsqLotteryEntity
+ * @ClassName PredictRuleEntity
  */
-@Document(collection = "lottery_rule")
+@Document(collection = "predict_rule")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class LotteryRuleEntity extends BaseEntity {
+public class PredictRuleEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	/**
 	 * lotteryType-ruleType-ruleNo

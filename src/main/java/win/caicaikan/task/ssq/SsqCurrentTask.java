@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.task;
+package win.caicaikan.task.ssq;
 
 import java.util.List;
 
@@ -14,24 +14,24 @@ import org.springframework.util.CollectionUtils;
 import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.api.res.Result;
 import win.caicaikan.constant.LotteryType;
-import win.caicaikan.repository.mongodb.dao.LotterySsqDao;
-import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
-import win.caicaikan.service.LotterySsqService;
+import win.caicaikan.repository.mongodb.dao.ssq.SsqResultDao;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
+import win.caicaikan.service.ssq.SsqService;
+import win.caicaikan.task.TaskTemplete;
 
 /**
  * @Desc 双色球及时任务：用于获取当天晚上开奖信息本期同步
  * @author wewenge.yan
  * @Date 2016年11月21日
- * @ClassName DoubleColorBallTask
+ * @ClassName SsqCurrentTask
  */
 @Service
-public class LotterySsqCurrentTask extends TaskTemplete {
-	private static final Logger logger = Logger
-			.getLogger(LotterySsqCurrentTask.class);
+public class SsqCurrentTask extends TaskTemplete {
+	private static final Logger logger = Logger.getLogger(SsqCurrentTask.class);
 	@Autowired
-	private LotterySsqService lotterySsqService;
+	private SsqService ssqService;
 	@Autowired
-	private LotterySsqDao lotterySsqDao;
+	private SsqResultDao ssqResultDao;
 
 	@Override
 	public void run() throws Throwable {
@@ -39,17 +39,16 @@ public class LotterySsqCurrentTask extends TaskTemplete {
 		req.setLotteryType(LotteryType.SSQ.getCode());
 		try {
 			// 本期同步
-			Result<List<LotterySsqEntity>> result = lotterySsqService
-					.getSsqCurrentByLotteryReq(req);
+			Result<List<SsqResultEntity>> result = ssqService.getSsqCurrentByLotteryReq(req);
 			if (CollectionUtils.isEmpty(result.getData())) {
 				logger.error("getSsqCurrentByLotteryReq获取数据失败");
 				return;
 			}
-			for (LotterySsqEntity entity : result.getData()) {
-				if (lotterySsqDao.exists(entity.getTermNo())) {
+			for (SsqResultEntity entity : result.getData()) {
+				if (ssqResultDao.exists(entity.getTermNo())) {
 					continue;
 				}
-				lotterySsqDao.insert(result.getData());
+				ssqResultDao.insert(result.getData());
 			}
 
 		} catch (Exception e) {

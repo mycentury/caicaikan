@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.task;
+package win.caicaikan.task.ssq;
 
 import java.util.Date;
 import java.util.List;
@@ -18,28 +18,28 @@ import org.springframework.util.CollectionUtils;
 import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.api.res.Result;
 import win.caicaikan.constant.LotteryType;
-import win.caicaikan.repository.mongodb.dao.LotterySsqDao;
-import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
-import win.caicaikan.service.LotterySsqService;
+import win.caicaikan.repository.mongodb.dao.ssq.SsqResultDao;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
+import win.caicaikan.service.ssq.SsqService;
+import win.caicaikan.task.TaskTemplete;
 import win.caicaikan.util.DateUtil;
 
 /**
  * @Desc 双色球历史任务：用于补齐一等奖、二等奖中奖信息
  * @author wewenge.yan
  * @Date 2016年11月21日
- * @ClassName DoubleColorBallTask
+ * @ClassName SsqHistoryTask
  */
 @Service
-public class LotterySsqHistoryTask extends TaskTemplete {
-	private static final Logger logger = Logger
-			.getLogger(LotterySsqHistoryTask.class);
+public class SsqHistoryTask extends TaskTemplete {
+	private static final Logger logger = Logger.getLogger(SsqHistoryTask.class);
 	private static final int START_YEAR = 2003;
 	private static final String END_NO = "200";
 	private static final String START_NO = "001";
 	@Autowired
-	private LotterySsqService lotterySsqService;
+	private SsqService ssqService;
 	@Autowired
-	private LotterySsqDao lotterySsqDao;
+	private SsqResultDao ssqResultDao;
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
@@ -51,8 +51,7 @@ public class LotterySsqHistoryTask extends TaskTemplete {
 		Criteria criteria = Criteria.where("firstPrizeCount").is("");
 		criteria.orOperator(Criteria.where("secondPrizeCount").is(""));
 		Query query = new Query().addCriteria(criteria);
-		List<LotterySsqEntity> list = mongoTemplate.find(query,
-				LotterySsqEntity.class);
+		List<SsqResultEntity> list = mongoTemplate.find(query, SsqResultEntity.class);
 		if (CollectionUtils.isEmpty(list)) {
 			return;
 		}
@@ -60,9 +59,8 @@ public class LotterySsqHistoryTask extends TaskTemplete {
 			String termNo = list.get(i).getTermNo();
 			req.setStart(termNo);
 			req.setEnd(termNo);
-			Result<List<LotterySsqEntity>> result = lotterySsqService
-					.getSsqHistoryByLotteryReq(req);
-			lotterySsqDao.save(result.getData());
+			Result<List<SsqResultEntity>> result = ssqService.getSsqHistoryByLotteryReq(req);
+			ssqResultDao.save(result.getData());
 		}
 	}
 
@@ -80,9 +78,8 @@ public class LotterySsqHistoryTask extends TaskTemplete {
 		for (int i = START_YEAR; i <= currentYear; i++) {
 			req.setStart(i + START_NO);
 			req.setEnd(i + END_NO);
-			Result<List<LotterySsqEntity>> result = lotterySsqService
-					.getSsqHistoryByLotteryReq(req);
-			lotterySsqDao.save(result.getData());
+			Result<List<SsqResultEntity>> result = ssqService.getSsqHistoryByLotteryReq(req);
+			ssqResultDao.save(result.getData());
 		}
 	}
 

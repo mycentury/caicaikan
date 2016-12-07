@@ -1,12 +1,13 @@
 /**
  * 
  */
-package win.caicaikan.task;
+package win.caicaikan.task.ssq;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import win.caicaikan.BaseTest;
+import win.caicaikan.task.ssq.SsqHistoryTask;
 
 /**
  * @Desc
@@ -14,19 +15,19 @@ import win.caicaikan.BaseTest;
  * @Date 2016年11月22日
  * @ClassName LotterySsqTaskTest
  */
-public class LotterySsqHistoryTaskTest extends BaseTest {
+public class SsqHistoryTaskTest extends BaseTest {
 
 	@Autowired
-	private LotterySsqHistoryTask lotterySsqHistoryTask;
+	private SsqHistoryTask ssqHistoryTask;
 
 	@Test
 	public void testExecute() {
-		lotterySsqHistoryTask.execute();
+		ssqHistoryTask.execute();
 	}
 
 	@Test
 	public void testSynchronizeHistoryData() {
-		lotterySsqHistoryTask.synchronizeHistoryData();
+		ssqHistoryTask.synchronizeHistoryData();
 	}
 
 }

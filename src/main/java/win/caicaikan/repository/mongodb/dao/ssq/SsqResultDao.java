@@ -1,11 +1,11 @@
 /**
  * 
  */
-package win.caicaikan.repository.mongodb.dao;
+package win.caicaikan.repository.mongodb.dao.ssq;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 
 /**
  * @Desc
@@ -14,5 +14,5 @@ import win.caicaikan.repository.mongodb.entity.LotterySsqEntity;
  * @Date 2016年9月10日
  * @ClassName BaseDao
  */
-public interface LotterySsqDao extends MongoRepository<LotterySsqEntity, String> {
+public interface SsqResultDao extends MongoRepository<SsqResultEntity, String> {
 }
