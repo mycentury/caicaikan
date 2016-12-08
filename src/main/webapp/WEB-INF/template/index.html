@@ -2,21 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8" />
-<title>彩彩看</title>
+	<div th:include="common/meta :: meta" th:remove="tag"></div>
+	<title>彩彩看</title>
 </head>
-<body style="padding-top: 70px;">
+<body th:with="menu='INDEX'">
 
 	<!-- BEGIN HEADER -->
 	<div th:include="common/header :: header" th:remove="tag"></div>
 	<!-- END HEADER -->
+	
 	<div class="container">
-		<ol class="breadcrumb">
-			<li><a href="#">Home</a></li>
-			<li><a href="#">Library</a></li>
-			<li class="active">Data</li>
-		</ol>
-
 		<h1 th:text="${words}" text="aaa"></h1>
 		<h2 th:text="${words}" text="aaa"></h2>
 		<h3 th:text="${words}" text="aaa"></h3>

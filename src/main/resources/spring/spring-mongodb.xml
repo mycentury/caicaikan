@@ -5,21 +5,23 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
           http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-	
-	<mongo:mongo-client id="mongo" host="${mongo.host}" port="${mongo.port}" credentials="${mongo.username}:${mongo.password}@admin">
-		<mongo:client-options connections-per-host="${mongo.connections.per.host}" 
+
+	<mongo:mongo-client id="mongo" host="${mongo.host}"
+		port="${mongo.port}" credentials="${mongo.username}:${mongo.password}@admin">
+		<mongo:client-options connections-per-host="${mongo.connections.per.host}"
 			min-connections-per-host="1"
 			threads-allowed-to-block-for-connection-multiplier="${mongo.threads.connection.multiplier}"
 			connect-timeout="10000" socket-timeout="60000"
 			max-connection-life-time="3600000" max-connection-idle-time="60000" />
 	</mongo:mongo-client>
-	
-	<mongo:db-factory id="mongoFactory" mongo-ref="mongo" dbname="${mongo.dbname}" />
+
+	<mongo:db-factory id="mongoFactory" mongo-ref="mongo"
+		dbname="${mongo.dbname}" />
 
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 		<constructor-arg name="mongoDbFactory" ref="mongoFactory" />
 	</bean>
 
 	<mongo:repositories base-package="win.caicaikan.repository.mongodb" />
-	
+
 </beans>

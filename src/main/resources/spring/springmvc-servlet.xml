@@ -22,6 +22,19 @@
 	<context:component-scan base-package="win.caicaikan.controller" />
 	<mvc:annotation-driven />
 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+    
+   	<mvc:default-servlet-handler />
+	<mvc:resources mapping="**" location="/WEB-INF/" />
+	
+	<bean id="menuInterceptor" class="win.caicaikan.interceptor.MenuInterceptor"></bean>
+	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/" />
+			<mvc:exclude-mapping path="/WEB-INF/" />
+			<ref bean="menuInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
 	
 	<bean id="templateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
 		<property name="prefix" value="/WEB-INF/template/" />
@@ -40,7 +53,4 @@
          <property name="characterEncoding" value="UTF-8"/>
          <property name="order" value="1"></property>
     </bean>
-    
-   	<mvc:default-servlet-handler />
-	<mvc:resources mapping="**" location="/WEB-INF/" />
 </beans>
