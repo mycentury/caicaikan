@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.controller;
+package win.caicaikan.controller.history;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,13 +21,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author yanwenge
  */
 @Controller
-public class IndexController {
+@RequestMapping(value = { "history" })
+public class DltController {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	@RequestMapping(value = { "", "/index" })
+	@RequestMapping(value = { "dlt" })
 	public String queryLottery(HttpServletRequest request, ModelMap map) {
 		map.put("words", "<p>Hello,World!</p>");
-		return "index";
+		return "history/dlt";
 	}
 }

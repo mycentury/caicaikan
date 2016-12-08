@@ -23,7 +23,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class MenuEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	/**
-	 * type-level-no
+	 * type-level-code
 	 */
 	@Id
 	private String id;
@@ -38,7 +38,7 @@ public class MenuEntity extends BaseEntity {
 	/**
 	 * 编号
 	 */
-	private String no;
+	private String code;
 	/**
 	 * 中文名称
 	 */
@@ -60,10 +60,10 @@ public class MenuEntity extends BaseEntity {
 	 */
 	private List<MenuEntity> subMenus;
 
-	public void setPrimaryKey(String type, int level, String no) {
+	public void setPrimaryKey(String type, int level, String code) {
 		this.type = type;
 		this.level = level;
-		this.no = no;
-		this.id = type + "-" + level + "-" + no;
+		this.code = code;
+		this.id = type + "-" + level + "-" + code;
 	}
 }
