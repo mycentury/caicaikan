@@ -25,20 +25,11 @@
     
    	<mvc:default-servlet-handler />
 	<mvc:resources mapping="**" location="/WEB-INF/" />
-	<!-- <mvc:resources mapping="/bootstrap/**" location="/WEB-INF/bootstrap/" />
-	<mvc:resources mapping="/css/**" location="/WEB-INF/css/" />
-	<mvc:resources mapping="/jquery/**" location="/WEB-INF/jquery/" /> -->
-	
-	<bean id="menuInterceptor" class="win.caicaikan.interceptor.MenuInterceptor"></bean>
 	
 	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/" />
-			<mvc:mapping path="/history/**" />
-			<!-- <mvc:exclude-mapping path="/bootstrap/**"/>
-			<mvc:exclude-mapping path="/css/**"/>
-			<mvc:exclude-mapping path="/jquery/**"/> -->
-			<ref bean="menuInterceptor" />
+			<mvc:mapping path="/**" />
+			<bean class="win.caicaikan.interceptor.MenuInterceptor"></bean>
 		</mvc:interceptor>
 	</mvc:interceptors>
 	

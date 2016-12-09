@@ -26,8 +26,14 @@ public class UserController {
 	private MongoTemplate mongoTemplate;
 
 	@RequestMapping(value = { "/login" })
-	public String queryLottery(HttpServletRequest request, ModelMap map) {
+	public String login(HttpServletRequest request, ModelMap map) {
 		map.put("words", "<p>Hello,World!</p>");
 		return "login";
+	}
+
+	@RequestMapping(value = { "/register" })
+	public String register(HttpServletRequest request, ModelMap map) {
+		map.put("words", "<p>Hello,World!</p>");
+		return "register";
 	}
 }

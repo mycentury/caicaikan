@@ -9,8 +9,8 @@
 			<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-					<li th:each="item:${menuList}" th:if="${#lists.isEmpty(item.subMenus)}" th:class="${item.code eq menu}?'active'" class="active"><a href="#" th:href="${item.path}" th:utext="${item.nameZh}"></a></li>
-					<li th:each="item:${menuList}" th:if="${not #lists.isEmpty(item.subMenus)}" th:class="${item.code eq menu}?'active dropdown'"  class="dropdown"><a href="#" th:href="${item.path}" class="dropdown-toggle"
+					<li th:each="item:${menuList}" th:if="${#lists.isEmpty(item.subMenus)}" th:class="${item.code eq menu}?'active'"><a href="#" th:href="${item.path}" th:utext="${item.nameZh}"></a></li>
+					<li th:each="item:${menuList}" th:if="${not #lists.isEmpty(item.subMenus)}" th:class="${item.code eq menu}?'active dropdown'"><a href="#" th:href="${item.path}" class="dropdown-toggle"
 						data-toggle="dropdown" th:utext="${item.nameZh}"><span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li th:each="subItem:${item.subMenus}" th:class="${subItem.code eq subMenu}?'active':''"><a href="#" th:href="${subItem.path}" th:utext="${subItem.nameZh}"></a></li>
@@ -26,18 +26,8 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#">Link</a></li>
-					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">Action</a></li>
-							<li><a href="#">Another action</a></li>
-							<li><a href="#">Something else here</a></li>
-							<li class="divider"></li>
-							<li><a href="#">Separated link</a></li>
-						</ul></li>
-					<li><a href="login">login</a></li>
-					<li><a href="#">register</a></li>
+					<li><a href="/login">login</a></li>
+					<li><a href="/register">register</a></li>
 				</ul>
 			</div>
 			<a href=""></a>
@@ -46,10 +36,13 @@
 		<!-- /.container-fluid -->
 	</nav>
 	<div class="container">
-		<ol class="breadcrumb">
-			<li><a href="#">Home</a></li>
-			<li><a href="#">Library</a></li>
-			<li class="active">Data</li>
+		<ol class="breadcrumb" th:each="item:${menuList}" th:if="${item.code eq menu}">
+			<li>
+				<a th:href="${item.path}" th:utext="${item.nameZh}"></a>
+			</li>
+			<li th:each="subItem:${item.subMenus}" th:if="${subItem.code eq subMenu}">
+				<a th:href="${subItem.path}" th:utext="${subItem.nameZh}"></a>
+			</li>
 		</ol>
 	</div>
 </div>
