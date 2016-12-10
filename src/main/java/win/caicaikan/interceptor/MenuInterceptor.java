@@ -17,7 +17,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import win.caicaikan.repository.mongodb.entity.MenuEntity;
+import win.caicaikan.repository.mongodb.entity.RecordEntity;
 import win.caicaikan.service.MenuService;
+import win.caicaikan.service.RecordService;
 
 /**
  * @Desc
@@ -30,6 +32,9 @@ public class MenuInterceptor implements HandlerInterceptor {
 
 	@Autowired
 	private MenuService menuService;
+
+	@Autowired
+	private RecordService recordService;
 
 	/**
 	 * preHandle方法是进行处理器拦截用的，顾名思义，该方法将在Controller处理之前进行调用， SpringMVC中的Interceptor拦截器是链式的，可以同时存在
@@ -44,6 +49,8 @@ public class MenuInterceptor implements HandlerInterceptor {
 			if (annotations != null) {
 				for (Annotation annotation : annotations) {
 					if (annotation instanceof RequestMapping) {
+						RecordEntity record = recordService.assembleRocordEntity(request);
+						recordService.insert(record);
 						logger.info("拦截到来自" + request.getHeader("Referer") + "的请求：" + request.getRequestURL());
 						return true;
 					}

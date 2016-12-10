@@ -48,8 +48,8 @@ public class SsqHistoryTask extends TaskTemplete {
 		LotteryReq req = new LotteryReq();
 		req.setLotteryType(LotteryType.SSQ.getValue());
 		req.setQueryType("range");
-		Criteria criteria = Criteria.where("firstPrizeCount").is("");
-		criteria.orOperator(Criteria.where("secondPrizeCount").is(""));
+		Criteria criteria = Criteria.where("firstPrizeCount").is(null);
+		criteria.orOperator(Criteria.where("secondPrizeCount").is(null));
 		Query query = new Query().addCriteria(criteria);
 		List<SsqResultEntity> list = mongoTemplate.find(query, SsqResultEntity.class);
 		if (CollectionUtils.isEmpty(list)) {

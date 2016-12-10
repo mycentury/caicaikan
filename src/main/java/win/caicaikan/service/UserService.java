@@ -43,10 +43,10 @@ public class UserService {
 	 */
 	public boolean exists(UserEntity user) {
 		Criteria criteria = Criteria.where("usertype").is(user.getUsertype());
-		if (StringUtils.hasText(user.getUsertype())) {
+		if (StringUtils.hasText(user.getUsername())) {
 			criteria.and("username").is(user.getUsername());
 		}
-		if (StringUtils.hasText(user.getUsertype())) {
+		if (StringUtils.hasText(user.getPassword())) {
 			criteria.and("password").is(user.getPassword());
 		}
 		Query query = new Query(criteria);
@@ -54,14 +54,19 @@ public class UserService {
 	}
 
 	/**
+	 * @param primaryKey
+	 * @return
+	 */
+	public boolean exists(String primaryKey) {
+		return userDao.exists(primaryKey);
+	}
+
+	/**
 	 * @param user
 	 * @return
 	 */
 	public List<UserEntity> findByEntity(UserEntity user) {
-		Criteria criteria = Criteria.where("1").is("1");
-		if (StringUtils.hasText(user.getUsertype())) {
-			criteria.and("usertype").is(user.getUsertype());
-		}
+		Criteria criteria = Criteria.where("usertype").is(user.getUsertype());
 		if (StringUtils.hasText(user.getUsername())) {
 			criteria.and("username").is(user.getUsername());
 		}

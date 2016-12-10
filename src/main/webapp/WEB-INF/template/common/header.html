@@ -3,7 +3,7 @@
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
-				<a class="navbar-brand" href="/">Brand</a>
+				<a class="" href="/"><img alt="主页" src="/img/logo.png" /></a>
 			</div>
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
@@ -26,13 +26,43 @@
 					</div>
 				</form>
 				<ul th:if="${session.usertype eq 'A'}" class="nav navbar-nav navbar-right">
-					<li><a href="/user/admin/console">console</a></li>
-					<li><a href="/user/admin/login">login</a></li>
+					<li th:if="${session.username}" class="dropdown user">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<span th:text="${session.username}"></span>
+							<i class="glyphicon glyphicon-user"></i>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#"><i class="glyphicon glyphicon-info-sign"></i> My Info</a></li>
+							<li><a href="#"><i class="glyphicon glyphicon-envelope"></i> My Mail</a></li>
+							<li><a href="#"><i class="glyphicon glyphicon-tasks"></i> My Tasks</a></li>
+							<li><a href="/user/admin_logout"><i class="glyphicon glyphicon-log-out"></i> Log Out</a></li>
+							<li><a href="#"><i class="glyphicon glyphicon-cog"></i> Setting</a></li>
+						</ul>
+					</li>
+					<li th:if="not ${session.username}">
+						<a href="/user/admin">login</a>
+					</li>
 				</ul>
 				<ul th:unless="${session.usertype eq 'A'}" class="nav navbar-nav navbar-right">
-					<li><a href="/user/console">console</a></li>
-					<li><a href="/user/login">login</a></li>
-					<li><a href="/user/register">register</a></li>
+					<li th:if="${session.username}" class="dropdown user">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<span th:text="${session.username}"></span>
+							<i class="glyphicon glyphicon-user"></i>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#"><i class="glyphicon glyphicon-info-sign"></i> My Info</a></li>
+							<li><a href="#"><i class="glyphicon glyphicon-envelope"></i> My Mail</a></li>
+							<li><a href="#"><i class="glyphicon glyphicon-tasks"></i> My Tasks</a></li>
+							<li><a href="/user/user_logout"><i class="glyphicon glyphicon-log-out"></i> Log Out</a></li>
+							<li><a href="#"><i class="glyphicon glyphicon-cog"></i> Setting</a></li>
+						</ul>
+					</li>
+					<li th:if="not ${session.username}">
+						<a href="/user/login">login</a>
+					</li>
+					<li>
+						<a href="/user/register">register</a>
+					</li>
 				</ul>
 			</div>
 			<a href=""></a>
