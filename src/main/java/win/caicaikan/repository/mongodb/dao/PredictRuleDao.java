@@ -15,5 +15,5 @@ import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
  * @ClassName BaseDao
  */
 public interface PredictRuleDao extends MongoRepository<PredictRuleEntity, String> {
-	PredictRuleEntity findById(String ruleNo);
+	PredictRuleEntity findById(String id);
 }

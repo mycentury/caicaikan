@@ -40,11 +40,11 @@ public class UserEntity extends BaseEntity {
 	/**
 	 * 等级
 	 */
-	private int level = 0;
+	private String level = "0";
 	/**
 	 * 登陆状态：1-已登录，0-未登录
 	 */
-	private int status = 0;
+	private String status = "0";
 
 	public void setPrimaryKey(String usertype, String username) {
 		this.usertype = usertype;

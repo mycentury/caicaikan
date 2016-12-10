@@ -25,8 +25,14 @@ public class IndexController {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	@RequestMapping(value = { "", "/index" })
-	public String queryLottery(HttpServletRequest request, ModelMap map) {
+	@RequestMapping(value = { "/index" })
+	public String index(HttpServletRequest request, ModelMap map) {
+		map.put("words", "<p>Hello,World!</p>");
+		return "direct:/";
+	}
+
+	@RequestMapping(value = { "/" })
+	public String home(HttpServletRequest request, ModelMap map) {
 		map.put("words", "<p>Hello,World!</p>");
 		return "index";
 	}

@@ -5,7 +5,6 @@
 	<title>彩彩看-登陆</title>
 </head>
 <body>
-
 	<!-- BEGIN HEADER -->
 	<div th:include="common/header :: header" th:remove="tag"></div>
 	<!-- END HEADER -->
@@ -26,7 +25,7 @@
 				<h7 th:text="${words}" text="aaa"></h7>
 			</div>
 			<div class="col-xs-4">
-				<form method="post" action="/user/do_login" class="form-horizontal form-login">
+				<form method="post" action="/user/admin_login" class="form-horizontal form-login">
 					<input type="hidden" name="usertype" th:value="${usertype}" />
 					<input type="hidden" name="token" th:value="${session.token}" />
 					<div class="form-group">
@@ -44,7 +43,10 @@
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-lock"></i>
 							</span>
-							<input id="password" class="form-control" name="password" maxlength="20" required="required" />
+							<input id="password" class="form-control" name="password" maxlength="20" required="required" type="password" />
+							<span id="switch_eye" class="input-group-addon">
+								<i id="eye" class="glyphicon glyphicon-eye-open"></i>
+							</span>
 						</div>
 					</div>
 					<div class="form-group">
@@ -53,7 +55,7 @@
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-random"></i>
 							</span>
-							<input id="checkcode" class="form-control" name="checkcode" maxlength="10" required="required" />
+							<input id="checkcode" class="form-control" name="checkcode" maxlength="10" required="required"  onclick="$(info).hide();" />
 							<span class="input-group-addon">
 								<img id="checkcode_img" title="单击更换" alt="单击更换" src="/user/checkcode" onclick="refresh(this,'src');" />
 							</span>
@@ -61,13 +63,18 @@
 					</div>
 					<div class="form-group">
 						<div class="input-group col-lg-10">
-							<span class="input-group-addon">
-								<a href="">密码？</a>
-							</span>
 							<button class="btn-default form-control" type="submit">登录</button>
 							<span class="input-group-addon">
-								<a href="">注册</a>
+								<a href="">忘记密码？</a>
 							</span>
+						</div>
+					</div>
+					<div id="info" class="form-group">
+						<div class="input-group col-lg-10">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-info-sign"></i>
+							</span>
+							<p class="form-control" th:utext="${errorMsg}"></p>
 						</div>
 					</div>
 				</form>
@@ -78,5 +85,17 @@
 	<!-- BEGIN CSS_JS -->
 	<div th:include="common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->
+
+	<script type="text/javascript">
+		$("#switch_eye").click(function(){
+			if ("password"==$("#password").attr("type")) {
+				$("#password").attr("type","text");
+				$("#eye").attr("class","glyphicon glyphicon-eye-close");
+			} else {
+				$("#password").attr("type","password");
+				$("#eye").attr("class","glyphicon glyphicon-eye-open");
+			}
+		});
+	</script>
 </body>
 </html>

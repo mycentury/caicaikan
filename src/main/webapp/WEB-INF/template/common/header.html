@@ -21,11 +21,16 @@
 					<div class="input-group">
 						<input type="text" name="keywords" class="form-control" placeholder="Search"></input>
 						<span class="input-group-addon" onclick="search.submit();">
-							<i class="glyphicon glyphicon-search" onclick="submit"></i>
+							<i class="glyphicon glyphicon-search"></i>
 						</span>
 					</div>
 				</form>
-				<ul class="nav navbar-nav navbar-right">
+				<ul th:if="${session.usertype eq 'A'}" class="nav navbar-nav navbar-right">
+					<li><a href="/user/admin/console">console</a></li>
+					<li><a href="/user/admin/login">login</a></li>
+				</ul>
+				<ul th:unless="${session.usertype eq 'A'}" class="nav navbar-nav navbar-right">
+					<li><a href="/user/console">console</a></li>
 					<li><a href="/user/login">login</a></li>
 					<li><a href="/user/register">register</a></li>
 				</ul>
