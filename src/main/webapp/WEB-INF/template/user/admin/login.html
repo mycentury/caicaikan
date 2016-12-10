@@ -85,17 +85,6 @@
 	<!-- BEGIN CSS_JS -->
 	<div th:include="common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->
-
-	<script type="text/javascript">
-		$("#switch_eye").click(function(){
-			if ("password"==$("#password").attr("type")) {
-				$("#password").attr("type","text");
-				$("#eye").attr("class","glyphicon glyphicon-eye-close");
-			} else {
-				$("#password").attr("type","password");
-				$("#eye").attr("class","glyphicon glyphicon-eye-open");
-			}
-		});
-	</script>
+	<script src="/js/switch_eye.js"></script>
 </body>
 </html>

@@ -1,3 +1,7 @@
 /target/
 /.settings/
 /log/
+src/main/resources/config.properties 
+src/main/resources/dbconfig.properties 
+config/prod/config.properties 
+config/prod/dbconfig.properties 

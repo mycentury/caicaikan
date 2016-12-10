@@ -43,10 +43,10 @@ public class UserService {
 	 */
 	public boolean exists(UserEntity user) {
 		Criteria criteria = Criteria.where("usertype").is(user.getUsertype());
-		if (StringUtils.hasText(user.getUsertype())) {
+		if (StringUtils.hasText(user.getUsername())) {
 			criteria.and("username").is(user.getUsername());
 		}
-		if (StringUtils.hasText(user.getUsertype())) {
+		if (StringUtils.hasText(user.getPassword())) {
 			criteria.and("password").is(user.getPassword());
 		}
 		Query query = new Query(criteria);

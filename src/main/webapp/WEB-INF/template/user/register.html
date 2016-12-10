@@ -26,37 +26,41 @@
 				<h7 th:text="${words}" text="aaa"></h7>
 			</div>
 			<div class="col-xs-4">
-				<form action="" class="form-horizontal form-login">
+				<form method="post" action="/user/user_register" class="form-horizontal form-login">
+					<input type="hidden" name="usertype" th:value="${usertype}" />
+					<input type="hidden" name="token" th:value="${session.token}" />
 					<div class="form-group">
+						<label for="username">用户名：</label>
 						<div class="input-group col-lg-10">
-							<label for="username" class="">用户名：</label> <span
-								class="input-group-addon"> <i
-								class="glyphicon glyphicon-user"></i>
-							</span> <input class="form-control" name="username" type="text" />
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-user"></i>
+							</span>
+							<input id="username" class="form-control" name="username" maxlength="20" required="required" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="password" >密码：</label>
+						<div class="input-group col-lg-10">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-lock"></i>
+							</span>
+							<input id="password" class="form-control" name="password" maxlength="20" required="required" type="password" />
+							<span id="switch_eye" class="input-group-addon">
+								<i id="eye" class="glyphicon glyphicon-eye-open"></i>
+							</span>
 						</div>
 					</div>
 					<div class="form-group">
 						<div class="input-group col-lg-10">
-							<label for="password" class="">密&nbsp;&nbsp;&nbsp;&nbsp;码：</label>
-							<span class="input-group-addon"> <i
-								class="glyphicon glyphicon-lock"></i>
-							</span> <input class="form-control" name="password" type="text" />
+							<button class="btn-default form-control" type="submit">注册</button>
 						</div>
 					</div>
-					<div class="form-group">
+					<div id="info" class="form-group">
 						<div class="input-group col-lg-10">
-							<label for="checkcode" class="col-lg-2">验证码：</label> <span
-								class="input-group-addon"> <i
-								class="glyphicon glyphicon-user"></i>
-							</span> <input class="col-lg-8" name="checkcode" type="text" />
-							<button class="col-lg-4">SVJFSGH</button>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="input-group col-lg-10">
-							<button class="col-lg-4 btn btn-default" type="button">登录</button>
-							<a class="col-lg-4" href="">忘记密码？</a>
-							<button class="col-lg-4 btn btn-default" type="button">注册</button>
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-info-sign"></i>
+							</span>
+							<p class="form-control" th:utext="${errorMsg}"></p>
 						</div>
 					</div>
 				</form>
@@ -67,5 +71,6 @@
 	<!-- BEGIN CSS_JS -->
 	<div th:include="common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->
+	<script src="/js/switch_eye.js"></script>
 </body>
 </html>

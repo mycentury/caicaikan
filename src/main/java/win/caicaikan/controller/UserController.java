@@ -17,7 +17,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import win.caicaikan.annotation.Token;
 import win.caicaikan.constant.Constant;
 import win.caicaikan.repository.mongodb.entity.UserEntity;
 import win.caicaikan.service.UserService;
@@ -35,28 +34,26 @@ import win.caicaikan.util.CheckCodeUtil;
  */
 @Controller
 @RequestMapping("user")
-public class UserController {
+public class UserController extends BaseController {
 	private final static Logger logger = Logger.getLogger(UserController.class);
 
 	@Autowired
 	private UserService userService;
 
 	@RequestMapping("login")
-	@Token(save = true)
 	public String userLogin(HttpServletRequest request, ModelMap map) {
 		map.put("usertype", "G");
 		return "user/login";
 	}
 
 	@RequestMapping(value = "user_login", method = { RequestMethod.POST })
-	@Token(remove = true)
 	public String userLogin(HttpServletRequest request, UserEntity user, String checkcode,
 			ModelMap map) {
-		if (!checkcode.equals(map.get("checkcode"))) {
+		if (!checkcode.equals(request.getSession().getAttribute("checkcode"))) {
 			map.put("errorMsg", "验证码错误！");
-			return "redirect:/user/login";
+			return "user/login";
 		}
-		if ("G".equals(user.getUsertype())) {
+		if (!"G".equals(user.getUsertype())) {
 			user.setUsertype("G");
 			logger.error("检测到调试攻击，IP=" + AddressUtil.getIpAddress(request));
 		}
@@ -70,8 +67,16 @@ public class UserController {
 		return "redirect:" + request.getHeader("Referer");
 	}
 
+	@RequestMapping(value = "user_logout", method = { RequestMethod.POST })
+	public String userLogout(HttpServletRequest request, ModelMap map) {
+		request.getSession().removeAttribute("username");
+		request.getSession().removeAttribute("usertype");
+		return "redirect:/user/login";
+	}
+
 	@RequestMapping("register")
 	public String register(HttpServletRequest request, ModelMap map) {
+		map.put("usertype", "G");
 		return "user/register";
 	}
 
@@ -81,13 +86,17 @@ public class UserController {
 		user.setPassword(null);
 		if (userService.exists(user)) {
 			map.put("errorMsg", "username allready exists");
-			return "redirect:/user/register";
+			return "user/register";
+		}
+		if (!"G".equals(user.getUsertype())) {
+			user.setUsertype("G");
+			logger.error("检测到调试攻击，IP=" + AddressUtil.getIpAddress(request));
 		}
 		user.setPassword(password);
 		userService.insert(user);
 		request.getSession().setAttribute("username", user.getUsername());
 		request.getSession().setAttribute("usertype", user.getUsertype());
-		return "user/console";
+		return "redirect:/";
 	}
 
 	@RequestMapping("admin")
@@ -101,7 +110,8 @@ public class UserController {
 			ModelMap map) {
 		if (!checkcode.equals(request.getSession().getAttribute("checkcode"))) {
 			map.put("errorMsg", "验证码错误！");
-			return "user/admin/login";
+			map.put("usertype", "A");
+			return "user/admin";
 		}
 		if (!"A".equals(user.getUsertype())) {
 			user.setUsertype("A");
@@ -109,7 +119,8 @@ public class UserController {
 		}
 		if (!userService.exists(user)) {
 			map.put("errorMsg", "username or password error");
-			return "user/admin/login";
+			map.put("usertype", "A");
+			return "user/admin";
 		}
 		request.getSession().setAttribute("username", user.getUsername());
 		request.getSession().setAttribute("usertype", user.getUsertype());
