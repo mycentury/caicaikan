@@ -6,10 +6,11 @@ package win.caicaikan.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import win.caicaikan.service.SsqResultService;
 
 /**
  * @Desc
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class IndexController {
 	@Autowired
-	private MongoTemplate mongoTemplate;
+	private SsqResultService ssqResultService;
 
 	@RequestMapping(value = { "/index" })
 	public String index(HttpServletRequest request, ModelMap map) {

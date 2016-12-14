@@ -1,13 +1,13 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<div th:include="common/meta :: meta" th:remove="tag"></div>
+	<div th:include="/common/meta :: meta" th:remove="tag"></div>
 	<title>彩彩看-登陆</title>
 </head>
 <body>
 
 	<!-- BEGIN HEADER -->
-	<div th:include="common/header :: header" th:remove="tag"></div>
+	<div th:include="/common/header :: header" th:remove="tag"></div>
 	<!-- END HEADER -->
 	<div class="container">
 		<ol class="breadcrumb">
@@ -88,7 +88,8 @@
 	</div>
 
 	<!-- BEGIN CSS_JS -->
-	<div th:include="common/css_js :: css_js" th:remove="tag"></div>
+	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->
+	<div th:include="/common/footer :: footer" th:remove="tag"></div>
 </body>
 </html>

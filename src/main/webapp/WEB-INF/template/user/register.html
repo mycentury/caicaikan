@@ -1,13 +1,13 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<div th:include="common/meta :: meta" th:remove="tag"></div>
+	<div th:include="/common/meta :: meta" th:remove="tag"></div>
 	<title>彩彩看-登陆</title>
 </head>
 <body>
 
 	<!-- BEGIN HEADER -->
-	<div th:include="common/header :: header" th:remove="tag"></div>
+	<div th:include="/common/header :: header" th:remove="tag"></div>
 	<!-- END HEADER -->
 	<div class="container">
 		<ol class="breadcrumb">
@@ -30,12 +30,12 @@
 					<input type="hidden" name="usertype" th:value="${usertype}" />
 					<input type="hidden" name="token" th:value="${session.token}" />
 					<div class="form-group">
-						<label for="username">用户名：</label>
+						<label for="username">用户名：</label><i id="user_avail_flag"></i>
 						<div class="input-group col-lg-10">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-user"></i>
 							</span>
-							<input id="username" class="form-control" name="username" maxlength="20" required="required" />
+							<input id="username" class="form-control" name="username" maxlength="20" required="required" onfocus="$(user_avail_flag).hide();" onblur="check_username(this.value);" />
 						</div>
 					</div>
 					<div class="form-group">
@@ -50,17 +50,17 @@
 							</span>
 						</div>
 					</div>
-					<div class="form-group">
-						<div class="input-group col-lg-10">
-							<button class="btn-default form-control" type="submit">注册</button>
-						</div>
-					</div>
-					<div id="info" class="form-group" th:if="${errorMsg}" onclick="$(this).hide();">
+					<div id="info" class="form-group" th:if="${errorMsg != null}" onclick="$(this).hide();">
 						<div class="input-group col-lg-10">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-info-sign"></i>
 							</span>
-							<p class="form-control" th:utext="${errorMsg}"></p>
+							<p class="form-control">[[${errorMsg}]]</p>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group col-lg-10">
+							<button class="btn-default form-control" type="submit">注册</button>
 						</div>
 					</div>
 				</form>
@@ -69,8 +69,29 @@
 	</div>
 
 	<!-- BEGIN CSS_JS -->
-	<div th:include="common/css_js :: css_js" th:remove="tag"></div>
+	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->
+	<div th:include="/common/footer :: footer" th:remove="tag"></div>
 	<script src="/js/switch_eye.js"></script>
+	<script type="text/javascript">
+		function check_username(username){
+			if (username == "") {
+				$("#user_avail_flag").hide();
+			}else{
+				$("#user_avail_flag").show();
+			}
+			general_ajax("/user/check_username", "POST", {username:username}, null, function(result){
+				if (get_type(result) == "[object String]") {
+					result = json_parse(result);
+				}
+				$("#user_avail_flag").text(result.message==undefined?"":result.message);
+				if(result.status==0){
+					$("#user_avail_flag").attr("class","glyphicon glyphicon-ok alert-success");
+				}else{
+					$("#user_avail_flag").attr("class","glyphicon glyphicon-remove alert-danger");
+				}
+			}, null, null);
+		}
+	</script>
 </body>
 </html>

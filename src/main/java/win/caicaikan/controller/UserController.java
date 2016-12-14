@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import win.caicaikan.api.res.Result;
 import win.caicaikan.constant.Constant;
@@ -58,7 +59,7 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping(value = "user_login", method = { RequestMethod.POST })
-	public String userLogin(HttpServletRequest request, UserEntity user, String checkcode, ModelMap map) {
+	public String userLogin(HttpServletRequest request, UserEntity user, String checkcode, RedirectAttributes attr) {
 		RecordEntity record = recordService.assembleRocordEntity(request);
 		record.setOpertype(OperType.LOGIN.name());
 		if (StringUtils.isEmpty(record.getUsername())) {
@@ -66,11 +67,11 @@ public class UserController extends BaseController {
 			record.setUsertype(user.getUsertype());
 		}
 		if (!checkcode.equalsIgnoreCase(request.getSession().getAttribute("checkcode").toString())) {
-			map.put("errorMsg", "验证码错误！");
-			map.put("usertype", "G");
+			attr.addFlashAttribute("errorMsg", "验证码错误！");
+			attr.addFlashAttribute("usertype", "G");
 			record.setAfter(checkcode + "-验证码错误！");
 			recordService.insert(record);
-			return "user/login";
+			return "redirect:/user/login";
 		}
 		if (!"G".equals(user.getUsertype())) {
 			user.setUsertype("G");
@@ -81,11 +82,11 @@ public class UserController extends BaseController {
 			logger.error("检测到调试攻击，IP=" + AddressUtil.getIpAddress(request));
 		}
 		if (!userService.exists(user)) {
-			map.put("usertype", "G");
-			map.put("errorMsg", "username or password error");
+			attr.addFlashAttribute("usertype", "G");
+			attr.addFlashAttribute("errorMsg", "username or password error");
 			record.setAfter(user.getUsername() + "/" + user.getPassword() + "-username or password error");
 			recordService.insert(record);
-			return "user/login";
+			return "redirect:/user/login";
 		}
 
 		request.getSession().setAttribute("username", user.getUsername());
@@ -96,7 +97,7 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping(value = "user_logout")
-	public String userLogout(HttpServletRequest request, ModelMap map) {
+	public String userLogout(HttpServletRequest request) {
 		request.getSession().removeAttribute("username");
 		request.getSession().removeAttribute("usertype");
 		return "redirect:/user/login";
@@ -120,7 +121,7 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping(value = "user_register", method = { RequestMethod.POST })
-	public String register(HttpServletRequest request, UserEntity user, ModelMap map) {
+	public String register(HttpServletRequest request, UserEntity user, RedirectAttributes attr) {
 		RecordEntity record = recordService.assembleRocordEntity(request);
 		record.setOpertype(OperType.REGISTER.name());
 		String password = user.getPassword();
@@ -128,8 +129,8 @@ public class UserController extends BaseController {
 		if (userService.exists(user)) {
 			record.setAfter(user.getUsername() + "-username allready exists");
 			recordService.insert(record);
-			map.put("errorMsg", "username allready exists");
-			return "user/register";
+			attr.addFlashAttribute("errorMsg", "username allready exists");
+			return "redirect:/user/register";
 		}
 		if (!"G".equals(user.getUsertype())) {
 			RecordEntity record2 = recordService.assembleRocordEntity(request);
@@ -158,15 +159,15 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping(value = "admin_login", method = { RequestMethod.POST })
-	public String adminLogin(HttpServletRequest request, UserEntity user, String checkcode, ModelMap map) {
+	public String adminLogin(HttpServletRequest request, UserEntity user, String checkcode, RedirectAttributes attr) {
 		RecordEntity record = recordService.assembleRocordEntity(request);
 		record.setOpertype(OperType.LOGIN.name());
 		if (!checkcode.equalsIgnoreCase(request.getSession().getAttribute("checkcode").toString())) {
-			map.put("errorMsg", "验证码错误！");
-			map.put("usertype", "A");
+			attr.addFlashAttribute("errorMsg", "验证码错误！");
+			attr.addFlashAttribute("usertype", "A");
 			record.setAfter(checkcode + "!=" + request.getSession().getAttribute("checkcode").toString() + "-验证码错误！");
 			recordService.insert(record);
-			return "user/admin/login";
+			return "redirect:/user/admin";
 		}
 		if (!"A".equals(user.getUsertype())) {
 			RecordEntity record2 = recordService.assembleRocordEntity(request);
@@ -177,11 +178,11 @@ public class UserController extends BaseController {
 			logger.error("检测到调试攻击，IP=" + AddressUtil.getIpAddress(request));
 		}
 		if (!userService.exists(user)) {
-			map.put("errorMsg", "username or password error");
-			map.put("usertype", "A");
+			attr.addFlashAttribute("errorMsg", "username or password error");
+			attr.addFlashAttribute("usertype", "A");
 			record.setAfter(user.getUsername() + "/" + user.getPassword() + "-username or password error");
 			recordService.insert(record);
-			return "user/admin/login";
+			return "redirect:/user/admin";
 		}
 		request.getSession().setAttribute("username", user.getUsername());
 		request.getSession().setAttribute("usertype", user.getUsertype());
@@ -191,7 +192,7 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping(value = "admin_logout")
-	public String adminLogout(HttpServletRequest request, ModelMap map) {
+	public String adminLogout(HttpServletRequest request) {
 		request.getSession().removeAttribute("username");
 		request.getSession().removeAttribute("usertype");
 		return "redirect:/user/admin";
@@ -199,12 +200,12 @@ public class UserController extends BaseController {
 	}
 
 	@RequestMapping("admin/console")
-	public String adminConsole(HttpServletRequest request, ModelMap map) {
+	public String adminConsole(HttpServletRequest request) {
 		return "user/admin/console";
 	}
 
 	@RequestMapping(value = { "/checkcode" })
-	public void checkCode(HttpServletRequest request, HttpServletResponse response, ModelMap map) {
+	public void checkCode(HttpServletRequest request, HttpServletResponse response) {
 		String checkCode = CheckCodeUtil.getRandomCode(Constant.CHECK_CODE, 4);
 		request.getSession().setAttribute("checkcode", checkCode);
 		BufferedImage image = CheckCodeUtil.getCheckCodeImg(checkCode, 60, 22);
