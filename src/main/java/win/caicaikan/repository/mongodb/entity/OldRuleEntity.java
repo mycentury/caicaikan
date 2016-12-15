@@ -17,13 +17,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @Date 2016年11月22日
  * @ClassName PredictRuleEntity
  */
-@Document(collection = "predict_rule")
+@Document(collection = "old_rule")
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class PredictRuleEntity extends BaseEntity {
+public class OldRuleEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	/**
-	 * lotteryType-ruleType-terms
+	 * lotteryType-ruleType-ruleNo
 	 */
 	@Id
 	private String id;
@@ -36,30 +36,42 @@ public class PredictRuleEntity extends BaseEntity {
 	 */
 	private String ruleType;
 	/**
-	 * 期数
+	 * 规则编号
 	 */
-	private int terms;
+	private String ruleNo;
 	/**
 	 * 规则名称
 	 */
 	private String ruleName;
 	/**
-	 * 基于的规则和权值
+	 * 规则描述
 	 */
-	Map<String, Integer> ruleAndweights;
+	private String ruleDesc;
+	/**
+	 * 期数和权值
+	 */
+	Map<Integer, Integer> periodsAndweights;
 	/**
 	 * 启用状态：1-启用，0-禁用
 	 */
 	private int status;
 	/**
+	 * 红球选取个数
+	 */
+	private int redCount;
+	/**
+	 * 启用状态：1-启用，0-禁用
+	 */
+	private int blueCount;
+	/**
 	 * 执行状态
 	 */
 	private String excuteStatus;
 
-	public void setPrimaryKey(String lotteryType, String ruleType, int terms) {
+	public void setPrimaryKey(String lotteryType, String ruleType, String ruleNo) {
 		this.lotteryType = lotteryType;
 		this.ruleType = ruleType;
-		this.terms = terms;
-		this.id = lotteryType + "-" + ruleType + "-" + terms;
+		this.ruleNo = ruleNo;
+		this.id = lotteryType + "-" + ruleType + "-" + ruleNo;
 	}
 }

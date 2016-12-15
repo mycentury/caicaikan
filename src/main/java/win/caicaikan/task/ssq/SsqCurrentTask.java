@@ -16,7 +16,7 @@ import win.caicaikan.api.res.Result;
 import win.caicaikan.constant.LotteryType;
 import win.caicaikan.repository.mongodb.dao.ssq.SsqResultDao;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
-import win.caicaikan.service.ssq.SsqService;
+import win.caicaikan.service.external.SsqService;
 import win.caicaikan.task.TaskTemplete;
 
 /**

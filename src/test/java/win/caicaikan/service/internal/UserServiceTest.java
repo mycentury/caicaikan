@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.service;
+package win.caicaikan.service.internal;
 
 import static org.junit.Assert.fail;
 
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import win.caicaikan.BaseTest;
 import win.caicaikan.repository.mongodb.entity.UserEntity;
+import win.caicaikan.service.internal.UserService;
 
 /**
  * @desc
@@ -24,7 +25,7 @@ public class UserServiceTest extends BaseTest {
 
 	/**
 	 * Test method for
-	 * {@link win.caicaikan.service.UserService#findById(java.lang.String)}.
+	 * {@link win.caicaikan.service.internal.UserService#findById(java.lang.String)}.
 	 */
 	@Test
 	public void testFindById() {
@@ -33,7 +34,7 @@ public class UserServiceTest extends BaseTest {
 
 	/**
 	 * Test method for
-	 * {@link win.caicaikan.service.UserService#insert(win.caicaikan.repository.mongodb.entity.UserEntity)}
+	 * {@link win.caicaikan.service.internal.UserService#insert(win.caicaikan.repository.mongodb.entity.UserEntity)}
 	 * .
 	 */
 	@Test
@@ -48,7 +49,7 @@ public class UserServiceTest extends BaseTest {
 
 	/**
 	 * Test method for
-	 * {@link win.caicaikan.service.UserService#save(win.caicaikan.repository.mongodb.entity.UserEntity)}
+	 * {@link win.caicaikan.service.internal.UserService#save(win.caicaikan.repository.mongodb.entity.UserEntity)}
 	 * .
 	 */
 	@Test
@@ -58,7 +59,7 @@ public class UserServiceTest extends BaseTest {
 
 	/**
 	 * Test method for
-	 * {@link win.caicaikan.service.UserService#exists(win.caicaikan.repository.mongodb.entity.UserEntity)}
+	 * {@link win.caicaikan.service.internal.UserService#exists(win.caicaikan.repository.mongodb.entity.UserEntity)}
 	 * .
 	 */
 	@Test
@@ -68,7 +69,7 @@ public class UserServiceTest extends BaseTest {
 
 	/**
 	 * Test method for
-	 * {@link win.caicaikan.service.UserService#findByEntity(win.caicaikan.repository.mongodb.entity.UserEntity)}
+	 * {@link win.caicaikan.service.internal.UserService#findByEntity(win.caicaikan.repository.mongodb.entity.UserEntity)}
 	 * .
 	 */
 	@Test

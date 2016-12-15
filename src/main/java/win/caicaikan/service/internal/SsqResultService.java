@@ -1,4 +1,4 @@
-package win.caicaikan.service;
+package win.caicaikan.service.internal;
 
 import java.util.Date;
 
@@ -10,15 +10,11 @@ import win.caicaikan.repository.mongodb.dao.ssq.SsqResultDao;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 
 @Service
-public class SsqResultService {
+public class SsqResultService extends DaoService {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private SsqResultDao ssqResultDao;
-
-	public SsqResultEntity findById(String id) {
-		return ssqResultDao.findById(id);
-	}
 
 	public SsqResultEntity insert(SsqResultEntity ssqResultEntity) {
 		Date createTime = new Date();
@@ -32,11 +28,8 @@ public class SsqResultService {
 		return ssqResultDao.save(ssqResultEntity);
 	}
 
-	/**
-	 * @param primaryKey
-	 * @return
-	 */
 	public boolean exists(String primaryKey) {
 		return ssqResultDao.exists(primaryKey);
 	}
+
 }

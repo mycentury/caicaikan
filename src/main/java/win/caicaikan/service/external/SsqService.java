@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.service.ssq;
+package win.caicaikan.service.external;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +17,6 @@ import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.api.res.LotteryCurrentRes;
 import win.caicaikan.api.res.Result;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
-import win.caicaikan.service.BaseService;
 
 /**
  * @Desc

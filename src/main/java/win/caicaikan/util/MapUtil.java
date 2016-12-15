@@ -33,8 +33,7 @@ public class MapUtil {
 		return result;
 	}
 
-	public static <K, V extends Comparable<V>> List<Map.Entry<K, V>> sortToListByValue(
-			Map<K, V> map, String sort) {
+	public static <K, V extends Comparable<V>> List<Map.Entry<K, V>> sortToListByValue(Map<K, V> map, String sort) {
 		Comparator<Map.Entry<K, V>> comparator = new Comparator<Map.Entry<K, V>>() {
 			@Override
 			public int compare(Entry<K, V> o1, Entry<K, V> o2) {

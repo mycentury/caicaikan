@@ -15,5 +15,4 @@ import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
  * @ClassName BaseDao
  */
 public interface SsqResultDao extends MongoRepository<SsqResultEntity, String> {
-	SsqResultEntity findById(String id);
 }

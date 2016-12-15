@@ -40,7 +40,6 @@ public class BaseEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return "BaseEntity [updateTime=" + updateTime + ", createTime="
-				+ createTime + "]";
+		return "BaseEntity [updateTime=" + updateTime + ", createTime=" + createTime + "]";
 	}
 }

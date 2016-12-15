@@ -19,7 +19,7 @@ import win.caicaikan.repository.mongodb.dao.ssq.SsqResultDao;
 import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
-import win.caicaikan.service.RuleTemplate;
+import win.caicaikan.service.rule.RuleTemplate;
 import win.caicaikan.task.TaskTemplete;
 import win.caicaikan.util.SpringContextUtil;
 
@@ -57,17 +57,16 @@ public class SsqPredictTask extends TaskTemplete {
 		excuteRules(beans, list, rules);
 	}
 
-	private void excuteRules(Map<String, RuleTemplate> beans, List<SsqResultEntity> list,
-			List<PredictRuleEntity> rules) throws Throwable {
+	private void excuteRules(Map<String, RuleTemplate> beans, List<SsqResultEntity> list, List<PredictRuleEntity> rules) throws Throwable {
 		List<SsqPredictEntity> result = new ArrayList<SsqPredictEntity>();
 		for (RuleTemplate ruleExcutor : beans.values()) {
 			for (PredictRuleEntity rule : rules) {
-				if (ruleExcutor.getRule().getRuleNo().equals(rule.getRuleNo())) {
+				if (ruleExcutor.getRuleType().name().equals(rule.getRuleType())) {
 					try {
 						SsqPredictEntity predict = ruleExcutor.excute(list, rule);
 						result.add(predict);
 					} catch (Exception e) {
-						logger.error("rule.getRuleNo() excute error");
+						logger.error("rule.excuteRules() excute error");
 						e.printStackTrace();
 					}
 				}

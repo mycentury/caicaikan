@@ -3,6 +3,8 @@
  */
 package win.caicaikan.repository.mongodb.entity.ssq;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -23,14 +25,15 @@ import win.caicaikan.repository.mongodb.entity.BaseEntity;
 public class SsqPredictEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	@Id
-	private String id;// ruleNo-termNo
-	private String ruleNo;
+	private String id;// ruleId-termNo
+	private String ruleId;
 	private String termNo;
-	private String numbers;
+	private List<String> redNumbers;
+	private List<String> blueNumbers;
 	private String rightNumbers;
 
 	public void setPrimaryKey(String ruleNo, String termNo) {
-		this.ruleNo = ruleNo;
+		this.ruleId = ruleNo;
 		this.termNo = termNo;
 		this.id = ruleNo + "-" + termNo;
 	}

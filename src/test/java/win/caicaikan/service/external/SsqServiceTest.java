@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.service.ssq;
+package win.caicaikan.service.external;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import win.caicaikan.BaseTest;
 import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.constant.LotteryType;
-import win.caicaikan.service.ssq.SsqService;
+import win.caicaikan.service.external.SsqService;
 
 /**
  * @Desc
@@ -23,7 +23,7 @@ public class SsqServiceTest extends BaseTest {
 
 	/**
 	 * Test method for
-	 * {@link win.caicaikan.service.ssq.SsqService#getSsqInfoByLotteryReq(win.caicaikan.api.req.HistoryLotteryReq)}.
+	 * {@link win.caicaikan.service.external.SsqService#getSsqInfoByLotteryReq(win.caicaikan.api.req.HistoryLotteryReq)}.
 	 */
 	@Test
 	public void testGetSsqInfoByLotteryReq() {

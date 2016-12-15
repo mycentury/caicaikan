@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import win.caicaikan.service.SsqResultService;
+import win.caicaikan.service.internal.SsqResultService;
 
 /**
  * @Desc

@@ -1,19 +1,19 @@
 /**
  * 
  */
-package win.caicaikan.service;
+package win.caicaikan.service.external;
 
 import java.util.List;
 
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.gson.Gson;
-
 import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.api.res.LotteryCurrentRes;
 import win.caicaikan.api.res.Result;
 import win.caicaikan.repository.mongodb.entity.BaseEntity;
+
+import com.google.gson.Gson;
 
 /**
  * @Desc
@@ -50,7 +50,7 @@ public abstract class BaseService {
 	private String getHistoryQueryRealUrl(String baseUrl, LotteryReq req) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(baseUrl).append(req.getLotteryType()).append("?");
-		sb.append("&type=").append(req.getQueryType());
+		sb.append("type=").append(req.getQueryType());
 		sb.append("&start=").append(req.getStart());
 		sb.append("&end=").append(req.getEnd());
 		return sb.toString();

@@ -34,8 +34,9 @@
 	  </property>
 	</bean>
 	
-	
-	<task:executor id="executor" pool-size="5-10" keep-alive="60" queue-capacity="2" rejection-policy="ABORT" />
+	<!-- 同时pool-size个线程 -->
+	<task:executor id="executor" pool-size="10-50" keep-alive="60" queue-capacity="100" rejection-policy="ABORT" />
+	<!-- 同时pool-size个任务 -->
 	<task:scheduler id="scheduler" pool-size="10" />
 	<task:annotation-driven executor="executor" scheduler="scheduler" />
 	

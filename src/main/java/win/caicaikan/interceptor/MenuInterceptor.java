@@ -18,8 +18,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import win.caicaikan.repository.mongodb.entity.MenuEntity;
 import win.caicaikan.repository.mongodb.entity.RecordEntity;
-import win.caicaikan.service.MenuService;
-import win.caicaikan.service.RecordService;
+import win.caicaikan.service.internal.MenuService;
+import win.caicaikan.service.internal.RecordService;
 
 /**
  * @Desc

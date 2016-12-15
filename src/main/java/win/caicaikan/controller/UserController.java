@@ -25,8 +25,8 @@ import win.caicaikan.constant.Constant;
 import win.caicaikan.constant.OperType;
 import win.caicaikan.repository.mongodb.entity.RecordEntity;
 import win.caicaikan.repository.mongodb.entity.UserEntity;
-import win.caicaikan.service.RecordService;
-import win.caicaikan.service.UserService;
+import win.caicaikan.service.internal.RecordService;
+import win.caicaikan.service.internal.UserService;
 import win.caicaikan.util.AddressUtil;
 import win.caicaikan.util.CheckCodeUtil;
 

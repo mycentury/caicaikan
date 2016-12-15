@@ -10,22 +10,17 @@ package win.caicaikan.constant;
  * @ClassName LotteryType
  */
 public enum RuleType {
-	BASE("0", "基础型"),
-	GEN("1", "衍生型");
+	DISPLAY_TIMES("出次平衡"),
+	DOUBLE_TIMES("连出平衡"),
+	SKIP_TIMES("遗漏平衡");
 
-	private RuleType(String code, String name) {
-		this.code = code;
-		this.name = name;
+	private String desc;
+
+	private RuleType(String desc) {
+		this.desc = desc;
 	}
 
-	private String code;
-	private String name;
-
-	public String getCode() {
-		return code;
-	}
-
-	public String getName() {
-		return name;
+	public String getDesc() {
+		return desc;
 	}
 }

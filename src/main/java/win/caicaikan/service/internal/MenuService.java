@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.service;
+package win.caicaikan.service.internal;
 
 import java.util.ArrayList;
 import java.util.Date;

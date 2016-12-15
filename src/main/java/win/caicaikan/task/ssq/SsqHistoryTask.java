@@ -20,7 +20,7 @@ import win.caicaikan.api.res.Result;
 import win.caicaikan.constant.LotteryType;
 import win.caicaikan.repository.mongodb.dao.ssq.SsqResultDao;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
-import win.caicaikan.service.ssq.SsqService;
+import win.caicaikan.service.external.SsqService;
 import win.caicaikan.task.TaskTemplete;
 import win.caicaikan.util.DateUtil;
 
@@ -55,7 +55,7 @@ public class SsqHistoryTask extends TaskTemplete {
 		if (CollectionUtils.isEmpty(list)) {
 			return;
 		}
-		for (int i = 1; i < list.size(); i++) {
+		for (int i = 0; i < list.size(); i++) {
 			String termNo = list.get(i).getTermNo();
 			req.setStart(termNo);
 			req.setEnd(termNo);

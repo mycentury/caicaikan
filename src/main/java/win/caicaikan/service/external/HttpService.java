@@ -1,7 +1,7 @@
 /**
  * 
  */
-package win.caicaikan.service;
+package win.caicaikan.service.external;
 
 import java.io.IOException;
 
