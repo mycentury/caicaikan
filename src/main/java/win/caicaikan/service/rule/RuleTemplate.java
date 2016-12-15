@@ -1,26 +1,27 @@
 package win.caicaikan.service.rule;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import win.caicaikan.constant.RuleType;
 import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
-import win.caicaikan.util.DateUtil;
 import win.caicaikan.util.MapUtil;
 
 public abstract class RuleTemplate {
-	private static final String START_NO = "001";
 	private static final String SPLITOR = "-";
 
-	public abstract SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity) throws Throwable;
+	@Autowired
+	protected RuleService ruleService;
+
+	public abstract SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity)
+			throws Throwable;
 
 	public abstract RuleType getRuleType();
 
@@ -30,25 +31,6 @@ public abstract class RuleTemplate {
 			map.put(key, value);
 		}
 		return map;
-	}
-
-	protected String getNextTermNo(SsqResultEntity entity) throws ParseException {
-		Date thisDate = DateUtil._SECOND.parse(entity.getOpenTime());
-		int yearOfThisTerm = DateUtil.getYear(thisDate);
-		int week = DateUtil.getWeek(thisDate);
-
-		int daysToNextTerm = 2;
-		// 周四到下期要三天
-		if (week == Calendar.THURSDAY) {
-			daysToNextTerm++;
-		}
-		Date nextDate = DateUtil.addDays(thisDate, daysToNextTerm);
-		int yearOfNextTerm = DateUtil.getYear(nextDate);
-		if (yearOfNextTerm != yearOfThisTerm) {
-			return yearOfNextTerm + START_NO;
-		} else {
-			return String.valueOf(Integer.valueOf(entity.getTermNo()) + 1);
-		}
 	}
 
 	/**

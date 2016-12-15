@@ -25,18 +25,15 @@ public class DateUtil {
 	/**
 	 * 格式:年-月-日
 	 */
-	public static final SimpleDateFormat _DAY = new SimpleDateFormat(
-			"yyyy-MM-dd");
+	public static final SimpleDateFormat _DAY = new SimpleDateFormat("yyyy-MM-dd");
 	/**
 	 * 格式:年/月/日
 	 */
-	public static final SimpleDateFormat DAY_ = new SimpleDateFormat(
-			"yyyy/MM/dd");
+	public static final SimpleDateFormat DAY_ = new SimpleDateFormat("yyyy/MM/dd");
 	/**
 	 * 格式:年-月-日 时:分:秒
 	 */
-	public static final SimpleDateFormat _SECOND = new SimpleDateFormat(
-			"yyyy-MM-dd HH:mm:ss");
+	public static final SimpleDateFormat _SECOND = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public static String toYear(Date date) {
 		return YEAR.format(date);
@@ -49,7 +46,7 @@ public class DateUtil {
 	public static Date addDays(Date date, int days) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		calendar.set(Calendar.DAY_OF_YEAR, days);
+		calendar.add(Calendar.DAY_OF_YEAR, days);
 		return calendar.getTime();
 	}
 

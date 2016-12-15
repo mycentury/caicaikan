@@ -1,36 +1,26 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
-<head >
+<head>
 	<div th:include="/common/meta :: meta" th:remove="tag"></div>
 	<title>彩彩看</title>
 </head>
-<body th:with="menu='HOME'">
+<body th:with="menu='HOME'" th:inline="text">
 
 	<!-- BEGIN HEADER -->
 	<div th:include="/common/header :: header" th:remove="tag"></div>
 	<!-- END HEADER -->
 	
 	<div class="container">
-		<h1 th:text="${words}" text="aaa"></h1>
-		<h2 th:text="${words}" text="aaa"></h2>
-		<h3 th:text="${words}" text="aaa"></h3>
-		<h4 th:text="${words}" text="aaa"></h4>
-		<h5 th:text="${words}" text="aaa"></h5>
-		<h6 th:text="${words}" text="aaa"></h6>
-		<h7 th:text="${words}" text="aaa"></h7>
-
-		<nav>
-			<ul class="pagination">
-				<li><a href="#">&laquo;</a></li>
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
-				<li><a href="#">&raquo;</a></li>
-			</ul>
-		</nav>
+		<h4>下期[[${nextTermNoOfSsq}]],预计开奖时间：[[${nextTermOpenDateOfSsq}]]</h4>
+		<h4>本期[[${ssq.termNo}]],开奖时间：[[${ssq.openTime}]]</h4>
+		<h4>红球：[[${ssq.redNumbers}]]  + 蓝球：[[${ssq.blueNumbers}]]</h4>
+		<ul>
+			<li>一等奖金：[[${ssq.firstPrizeAmount}]]</li>
+			<li>一等奖数：[[${ssq.firstPrizeCount}]]</li>
+			<li>二等奖金：[[${ssq.secondPrizeAmount}]]</li>
+			<li>二等奖数：[[${ssq.secondPrizeCount}]]</li>
+		</ul>
 	</div>
 
 	<!-- BEGIN CSS_JS -->
