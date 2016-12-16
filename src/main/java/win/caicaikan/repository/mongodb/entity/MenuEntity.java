@@ -23,22 +23,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class MenuEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	/**
-	 * type-level-code
 	 */
 	@Id
 	private String id;
 	/**
-	 * 类型
+	 * 顺序
 	 */
-	private String type;// H-header,B-bottom,C-content
-	/**
-	 * 等级
-	 */
-	private int level;
-	/**
-	 * 编号
-	 */
-	private String code;
+	private int seq;
 	/**
 	 * 中文名称
 	 */
@@ -56,14 +47,7 @@ public class MenuEntity extends BaseEntity {
 	 */
 	private int status = 1;
 	/**
-	 * 父菜单Id
+	 * 子菜单列表（封装用）
 	 */
 	private List<MenuEntity> subMenus;
-
-	public void setPrimaryKey(String type, int level, String code) {
-		this.type = type;
-		this.level = level;
-		this.code = code;
-		this.id = type + "-" + level + "-" + code;
-	}
 }

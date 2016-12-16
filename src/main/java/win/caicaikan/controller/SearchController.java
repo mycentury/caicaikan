@@ -12,11 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * @Desc
  * @author wewenge.yan
- * @Date 2016年11月25日
- * @ClassName LotterySsqController
- */
-/**
- * @author yanwenge
+ * @Date 2016年12月16日
+ * @ClassName SearchController
  */
 @Controller
 @RequestMapping("search")

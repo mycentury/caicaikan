@@ -1,0 +1,41 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+	<div th:include="/common/meta :: meta" th:remove="tag"></div>
+	<title>彩彩看</title>
+</head>
+<body th:with="menu='PREDICT',subMenu='PREDICT_DLT'">
+
+	<!-- BEGIN HEADER -->
+	<div th:include="/common/header :: header" th:remove="tag"></div>
+	<!-- END HEADER -->
+	
+	<div class="container">
+		<h1 th:text="${words}" text="aaa"></h1>
+		<h2 th:text="${words}" text="aaa"></h2>
+		<h3 th:text="${words}" text="aaa"></h3>
+		<h4 th:text="${words}" text="aaa"></h4>
+		<h5 th:text="${words}" text="aaa"></h5>
+		<h6 th:text="${words}" text="aaa"></h6>
+		<h7 th:text="${words}" text="aaa"></h7>
+
+		<nav>
+			<ul class="pagination">
+				<li><a href="#">&laquo;</a></li>
+				<li><a href="#">1</a></li>
+				<li><a href="#">2</a></li>
+				<li><a href="#">3</a></li>
+				<li><a href="#">4</a></li>
+				<li><a href="#">5</a></li>
+				<li><a href="#">&raquo;</a></li>
+			</ul>
+		</nav>
+	</div>
+
+	<!-- BEGIN CSS_JS -->
+	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
+	<!-- END CSS_JS -->
+	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+</body>
+</html>

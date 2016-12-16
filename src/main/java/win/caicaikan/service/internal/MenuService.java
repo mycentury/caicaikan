@@ -47,7 +47,8 @@ public class MenuService {
 		if (CollectionUtils.isEmpty(menuEntities)) {
 			menuEntities = new ArrayList<MenuEntity>();
 			MenuEntity entity = new MenuEntity();
-			entity.setPrimaryKey("H", 0, "HOME");
+			entity.setId("HOME");
+			entity.setSeq(0);
 			entity.setNameZh("主页");
 			entity.setNameEn("Home");
 			entity.setPath("/");
@@ -57,7 +58,8 @@ public class MenuService {
 
 			List<MenuEntity> subMenus = new ArrayList<MenuEntity>();
 			entity = new MenuEntity();
-			entity.setPrimaryKey("H", 1, "HISTORY_SSQ");
+			entity.setId("HISTORY_SSQ");
+			entity.setSeq(0);
 			entity.setNameZh("双色球");
 			entity.setNameEn("Double Color Ball");
 			entity.setPath("/history/ssq");
@@ -66,7 +68,8 @@ public class MenuService {
 			subMenus.add(entity);
 
 			entity = new MenuEntity();
-			entity.setPrimaryKey("H", 1, "HISTORY_DLT");
+			entity.setId("HISTORY_DLT");
+			entity.setSeq(1);
 			entity.setNameZh("大乐透");
 			entity.setNameEn("Super Lotto");
 			entity.setPath("/history/dlt");
@@ -75,7 +78,8 @@ public class MenuService {
 			subMenus.add(entity);
 
 			entity = new MenuEntity();
-			entity.setPrimaryKey("H", 0, "HISTORY");
+			entity.setId("HISTORY");
+			entity.setSeq(1);
 			entity.setNameZh("往期数据");
 			entity.setNameEn("History");
 			entity.setPath("/history");
