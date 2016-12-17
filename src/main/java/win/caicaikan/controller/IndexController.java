@@ -15,10 +15,13 @@ import org.springframework.ui.ModelMap;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import win.caicaikan.constant.SsqConstant;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.service.internal.DaoService;
 import win.caicaikan.service.internal.DaoService.Condition;
 import win.caicaikan.service.rule.RuleService;
+import win.caicaikan.service.rule.RuleTemplate.Result;
+import win.caicaikan.service.rule.ssq.RuleDisplayTimes;
 import win.caicaikan.util.DateUtil;
 
 /**
@@ -35,7 +38,9 @@ public class IndexController {
 	@Autowired
 	private DaoService daoService;
 	@Autowired
-	protected RuleService ruleService;
+	private RuleService ruleService;
+	@Autowired
+	private RuleDisplayTimes displayTimes;
 
 	@RequestMapping(value = { "/index" })
 	public String index(HttpServletRequest request, ModelMap map) {
@@ -46,7 +51,7 @@ public class IndexController {
 	public String home(HttpServletRequest request, ModelMap map) {
 		Condition condition = new Condition();
 		condition.setOrderBy("termNo");
-		condition.setLimit(1);
+		condition.setLimit(100);
 		List<SsqResultEntity> ssqs = daoService.query(condition, SsqResultEntity.class);
 		if (!CollectionUtils.isEmpty(ssqs)) {
 			SsqResultEntity ssq = ssqs.get(0);
@@ -61,6 +66,12 @@ public class IndexController {
 			}
 			map.put("ssq", ssq);
 		}
+
+		Result countResult = displayTimes.countDisplayTimes(ssqs, 100);
+		map.put("redBallLabels", SsqConstant.RED_NUMBERS);
+		map.put("blueBallLabels", SsqConstant.BLUE_NUMBERS);
+		map.put("countRedBalls", countResult.getRedMap().values());
+		map.put("countBlueBalls", countResult.getBlueMap().values());
 		return "index";
 	}
 }

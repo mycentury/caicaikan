@@ -9,3 +9,27 @@ ul.list{
 	list-style: none;
 	padding-left: 0px;
 }
+
+canvas {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+	
+span.ball{
+	width: 20px;
+	height: 21px;
+	line-height: 21px;
+	text-align: center;
+	font-weight: bold;
+	color: #fff;
+	display: inline-block;
+}
+
+sapn.redball{
+	url(/img/ball_bg.gif) 0 0 no-repeat;
+}
+
+sapn.blueball{
+	url(/img/ball_bg.gif) -21px 0 no-repeat;
+}

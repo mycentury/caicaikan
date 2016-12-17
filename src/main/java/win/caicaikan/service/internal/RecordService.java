@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -18,7 +19,13 @@ public class RecordService {
 	@Autowired
 	private RecordDao recordDao;
 
+	@Value("${log.record.open}")
+	private boolean openRecord;
+
 	public RecordEntity insert(RecordEntity record) {
+		if (!openRecord) {
+			return record;
+		}
 		Date createTime = new Date();
 		record.setCreateTime(createTime);
 		record.setUpdateTime(createTime);
@@ -31,6 +38,9 @@ public class RecordService {
 	 */
 	public RecordEntity assembleRocordEntity(HttpServletRequest request) {
 		RecordEntity record = new RecordEntity();
+		if (!openRecord) {
+			return record;
+		}
 		record.setOpertype(OperType.REQUEST.name());
 		record.setUsername(String.valueOf(request.getSession().getAttribute("username")));
 		record.setUsertype(String.valueOf(request.getSession().getAttribute("usertype")));

@@ -33,20 +33,10 @@ public class RuleDisplayTimes extends RuleTemplate {
 	@Override
 	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity)
 			throws Throwable {
-		int count = entity.getTerms() >= list.size() ? list.size() : entity.getTerms();
-		Map<String, Integer> redMap = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
-		Map<String, Integer> blueMap = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, 0);
 
-		for (int i = 0; i < count; i++) {
-			SsqResultEntity lotterySsqEntity = list.get(i);
-			String[] redNumbers = lotterySsqEntity.getRedNumbers().split(",");
-			for (String redNumber : redNumbers) {
-				redMap.put(redNumber, redMap.get(redNumber) + 1);
-			}
-			// 去除幸运号
-			String blueNumber = lotterySsqEntity.getBlueNumbers().split(",")[0];
-			blueMap.put(blueNumber, blueMap.get(blueNumber) + 1);
-		}
+		Result countResult = this.countDisplayTimes(list, entity.getTerms());
+		Map<String, Integer> redMap = countResult.getRedMap();
+		Map<String, Integer> blueMap = countResult.getRedMap();
 		List<String> redNumbers = sortMapToList(redMap);
 		List<String> blueNumbers = sortMapToList(blueMap);
 
@@ -58,6 +48,28 @@ public class RuleDisplayTimes extends RuleTemplate {
 		result.setBlueNumbers(blueNumbers);
 		result.setCreateTime(new Date());
 		result.setUpdateTime(new Date());
+		return result;
+	}
+
+	public Result countDisplayTimes(List<SsqResultEntity> list, int count) {
+		if (count >= list.size()) {
+			count = list.size();
+		}
+		Map<String, Integer> redMap = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
+		Map<String, Integer> blueMap = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, 0);
+		Result result = new Result();
+		for (int i = 0; i < count; i++) {
+			SsqResultEntity lotterySsqEntity = list.get(i);
+			String[] redNumbers = lotterySsqEntity.getRedNumbers().split(",");
+			for (String redNumber : redNumbers) {
+				redMap.put(redNumber, redMap.get(redNumber) + 1);
+			}
+			// 去除幸运号
+			String blueNumber = lotterySsqEntity.getBlueNumbers().split(",")[0];
+			blueMap.put(blueNumber, blueMap.get(blueNumber) + 1);
+		}
+		result.setRedMap(redMap);
+		result.setBlueMap(blueMap);
 		return result;
 	}
 }

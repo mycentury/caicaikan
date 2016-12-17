@@ -21,11 +21,43 @@
 			<li>二等奖金：[[${ssq.secondPrizeAmount}]]</li>
 			<li>二等奖数：[[${ssq.secondPrizeCount}]]</li>
 		</ul>
+		<h4>近100期统计如下：</h4>
+		<div class="col-xs-12 col-md-8">
+			<canvas id="red" width="100%" height="100%"></canvas>
+		</div>
+		<div class="col-xs-6 col-md-4">
+			<canvas id="blue" width="100%" height="210%"></canvas>
+		</div>
 	</div>
 
 	<!-- BEGIN CSS_JS -->
 	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->
 	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+	<script type="text/javascript" th:inline="javascript">
+		var color = Chart.helpers.color;
+		var red = {
+			labels : /*[[${redBallLabels}]]*/ null,
+			datasets : [
+					{
+						label : "red",
+						backgroundColor : color(window.chartColors.red).alpha(0.5)
+								.rgbString(),
+						data : /*[[${countRedBalls}]]*/ null
+					}]
+		};
+		var blue = {
+				labels : /*[[${blueBallLabels}]]*/ null,
+				datasets : [
+						{
+							label : "blue",
+							backgroundColor : color(window.chartColors.blue).alpha(0.5)
+									.rgbString(),
+							data : /*[[${countBlueBalls}]]*/ null
+						}]
+			};
+		getBarChart("red", red,"红球");
+		getBarChart("blue", blue,"蓝球");
+	</script>
 </body>
 </html>

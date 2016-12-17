@@ -11,8 +11,8 @@
 		<mongo:client-options connections-per-host="${mongo.connections.per.host}"
 			min-connections-per-host="1"
 			threads-allowed-to-block-for-connection-multiplier="${mongo.threads.connection.multiplier}"
-			connect-timeout="10000" socket-timeout="60000"
-			max-connection-life-time="3600000" max-connection-idle-time="60000" />
+			connect-timeout="${mongo.connect.timeout}" socket-timeout="${mongo.socket.timeout}"
+			max-connection-life-time="${mongo.connect.life.time}" max-connection-idle-time="${mongo.connect.idle.time}" />
 	</mongo:mongo-client>
 
 	<mongo:db-factory id="mongoFactory" mongo-ref="mongo"

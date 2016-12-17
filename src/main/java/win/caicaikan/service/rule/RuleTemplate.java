@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import win.caicaikan.constant.RuleType;
@@ -44,6 +47,13 @@ public abstract class RuleTemplate {
 			redNumbers.add(entry.getKey() + SPLITOR + entry.getValue());
 		}
 		return redNumbers;
+	}
+
+	@Data
+	@EqualsAndHashCode(callSuper = false)
+	public static class Result {
+		Map<String, Integer> redMap;
+		Map<String, Integer> blueMap;
 	}
 
 }
