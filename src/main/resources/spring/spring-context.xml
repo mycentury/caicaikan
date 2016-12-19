@@ -30,6 +30,7 @@
 	    <list>
 	        <value>classpath*:config.properties</value>
 	        <value>classpath*:dbconfig.properties</value>
+	        <value>classpath*:aliapi.properties</value>
 	    </list>
 	  </property>
 	</bean>

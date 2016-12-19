@@ -21,15 +21,19 @@
 			<li>二等奖金：[[${ssq.secondPrizeAmount}]]</li>
 			<li>二等奖数：[[${ssq.secondPrizeCount}]]</li>
 		</ul>
+		
 		<h4>近100期统计如下：</h4>
-		<div class="col-xs-12 col-md-8">
+		<div class="col-xs-12 col-sm-8 col-md-8">
 			<canvas id="red" width="100%" height="100%"></canvas>
 		</div>
-		<div class="col-xs-6 col-md-4">
+		<div class="col-xs-6 col-sm-4 col-md-4">
 			<canvas id="blue" width="100%" height="210%"></canvas>
 		</div>
+		
 	</div>
 
+	<div th:include="/common/slider_window :: slider_window" th:remove="tag"></div>
+	
 	<!-- BEGIN CSS_JS -->
 	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->

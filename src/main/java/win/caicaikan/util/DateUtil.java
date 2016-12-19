@@ -3,9 +3,11 @@
  */
 package win.caicaikan.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * @Desc
@@ -35,11 +37,29 @@ public class DateUtil {
 	 */
 	public static final SimpleDateFormat _SECOND = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+	/**
+	 * ISO8601_DATE_FORMAT
+	 */
+	public static final String ISO8601 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
 	public static String toYear(Date date) {
 		return YEAR.format(date);
 	}
 
-	public static String toDate(Date date) {
+	public static Date toDate(String source, String format) {
+		try {
+			return new SimpleDateFormat(format).parse(source);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static String toChar(Date date, String format) {
+		return new SimpleDateFormat(format).format(date);
+	}
+
+	public static String toChar(Date date) {
 		return DAY.format(date);
 	}
 
@@ -79,4 +99,22 @@ public class DateUtil {
 		calendar.setTime(date);
 		return calendar.get(Calendar.HOUR_OF_DAY);
 	}
+
+	public static Date getTimeByTimeZone(String timeZone) {
+		TimeZone zone = TimeZone.getTimeZone(timeZone);
+		return Calendar.getInstance(zone).getTime();
+	}
+
+	public static Date getUtcTime() {
+		// 1、取得本地时间：
+		Calendar cal = Calendar.getInstance();
+		// 2、取得时间偏移量：
+		int zoneOffset = cal.get(Calendar.ZONE_OFFSET);
+		// 3、取得夏令时差：
+		int dstOffset = cal.get(Calendar.DST_OFFSET);
+		// 4、从本地时间里扣除这些差量，即可以取得UTC时间：
+		cal.add(Calendar.MILLISECOND, -(zoneOffset + dstOffset));
+		return cal.getTime();
+	}
+
 }
