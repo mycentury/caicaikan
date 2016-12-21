@@ -36,7 +36,7 @@ public class AliSecurityServiceTest extends BaseTest {
 	@Test
 	public void testQuerySecurityRules() {
 		AliSecurityQueryReq req = TypeConverterUtil.map(apiConfig, AliSecurityQueryReq.class);
-		req.setAction("AuthorizeSecurityGroup");
+		req.setAction("DescribeSecurityGroupAttribute");
 		req.setSignatureNonce(UUID.randomUUID().toString());
 		req.setNicType("intranet");
 		req.setDirection("all");

@@ -31,12 +31,10 @@ public class AliSecurityService {
 	public AliSecurityQueryRes querySecurityRules(AliSecurityQueryReq req) {
 		String url;
 		try {
-			String accessKeySecret = req.getAccessKeySecret();
-			req.setAccessKeySecret(null);
 			url = httpService.assembleHttpGetUrlWithOrder(req);
 			String stringToSign = this.generateStringToSign("GET", url);
-			String signature = this.getSignature("HmacSHA1", apiUrl + "?" + stringToSign,
-					accessKeySecret);
+			String signature = this
+					.getSignature("HmacSHA1", stringToSign, req.getAccessKeySecret());
 			req.setSignature(signature);
 			url = httpService.assembleHttpGetUrlWithOrder(req);
 			String json = httpService.getDocumentByGetWithHttpClient(apiUrl + "?" + url);

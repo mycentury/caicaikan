@@ -11,7 +11,7 @@
 	<div class="container">
 		<ol class="breadcrumb">
 			<li><a href="/">Home</a></li>
-			<li><a href="/user/login">Login</a></li>
+			<li><a href="/admin/login">Login</a></li>
 		</ol>
 
 		<div class="row">
@@ -25,7 +25,7 @@
 				<h7 th:text="${words}" text="aaa"></h7>
 			</div>
 			<div class="col-xs-4">
-				<form method="post" action="/user/admin_login" class="form-horizontal form-login">
+				<form method="post" action="/admin/admin_login" class="form-horizontal form-login">
 					<input type="hidden" name="usertype" th:value="${usertype}" />
 					<input type="hidden" name="token" th:value="${session.token}" />
 					<div class="form-group">
@@ -57,7 +57,7 @@
 							</span>
 							<input id="checkcode" class="form-control" name="checkcode" maxlength="10" required="required" />
 							<span class="input-group-addon">
-								<img id="checkcode_img" title="单击更换" alt="单击更换" src="/user/checkcode" onclick="refresh_attr(this,'src');" />
+								<img id="checkcode_img" title="单击更换" alt="单击更换" src="/checkcode" onclick="refresh_attr(this,'src');" />
 							</span>
 						</div>
 					</div>

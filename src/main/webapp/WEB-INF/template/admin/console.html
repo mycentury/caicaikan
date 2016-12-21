@@ -1,0 +1,63 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<div th:include="/common/meta :: meta" th:remove="tag"></div>
+	<title>彩彩看-登陆</title>
+</head>
+<body>
+
+	<!-- BEGIN HEADER -->
+	<div th:include="/common/header :: header" th:remove="tag"></div>
+	<!-- END HEADER -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="/">Home</a></li>
+			<li><a href="/admin/console">console</a></li>
+		</ol>
+
+		<div class="col-xs-18 col-sm-12 col-md-12">
+			<table th:if="${not #lists.isEmpty(Permissions)}" class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<td>IP协议</td>
+						<td>端口范围</td>
+						<td>源IP地址段</td>
+						<td>源安全组</td>
+						<td>账户Id</td>
+						<td>目标IP地址</td>
+						<td>目标安全组</td>
+						<td>阿里云账户Id</td>
+						<td>授权策略</td>
+						<td>网络类型</td>
+						<td>规则优先级</td>
+						<td>授权方向</td>
+						<td>描述信息</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="item:${Permissions}">
+						<td th:utext="${item.IpProtocol}"></td>
+						<td th:utext="${item.PortRange}"></td>
+						<td th:utext="${item.SourceCidrIp}"></td>
+						<td th:utext="${item.SourceGroupId}"></td>
+						<td th:utext="${item.SourceGroupOwnerAccount}"></td>
+						<td th:utext="${item.DestCidrIp}"></td>
+						<td th:utext="${item.DestGroupId}"></td>
+						<td th:utext="${item.DestGroupOwnerAccount}"></td>
+						<td th:utext="${item.Policy}"></td>
+						<td th:utext="${item.NicType}"></td>
+						<td th:utext="${item.Priority}"></td>
+						<td th:utext="${item.Direction}"></td>
+						<td th:utext="${item.Description}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<!-- BEGIN CSS_JS -->
+	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
+	<!-- END CSS_JS -->
+	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+</body>
+</html>
