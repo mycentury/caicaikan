@@ -100,7 +100,7 @@ public class DateUtil {
 		return calendar.get(Calendar.HOUR_OF_DAY);
 	}
 
-	public static Date getTimeByTimeZone(String timeZone) {
+	public static Date getDateByTimeZone(String timeZone) {
 		TimeZone zone = TimeZone.getTimeZone(timeZone);
 		return Calendar.getInstance(zone).getTime();
 	}
@@ -115,6 +115,15 @@ public class DateUtil {
 		// 4、从本地时间里扣除这些差量，即可以取得UTC时间：
 		cal.add(Calendar.MILLISECOND, -(zoneOffset + dstOffset));
 		return cal.getTime();
+	}
+
+	public static void main(String[] args) {
+		Date date1 = getDateByTimeZone("UTC");
+		System.out.println(date1);
+		Date date2 = getDateByTimeZone("GTM-8");
+		System.out.println(date2);
+		Date date3 = new Date();
+		System.out.println(date3);
 	}
 
 }

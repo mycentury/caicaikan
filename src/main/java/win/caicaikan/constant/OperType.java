@@ -14,7 +14,8 @@ public enum OperType {
 	PASSWORD("修改密码"),
 	ATTACK("攻击"),
 	LOGIN("登录"),
-	REGISTER("注册");
+	REGISTER("注册"),
+	AUTHORIZE("授权");
 	private String desc;
 
 	private OperType(String desc) {

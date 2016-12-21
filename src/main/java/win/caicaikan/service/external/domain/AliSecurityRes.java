@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class AliSecurityRes {
 	String RequestId;
-	String HostId;// 必传。目标安全组编码
-	String Code;// 必传。目标安全组所属Region ID
-	String Message;// 必传。IP协议，取值：tcp | udp | icmp | gre | all；all表示同时支持四种协议
+	String HostId;//
+	String Code;//
+	String Message;//
 }

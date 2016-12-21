@@ -1,4 +1,4 @@
 User-agent:*
 
-Disallow:/user/admin
-Disallow:/user/admin/console
+Disallow:/admin/login
+Disallow:/admin/console

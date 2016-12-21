@@ -21,8 +21,8 @@ function general_ajax(url, method, data, beforeSend, success, complete, error) {
 		// dataType : "json", // 返回格式为json,可由SpringMVC定义
 		async : true,// 请求是否异步，默认为异步，这也是ajax重要特性
 		cache : false,
-		data : data, // 参数值
 		type : method, // 请求方式
+		data : data, // 参数值
 		// contentType : false,
 		// processData : false,// 必须
 		beforeSend : beforeSend,

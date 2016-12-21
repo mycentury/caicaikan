@@ -5,6 +5,8 @@ package win.caicaikan.api.res;
 
 import java.io.Serializable;
 
+import win.caicaikan.constant.ResultType;
+
 /**
  * @Desc
  * @author wewenge.yan
@@ -13,9 +15,14 @@ import java.io.Serializable;
  */
 public class Result<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private int status;
+	private int status = 0;
 	private String message;
 	private T data;
+
+	public void setErrorStatusAndMsg(ResultType errorType, String addition) {
+		this.status = errorType.getStatus();
+		this.message = errorType.getMsg() + (addition == null ? "" : "-->" + addition);
+	}
 
 	public int getStatus() {
 		return status;
