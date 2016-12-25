@@ -3,12 +3,7 @@
  */
 package win.caicaikan.controller;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import win.caicaikan.api.res.Result;
-import win.caicaikan.constant.Constant;
 import win.caicaikan.constant.OperType;
+import win.caicaikan.constant.RoleType;
 import win.caicaikan.repository.mongodb.entity.RecordEntity;
 import win.caicaikan.repository.mongodb.entity.UserEntity;
 import win.caicaikan.service.internal.RecordService;
+import win.caicaikan.service.internal.SessionService;
 import win.caicaikan.service.internal.UserService;
 import win.caicaikan.util.AddressUtil;
-import win.caicaikan.util.CheckCodeUtil;
 
 /**
  * @Desc
@@ -41,20 +36,22 @@ import win.caicaikan.util.CheckCodeUtil;
  */
 @Controller
 @RequestMapping("user")
-public class UserController extends BaseController {
+public class UserController {
 	private final static Logger logger = Logger.getLogger(UserController.class);
 
 	@Autowired
 	private UserService userService;
 	@Autowired
 	private RecordService recordService;
+	@Autowired
+	private SessionService sessionService;
 
 	@RequestMapping("login")
 	public String login(HttpServletRequest request, ModelMap map) {
-		if (hasLogin(request)) {
+		if (sessionService.hasLogin(request)) {
 			return "redirect:/";
 		}
-		map.put("usertype", "G");
+		map.put("usertype", RoleType.USER.getCode());
 		return "user/login";
 	}
 
@@ -67,15 +64,15 @@ public class UserController extends BaseController {
 			record.setUsername(user.getUsername());
 			record.setUsertype(user.getUsertype());
 		}
-		if (!checkcode.equalsIgnoreCase(request.getSession().getAttribute("checkcode").toString())) {
+		if (!checkcode.equalsIgnoreCase(sessionService.getCheckcode(request))) {
 			attr.addFlashAttribute("errorMsg", "验证码错误！");
-			attr.addFlashAttribute("usertype", "G");
+			attr.addFlashAttribute("usertype", RoleType.USER.getCode());
 			record.setAfter(checkcode + "-验证码错误！");
 			recordService.insert(record);
 			return "redirect:/user/login";
 		}
-		if (!"G".equals(user.getUsertype())) {
-			user.setUsertype("G");
+		if (!RoleType.USER.getCode().equals(user.getUsertype())) {
+			user.setUsertype(RoleType.USER.getCode());
 			RecordEntity record2 = recordService.assembleRocordEntity(request);
 			record2.setOpertype(OperType.ATTACK.name());
 			record2.setAfter(user.getUsertype() + "-用户类型被调试修改！");
@@ -83,7 +80,7 @@ public class UserController extends BaseController {
 			logger.error("检测到调试攻击，IP=" + AddressUtil.getIpAddress(request));
 		}
 		if (!userService.exists(user)) {
-			attr.addFlashAttribute("usertype", "G");
+			attr.addFlashAttribute("usertype", RoleType.USER.getCode());
 			attr.addFlashAttribute("errorMsg", "username or password error");
 			record.setAfter(user.getUsername() + "/" + user.getPassword()
 					+ "-username or password error");
@@ -91,8 +88,8 @@ public class UserController extends BaseController {
 			return "redirect:/user/login";
 		}
 
-		request.getSession().setAttribute("username", user.getUsername());
-		request.getSession().setAttribute("usertype", user.getUsertype());
+		sessionService.setUsername(request, user.getUsername());
+		sessionService.setUsertype(request, user.getUsertype());
 		record.setAfter(user.getUsername() + "-login successfully");
 		recordService.insert(record);
 		return "redirect:/";
@@ -100,14 +97,14 @@ public class UserController extends BaseController {
 
 	@RequestMapping(value = "logout")
 	public String logout(HttpServletRequest request) {
-		request.getSession().removeAttribute("username");
-		request.getSession().removeAttribute("usertype");
+		sessionService.removeUsername(request);
+		sessionService.removeUsertype(request);
 		return "redirect:/user/login";
 	}
 
 	@RequestMapping("register")
 	public String register(HttpServletRequest request, ModelMap map) {
-		map.put("usertype", "G");
+		map.put("usertype", RoleType.USER.getCode());
 		return "user/register";
 	}
 
@@ -115,7 +112,7 @@ public class UserController extends BaseController {
 	public @ResponseBody Result<Boolean> checkUsername(HttpServletRequest request, String username,
 			ModelMap map) {
 		Result<Boolean> result = new Result<Boolean>();
-		if (userService.exists("G" + "-" + username)) {
+		if (userService.exists(RoleType.USER.getCode() + "-" + username)) {
 			result.setStatus(400);
 			result.setMessage("username allready exists");
 			result.setData(false);
@@ -135,33 +132,20 @@ public class UserController extends BaseController {
 			attr.addFlashAttribute("errorMsg", "username allready exists");
 			return "redirect:/user/register";
 		}
-		if (!"G".equals(user.getUsertype())) {
+		if (!RoleType.USER.getCode().equals(user.getUsertype())) {
 			RecordEntity record2 = recordService.assembleRocordEntity(request);
 			record2.setOpertype(OperType.ATTACK.name());
 			record2.setAfter(user.getUsertype() + "-用户类型被调试修改！");
 			recordService.insert(record2);
-			user.setUsertype("G");
+			user.setUsertype(RoleType.USER.getCode());
 			logger.error("检测到调试攻击，IP=" + AddressUtil.getIpAddress(request));
 		}
 		user.setPassword(password);
 		userService.insert(user);
-		request.getSession().setAttribute("username", user.getUsername());
-		request.getSession().setAttribute("usertype", user.getUsertype());
+		sessionService.setUsername(request, user.getUsername());
+		sessionService.setUsertype(request, user.getUsertype());
 		record.setAfter(user.getUsername() + "-register successfully！");
 		recordService.insert(record);
 		return "redirect:/";
-	}
-
-	@RequestMapping(value = { "/checkcode" })
-	public void checkCode(HttpServletRequest request, HttpServletResponse response) {
-		String checkCode = CheckCodeUtil.getRandomCode(Constant.CHECK_CODE, 4);
-		request.getSession().setAttribute("checkcode", checkCode);
-		BufferedImage image = CheckCodeUtil.getCheckCodeImg(checkCode, 60, 22);
-		try {
-			ImageIO.write(image, Constant.IMAGE_TYPE, response.getOutputStream());
-			response.getOutputStream().flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

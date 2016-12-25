@@ -19,9 +19,9 @@ public class Result<T> implements Serializable {
 	private String message;
 	private T data;
 
-	public void setErrorStatusAndMsg(ResultType errorType, String addition) {
-		this.status = errorType.getStatus();
-		this.message = errorType.getMsg() + (addition == null ? "" : "-->" + addition);
+	public void setResultStatusAndMsg(ResultType resultType, String addition) {
+		this.status = resultType.getStatus();
+		this.message = resultType.getMsg() + (addition == null ? "" : "-->" + addition);
 	}
 
 	public int getStatus() {

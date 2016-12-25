@@ -18,7 +18,6 @@ import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.util.MapUtil;
 
 public abstract class RuleTemplate {
-	private static final String SPLITOR = "-";
 
 	@Autowired
 	protected RuleService ruleService;
@@ -34,19 +33,6 @@ public abstract class RuleTemplate {
 			map.put(key, value);
 		}
 		return map;
-	}
-
-	/**
-	 * @param redMap
-	 * @return
-	 */
-	protected List<String> sortMapToList(Map<String, Integer> redMap) {
-		List<String> redNumbers = new ArrayList<String>();
-		List<Entry<String, Integer>> redEntries = MapUtil.sortToListByValue(redMap, MapUtil.DESC);
-		for (Entry<String, Integer> entry : redEntries) {
-			redNumbers.add(entry.getKey() + SPLITOR + entry.getValue());
-		}
-		return redNumbers;
 	}
 
 	@Data

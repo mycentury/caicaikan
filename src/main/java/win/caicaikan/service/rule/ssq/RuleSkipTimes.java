@@ -17,6 +17,7 @@ import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.service.rule.RuleTemplate;
+import win.caicaikan.util.MapUtil;
 
 /**
  * @Desc
@@ -56,8 +57,8 @@ public class RuleSkipTimes extends RuleTemplate {
 				blueMap.put(blueNumber, i);
 			}
 		}
-		List<String> redNumbers = sortMapToList(redMap);
-		List<String> blueNumbers = sortMapToList(blueMap);
+		List<String> redNumbers = MapUtil.sortMapToList(redMap, "=", MapUtil.DESC);
+		List<String> blueNumbers = MapUtil.sortMapToList(blueMap, "=", MapUtil.DESC);
 
 		SsqPredictEntity result = new SsqPredictEntity();
 		String ruleId = entity.getId();

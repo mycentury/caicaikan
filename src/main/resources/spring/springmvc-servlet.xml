@@ -35,6 +35,10 @@
 			<mvc:mapping path="/**" />
 			<bean class="win.caicaikan.interceptor.FormInterceptor"></bean>
 		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="win.caicaikan.interceptor.RoleInterceptor"></bean>
+		</mvc:interceptor>
 	</mvc:interceptors>
 	
 	<bean id="templateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">

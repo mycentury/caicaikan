@@ -26,6 +26,12 @@
 					</div>
 				</form>
 				<ul th:if="${session.usertype eq 'A'}" class="nav navbar-nav navbar-right">
+					<li>
+						<a href="/admin/console">console</a>
+					</li>
+					<li>
+						<a href="/admin/rule">rule</a>
+					</li>
 					<li th:if="${session.username}" class="dropdown user">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<span th:text="${session.username}"></span>
@@ -46,7 +52,7 @@
 						</ul>
 					</li>
 					<li th:if="not ${session.username}">
-						<a href="/user/admin">login</a>
+						<a href="/admin/login">login</a>
 					</li>
 				</ul>
 				<ul th:unless="${session.usertype eq 'A'}" class="nav navbar-nav navbar-right">

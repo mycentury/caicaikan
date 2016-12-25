@@ -25,7 +25,7 @@ public class MenuService {
 	@Autowired
 	private MenuDao menuDao;
 
-	private List<MenuEntity> menuEntities;
+	private List<MenuEntity> menuEntities = new ArrayList<MenuEntity>();
 
 	public List<MenuEntity> getMenuEntities() {
 		if (CollectionUtils.isEmpty(menuEntities)) {
