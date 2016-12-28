@@ -17,21 +17,21 @@ canvas {
 }
 
 span.ball{
-	width: 20px;
+	width: 21px;
 	height: 21px;
-	line-height: 21px;
+	line-height: 20px;
 	text-align: center;
 	font-weight: bold;
 	color: #fff;
 	display: inline-block;
 }
 
-sapn.redball{
-	url(/img/ball_bg.gif) 0 0 no-repeat;
+span.redball{
+	background: url(/img/ball_bg.gif) 0 0 no-repeat;
 }
 
-sapn.blueball{
-	url(/img/ball_bg.gif) -21px 0 no-repeat;
+span.blueball{
+	background: url(/img/ball_bg.gif) -21px 0 no-repeat;
 }
 
 .carousel-control{

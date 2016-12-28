@@ -35,9 +35,26 @@ public class RuleSkipTimes extends RuleTemplate {
 	}
 
 	@Override
-	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity)
-			throws Throwable {
-		int count = entity.getTerms() >= list.size() ? list.size() : entity.getTerms();
+	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity) throws Throwable {
+		Result countResult = countSkipTimes(list, entity.getTerms());
+		List<String> redNumbers = MapUtil.sortMapToList(countResult.getRedMap(), "=", MapUtil.DESC);
+		List<String> blueNumbers = MapUtil.sortMapToList(countResult.getBlueMap(), "=", MapUtil.DESC);
+
+		SsqPredictEntity result = new SsqPredictEntity();
+		String ruleId = entity.getId();
+		String termNo = ruleService.getNextTermNoOfSsq(list.get(0));
+		result.setPrimaryKey(ruleId, termNo);
+		result.setRedNumbers(redNumbers);
+		result.setBlueNumbers(blueNumbers);
+		result.setCreateTime(new Date());
+		result.setUpdateTime(new Date());
+		return result;
+	}
+
+	public Result countSkipTimes(List<SsqResultEntity> list, int count) {
+		if (count >= list.size()) {
+			count = list.size();
+		}
 		Map<String, Integer> redMap = initMapKeysWithValue(SsqConstant.RED_NUMBERS, count);
 		Map<String, Integer> blueMap = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, count);
 
@@ -57,17 +74,9 @@ public class RuleSkipTimes extends RuleTemplate {
 				blueMap.put(blueNumber, i);
 			}
 		}
-		List<String> redNumbers = MapUtil.sortMapToList(redMap, "=", MapUtil.DESC);
-		List<String> blueNumbers = MapUtil.sortMapToList(blueMap, "=", MapUtil.DESC);
-
-		SsqPredictEntity result = new SsqPredictEntity();
-		String ruleId = entity.getId();
-		String termNo = ruleService.getNextTermNoOfSsq(list.get(0));
-		result.setPrimaryKey(ruleId, termNo);
-		result.setRedNumbers(redNumbers);
-		result.setBlueNumbers(blueNumbers);
-		result.setCreateTime(new Date());
-		result.setUpdateTime(new Date());
+		Result result = new Result();
+		result.setRedMap(redMap);
+		result.setBlueMap(blueMap);
 		return result;
 	}
 }

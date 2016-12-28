@@ -5,37 +5,70 @@
 	<div th:include="/common/meta :: meta" th:remove="tag"></div>
 	<title>彩彩看</title>
 </head>
-<body th:with="menu='HISTORY',subMenu='HISTORY_SSQ'">
+<body th:with="menu='HISTORY',subMenu='HISTORY_SSQ'" th:inline="text">
 
 	<!-- BEGIN HEADER -->
 	<div th:include="/common/header :: header" th:remove="tag"></div>
 	<!-- END HEADER -->
 	
 	<div class="container">
-		<h1 th:text="${words}" text="aaa"></h1>
-		<h2 th:text="${words}" text="aaa"></h2>
-		<h3 th:text="${words}" text="aaa"></h3>
-		<h4 th:text="${words}" text="aaa"></h4>
-		<h5 th:text="${words}" text="aaa"></h5>
-		<h6 th:text="${words}" text="aaa"></h6>
-		<h7 th:text="${words}" text="aaa"></h7>
-
-		<nav>
-			<ul class="pagination">
-				<li><a href="#">&laquo;</a></li>
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
-				<li><a href="#">&raquo;</a></li>
-			</ul>
-		</nav>
+		<p>下期[[${nextTermNoOfSsq}]],预计开奖时间：[[${nextTermOpenDateOfSsq}]]</p>
+		<p>本期[[${ssq.termNo}]],开奖时间：[[${ssq.openTime}]]</p>
+		<p>
+			<span th:if="${not #lists.isEmpty(redBalls)}">
+				<span th:each="item:${redBalls}" class="ball redball" th:utext="${item}"></span>
+			</span>
+			<span th:if="${not #lists.isEmpty(blueBalls)}">
+				<span th:each="item:${blueBalls}" class="ball blueball" th:utext="${item}"></span>
+			</span>
+		</p>
+		<ul>
+			<li>一等奖金：[[${ssq.firstPrizeAmount == null?"暂无数据":ssq.firstPrizeAmount}]]</li>
+			<li>一等奖数：[[${ssq.firstPrizeCount == null?"暂无数据":ssq.firstPrizeCount}]]</li>
+			<li>二等奖金：[[${ssq.secondPrizeAmount == null?"暂无数据":ssq.secondPrizeAmount}]]</li>
+			<li>二等奖数：[[${ssq.secondPrizeCount == null?"暂无数据":ssq.secondPrizeCount}]]</li>
+		</ul>
+		
+		<p>近100期统计如下：</p>
+		<div class="col-xs-12 col-sm-8 col-md-8">
+			<canvas id="red" width="100%" height="100%"></canvas>
+		</div>
+		<div class="col-xs-6 col-sm-4 col-md-4">
+			<canvas id="blue" width="100%" height="210%"></canvas>
+		</div>
+		
 	</div>
 
+	<!-- <div th:include="/common/slider_window :: slider_window" th:remove="tag"></div> -->
+	
 	<!-- BEGIN CSS_JS -->
 	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->
 	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+	<script type="text/javascript" th:inline="javascript">
+		var color = Chart.helpers.color;
+		var red = {
+			labels : /*[[${redBallLabels}]]*/ null,
+			datasets : [
+					{
+						label : "red",
+						backgroundColor : color(window.chartColors.red).alpha(0.5)
+								.rgbString(),
+						data : /*[[${countRedBalls}]]*/ null
+					}]
+		};
+		var blue = {
+				labels : /*[[${blueBallLabels}]]*/ null,
+				datasets : [
+						{
+							label : "blue",
+							backgroundColor : color(window.chartColors.blue).alpha(0.5)
+									.rgbString(),
+							data : /*[[${countBlueBalls}]]*/ null
+						}]
+			};
+		getBarChart("red", red,"红球");
+		getBarChart("blue", blue,"蓝球");
+	</script>
 </body>
 </html>

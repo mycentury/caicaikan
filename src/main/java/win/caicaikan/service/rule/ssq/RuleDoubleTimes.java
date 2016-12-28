@@ -35,12 +35,31 @@ public class RuleDoubleTimes extends RuleTemplate {
 	}
 
 	@Override
-	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity)
-			throws Throwable {
-
+	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity) throws Throwable {
 		Result countResult = this.countDoubleTimes(list, entity.getTerms());
 		Map<String, Integer> redMap = countResult.getRedMap();
 		Map<String, Integer> blueMap = countResult.getBlueMap();
+
+		// 按上期出现的号码，处理为负数
+		SsqResultEntity ssqResultEntity = list.get(0);
+		List<String> lastRedNumbers = Arrays.asList(ssqResultEntity.getRedNumbers().split(","));
+		// 去除幸运号
+		String lastBlueNumber = ssqResultEntity.getBlueNumbers().split(",")[0];
+		for (Entry<String, Integer> entry : redMap.entrySet()) {
+			if (lastRedNumbers.contains(entry.getKey())) {
+				entry.setValue(0 - entry.getValue());
+			} else {
+				entry.setValue(0);
+			}
+		}
+		for (Entry<String, Integer> entry : blueMap.entrySet()) {
+			if (lastBlueNumber.equals(entry.getKey())) {
+				entry.setValue(0 - entry.getValue());
+			} else {
+				entry.setValue(0);
+			}
+		}
+
 		List<String> redNumbers = MapUtil.sortMapToList(redMap, "=", MapUtil.DESC);
 		List<String> blueNumbers = MapUtil.sortMapToList(blueMap, "=", MapUtil.DESC);
 
@@ -64,15 +83,15 @@ public class RuleDoubleTimes extends RuleTemplate {
 		Result result = new Result();
 		List<String> lastRedNumbers = new ArrayList<String>();
 		String lastBlueNumber = null;
-		int redDoubleCount = 0;
-		int blueDoubleCount = 0;
+		int redCount = 0;
+		int blueCount = 0;
 		for (int i = 0; i < count; i++) {
 			SsqResultEntity ssqResultEntity = list.get(i);
 			String[] redNumbers = ssqResultEntity.getRedNumbers().split(",");
 			for (String redNumber : redNumbers) {
 				if (lastRedNumbers.contains(redNumber)) {
 					redMap.put(redNumber, redMap.get(redNumber) + 1);
-					redDoubleCount++;
+					redCount++;
 				}
 			}
 			lastRedNumbers = Arrays.asList(redNumbers);
@@ -80,33 +99,14 @@ public class RuleDoubleTimes extends RuleTemplate {
 			String blueNumber = ssqResultEntity.getBlueNumbers().split(",")[0];
 			if (blueNumber.equals(lastBlueNumber)) {
 				blueMap.put(blueNumber, blueMap.get(blueNumber) + 1);
-				blueDoubleCount++;
+				blueCount++;
 			}
 			lastBlueNumber = blueNumber;
 		}
-		SsqResultEntity ssqResultEntity = list.get(0);
-		List<String> redNumbers = Arrays.asList(ssqResultEntity.getRedNumbers().split(","));
-		// 去除幸运号
-		String blueNumber = ssqResultEntity.getBlueNumbers().split(",")[0];
-		for (Entry<String, Integer> entry : redMap.entrySet()) {
-			if (redNumbers.contains(entry.getKey())) {
-				int sub = entry.getValue() - redDoubleCount / SsqConstant.RED_NUMBERS.length;
-				entry.setValue(0 - sub);
-			} else {
-				entry.setValue(0);
-			}
-		}
-		for (Entry<String, Integer> entry : blueMap.entrySet()) {
-			if (blueNumber.equals(entry.getKey())) {
-				int sub = blueMap.get(blueNumber) - blueDoubleCount
-						/ SsqConstant.BLUE_NUMBERS.length;
-				entry.setValue(0 - sub);
-			} else {
-				entry.setValue(0);
-			}
-		}
 		result.setRedMap(redMap);
 		result.setBlueMap(blueMap);
+		result.setRedCount(redCount);
+		result.setBlueCount(blueCount);
 		return result;
 	}
 }

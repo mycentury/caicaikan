@@ -45,10 +45,10 @@ public class SsqCurrentTask extends TaskTemplete {
 				return;
 			}
 			for (SsqResultEntity entity : result.getData()) {
-				ssqResultDao.insert(result.getData());
 				if (ssqResultDao.exists(entity.getTermNo())) {
 					continue;
 				}
+				ssqResultDao.insert(entity);
 			}
 
 		} catch (Exception e) {
