@@ -10,12 +10,19 @@ package win.caicaikan.constant;
  * @ClassName ErrorType
  */
 public enum ResultType {
-	SUCCESS(0, "操作成功！"),
+	// 成功
+	SUCCESS(200, ""),
+	// 权限错误
+	NOT_LOGIN(300, "未登录不可操作！"),
+	NO_AUTHORITY(301, "无权限操作！"),
+	// 请求错误
 	PARAMETER_ERROR(400, "请求参数错误！"),
-	SERVICE_ERROR(1000, "本服务异常！"),
-	API_ERROR(2000, "API服务异常！"),
-	NOT_LOGIN(410, "未登录不可操作！"),
-	NO_AUTHORITY(420, "无权限操作！");
+	// 内部服务异常
+	SERVICE_ERROR(500, "本服务异常！"),
+	// 外部服务异常
+	API_ERROR(600, "API服务异常！"),
+	// 警告性，提示性错误
+	USER_EXISTS(700, "用户已存在！");
 	private int status;
 	private String msg;
 

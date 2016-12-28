@@ -3,8 +3,6 @@
  */
 package win.caicaikan.repository.mongodb.entity;
 
-import java.util.Map;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -46,7 +44,7 @@ public class PredictRuleEntity extends BaseEntity {
 	/**
 	 * 基于的规则和权值
 	 */
-	Map<String, Integer> ruleAndweights;
+	private String ruleAndweights;
 	/**
 	 * 启用状态：1-启用，0-禁用
 	 */

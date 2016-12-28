@@ -5,6 +5,8 @@ package win.caicaikan.api.res;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import win.caicaikan.constant.ResultType;
 
 /**
@@ -15,12 +17,20 @@ import win.caicaikan.constant.ResultType;
  */
 public class Result<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private int status = 0;
+	private int status;
 	private String message;
 	private T data;
 
 	public void setResultStatusAndMsg(ResultType resultType, String addition) {
 		this.status = resultType.getStatus();
+		if (StringUtils.isEmpty(resultType.getMsg())) {
+			this.message = addition;
+			return;
+		}
+		if (StringUtils.isEmpty(addition)) {
+			this.message = resultType.getMsg();
+			return;
+		}
 		this.message = resultType.getMsg() + (addition == null ? "" : "-->" + addition);
 	}
 

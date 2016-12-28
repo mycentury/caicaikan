@@ -14,9 +14,9 @@
 			<li><a href="/">Home</a></li>
 			<li><a href="/admin/rule">rule</a></li>
 		</ol>
-		<div>
+		<div id="rule_console">
 			<button role="button" class="btn" data-toggle="modal" data-target="#modal-clone">clone</button>
-			<button onclick="">delete</button>
+			<button class="btn" onclick="">delete</button>
 		</div>
 		<table th:if="${not #lists.isEmpty(rules)}" class="table table-bordered table-hover">
 			<thead>
@@ -49,24 +49,59 @@
 		<div class="modal fade" id="modal-clone" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
-					<form>
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-								&times;
-							</button>
-							<h4 class="modal-title" id="modalLabel">
-								新增规则
-							</h4>
-						</div>
-						<div class="modal-body container-fluid">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							&times;
+						</button>
+						<h4 class="modal-title" id="modalLabel">
+							新增规则
+						</h4>
+					</div>
+					<div class="modal-body container-fluid">
+						<form id="edit-form">
 							<table id="modal_body" class="table table-bordered">
+								<tr id="id_row">
+									<td>ID:</td>
+									<td><input name="id" readonly="readonly" /></td>
+								</tr>
+								<tr>
+									<td>彩种:</td>
+									<td><input name="lotteryType" readonly="readonly" /></td>
+								</tr>
+								<tr>
+									<td>规则类型:</td>
+									<td><select name="ruleType">
+										<option></option>
+										<option></option>
+									</select></td>
+								</tr>
+								<tr>
+									<td>最近期数:</td>
+									<td><input name="terms" /></td>
+								</tr>
+								<tr>
+									<td>规则名称:</td>
+									<td><input name="ruleName" /></td>
+								</tr>
+								<tr>
+									<td>基本规则和权值:</td>
+									<td><input name="ruleAndweights" /></td>
+								</tr>
+								<tr>
+									<td>状态:</td>
+									<td><input name="status" /></td>
+								</tr>
+								<tr>
+									<td>执行状态:</td>
+									<td><input name="excuteStatus" value="STOP" type="hidden" />STOP</td>
+								</tr>
 							</table>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-							<button type="button" class="btn btn-primary">提交更改</button>
-						</div>
-					</form>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default btn-primary" data-dismiss="modal">关闭</button>
+						<button type="button" class="btn btn-primary" onclick="save_rule();">提交更改</button>
+					</div>
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal -->
 		</div>
@@ -77,7 +112,7 @@
 	<!-- END CSS_JS -->
 	<div th:include="/common/footer :: footer" th:remove="tag"></div>
 	
-	<script type="text/javascript"  th:inline="javascript">
+	<script type="text/javascript">
 	/*<![CDATA[*/
 		function clone(elem){
 			var trs = $(elem).parent().children();
@@ -86,15 +121,17 @@
 			}
 			$(elem).attr("class","active");
 			var tds = $(elem).children();
-			var content = '<tr>'
+			var content = '<tr id="id_row">'
 				+'<td>ID:</td>'
-				+'<td><input name="lotteryType" value="'+$(tds.get(0)).html()+'" /></td>'
+				+'<td><input name="id" value="'+$(tds.get(0)).html()+'" /></td>'
 				+'</tr><tr>'
 				+'<td>彩种:</td>'
 				+'<td><input name="lotteryType" value="'+$(tds.get(1)).html()+'" type="hidden" />'+$(tds.get(1)).html()+'</td>'
 				+'</tr><tr>'
 				+'<td>规则类型:</td>'
-				+'<td><input name="ruleType" value="MULTI" type="hidden" />MULTI</td>'
+				+'<td><input name="ruleType" value="'+$(tds.get(2)).html()+'" />'
+				+'<select name="ruleType" value="'+$(tds.get(2)).html()+'" />'
+				+'</select></td>'
 				+'</tr><tr>'
 				+'<td>最近期数:</td>'
 				+'<td><input name="terms" value="'+$(tds.get(3)).html()+'" /></td>'
@@ -103,7 +140,7 @@
 				+'<td><input name="ruleName" value="'+$(tds.get(4)).html()+'" /></td>'
 				+'</tr><tr>'
 				+'<td>基本规则和权值:</td>'
-				+'<td><input name="ruleAndweights" value="'+$(tds.get(5)).html()+'"  /></td>'
+				+'<td><input name="ruleAndweights" value="'+$(tds.get(5)).html()+'" /></td>'
 				+'</tr><tr>'
 				+'<td>状态:</td>'
 				+'<td><input name="status" value="'+$(tds.get(6)).html()+'" /></td>'
@@ -112,6 +149,20 @@
 				+'<td><input name="excuteStatus" value="STOP" type="hidden" />STOP</td>'
 				+'</tr>';
 			$("#modal_body").html(content);
+		}
+
+		function save_rule(){
+			var form = $("#edit-form").serialize();
+			general_ajax("/admin/save_rule", "post", form, null, function(result){
+				if (get_type(result) == "[object String]") {
+					result = json_parse(result);
+				}
+				if (result.status==200) {
+					window.parent.location.href = window.parent.location.href;
+				}else{
+					alert(result.message);
+				}
+			}, null, null);
 		}
 	/*]]>*/
 	</script>

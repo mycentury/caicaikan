@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import win.caicaikan.api.res.Result;
 import win.caicaikan.constant.OperType;
+import win.caicaikan.constant.ResultType;
 import win.caicaikan.constant.RoleType;
 import win.caicaikan.repository.mongodb.entity.RecordEntity;
 import win.caicaikan.repository.mongodb.entity.UserEntity;
@@ -56,8 +57,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "user_login", method = { RequestMethod.POST })
-	public String userLogin(HttpServletRequest request, UserEntity user, String checkcode,
-			RedirectAttributes attr) {
+	public String userLogin(HttpServletRequest request, UserEntity user, String checkcode, RedirectAttributes attr) {
 		RecordEntity record = recordService.assembleRocordEntity(request);
 		record.setOpertype(OperType.LOGIN.name());
 		if (StringUtils.isEmpty(record.getUsername())) {
@@ -82,8 +82,7 @@ public class UserController {
 		if (!userService.exists(user)) {
 			attr.addFlashAttribute("usertype", RoleType.USER.getCode());
 			attr.addFlashAttribute("errorMsg", "username or password error");
-			record.setAfter(user.getUsername() + "/" + user.getPassword()
-					+ "-username or password error");
+			record.setAfter(user.getUsername() + "/" + user.getPassword() + "-username or password error");
 			recordService.insert(record);
 			return "redirect:/user/login";
 		}
@@ -109,14 +108,15 @@ public class UserController {
 	}
 
 	@RequestMapping("check_username")
-	public @ResponseBody Result<Boolean> checkUsername(HttpServletRequest request, String username,
-			ModelMap map) {
+	public @ResponseBody Result<Boolean> checkUsername(HttpServletRequest request, String username, ModelMap map) {
 		Result<Boolean> result = new Result<Boolean>();
 		if (userService.exists(RoleType.USER.getCode() + "-" + username)) {
-			result.setStatus(400);
-			result.setMessage("username allready exists");
+			result.setResultStatusAndMsg(ResultType.USER_EXISTS, null);
 			result.setData(false);
+			return result;
 		}
+		result.setResultStatusAndMsg(ResultType.SUCCESS, null);
+		result.setData(false);
 		return result;
 	}
 

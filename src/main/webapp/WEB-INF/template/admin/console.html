@@ -17,7 +17,7 @@
 
 		<div id="authorize">
 			<button role="button" class="btn" data-toggle="modal" data-target="#modal-clone" >新增</button>
-			<button id="authorize_button" type="button" onclick="auto_authorize(this.innerHTML);" th:utext="${hasAuthorized}?'撤权':'授权'" ></button>
+			<button id="authorize_button" class="btn" type="button" onclick="auto_authorize(this.innerHTML);" th:utext="${hasAuthorized}?'撤权':'授权'" ></button>
 		</div>
 		<!-- 模态框（Modal） -->
 		<div class="modal fade" id="modal-clone" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">

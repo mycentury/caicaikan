@@ -3,6 +3,7 @@
  */
 package win.caicaikan.task.ssq;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,8 +27,11 @@ import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.service.rule.RuleTemplate;
 import win.caicaikan.task.TaskTemplete;
+import win.caicaikan.util.GsonUtil;
 import win.caicaikan.util.MapUtil;
 import win.caicaikan.util.SpringContextUtil;
+
+import com.google.gson.reflect.TypeToken;
 
 /**
  * @Desc 双色球及时任务：用于下期预测
@@ -75,8 +79,7 @@ public class SsqPredictTask extends TaskTemplete {
 		ssqPredictDao.save(predicts);
 	}
 
-	private List<SsqPredictEntity> excuteGeneRules(List<SsqPredictEntity> basePredicts,
-			List<PredictRuleEntity> rules) {
+	private List<SsqPredictEntity> excuteGeneRules(List<SsqPredictEntity> basePredicts, List<PredictRuleEntity> rules) {
 		List<SsqPredictEntity> result = new ArrayList<SsqPredictEntity>();
 		Map<String, SsqPredictEntity> map = new HashMap<String, SsqPredictEntity>();
 		for (SsqPredictEntity basePredict : basePredicts) {
@@ -120,8 +123,8 @@ public class SsqPredictTask extends TaskTemplete {
 		return result;
 	}
 
-	private List<SsqPredictEntity> excuteBaseRules(Map<String, RuleTemplate> beans,
-			List<SsqResultEntity> list, List<PredictRuleEntity> rules) throws Throwable {
+	private List<SsqPredictEntity> excuteBaseRules(Map<String, RuleTemplate> beans, List<SsqResultEntity> list, List<PredictRuleEntity> rules)
+			throws Throwable {
 		List<SsqPredictEntity> result = new ArrayList<SsqPredictEntity>();
 		for (PredictRuleEntity rule : rules) {
 			if (RuleType.MULTI.name().equals(rule.getRuleType())) {
@@ -146,11 +149,12 @@ public class SsqPredictTask extends TaskTemplete {
 		return result;
 	}
 
-	private SsqPredictEntity excuteGeneRule(PredictRuleEntity rule,
-			Map<String, SsqPredictEntity> map, List<SsqPredictEntity> basePredicts) {
+	private SsqPredictEntity excuteGeneRule(PredictRuleEntity rule, Map<String, SsqPredictEntity> map, List<SsqPredictEntity> basePredicts) {
 		List<String> redNumbers = null;
 		List<String> blueNumbers = null;
-		Map<String, Integer> ruleAndweights = rule.getRuleAndweights();
+		Type typeOfT = new TypeToken<Map<String, Integer>>() {
+		}.getType();
+		Map<String, Integer> ruleAndweights = GsonUtil.fromJson(rule.getRuleAndweights(), typeOfT);
 		for (Entry<String, Integer> entry : ruleAndweights.entrySet()) {
 			SsqPredictEntity ssqPredictEntity = map.get(entry.getKey());
 			if (ssqPredictEntity == null) {

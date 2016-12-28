@@ -9,6 +9,8 @@ import java.util.Date;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * @Desc
  * @author wewenge.yan
@@ -19,6 +21,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date updateTime;
 	private Date createTime;
 

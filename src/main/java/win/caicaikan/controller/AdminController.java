@@ -26,6 +26,7 @@ import win.caicaikan.api.res.Result;
 import win.caicaikan.constant.OperType;
 import win.caicaikan.constant.ResultType;
 import win.caicaikan.constant.RoleType;
+import win.caicaikan.constant.RuleType;
 import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
 import win.caicaikan.repository.mongodb.entity.RecordEntity;
 import win.caicaikan.repository.mongodb.entity.UserEntity;
@@ -81,9 +82,10 @@ public class AdminController {
 	}
 
 	@RequestMapping(value = "admin_login", method = { RequestMethod.POST })
-	public String adminLogin(HttpServletRequest request, UserEntity user, String checkcode,
-			RedirectAttributes attr) {
+	public String adminLogin(HttpServletRequest request, UserEntity user, String checkcode, RedirectAttributes attr) {
 		RecordEntity record = recordService.assembleRocordEntity(request);
+		attr.addFlashAttribute("username", user.getUsername());
+		attr.addFlashAttribute("password", user.getPassword());
 		record.setOpertype(OperType.LOGIN.name());
 		if (!checkcode.equalsIgnoreCase(sessionService.getCheckcode(request))) {
 			attr.addFlashAttribute("errorMsg", "验证码错误！");
@@ -103,8 +105,7 @@ public class AdminController {
 		if (!userService.exists(user)) {
 			attr.addFlashAttribute("errorMsg", "username or password error");
 			attr.addFlashAttribute("usertype", RoleType.ADMIN.getCode());
-			record.setAfter(user.getUsername() + "/" + user.getPassword()
-					+ "-username or password error");
+			record.setAfter(user.getUsername() + "/" + user.getPassword() + "-username or password error");
 			recordService.insert(record);
 			return "redirect:/admin/login";
 		}
@@ -124,6 +125,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("console")
+	@Role({ RoleType.ADMIN })
 	public String console(HttpServletRequest request, ModelMap map) {
 		if (!sessionService.hasLogin(request)) {
 			return "redirect:/admin/login";
@@ -140,12 +142,10 @@ public class AdminController {
 		String ipAddress = AddressUtil.getIpAddress(request);
 		boolean hasAuthorized = false;
 
-		if (internets != null && internets.getPermissions() != null
-				&& !CollectionUtils.isEmpty(internets.getPermissions().getPermission())) {
+		if (internets != null && internets.getPermissions() != null && !CollectionUtils.isEmpty(internets.getPermissions().getPermission())) {
 			List<AliSecurityQueryRes.Permission> internetIns = new ArrayList<AliSecurityQueryRes.Permission>();
 			List<AliSecurityQueryRes.Permission> internetOuts = new ArrayList<AliSecurityQueryRes.Permission>();
-			for (AliSecurityQueryRes.Permission permission : internets.getPermissions()
-					.getPermission()) {
+			for (AliSecurityQueryRes.Permission permission : internets.getPermissions().getPermission()) {
 				if ("ingress".equals(permission.getDirection())) {
 					internetIns.add(permission);
 					if (!hasAuthorized && permission.getSourceCidrIp().equals(ipAddress)) {
@@ -165,12 +165,10 @@ public class AdminController {
 		req.setNicType("intranet");
 		AliSecurityQueryRes intranets = aliApiSecurityService.querySecurityRules(req);
 
-		if (intranets != null && intranets.getPermissions() != null
-				&& !CollectionUtils.isEmpty(intranets.getPermissions().getPermission())) {
+		if (intranets != null && intranets.getPermissions() != null && !CollectionUtils.isEmpty(intranets.getPermissions().getPermission())) {
 			List<AliSecurityQueryRes.Permission> intranetIns = new ArrayList<AliSecurityQueryRes.Permission>();
 			List<AliSecurityQueryRes.Permission> intranetOuts = new ArrayList<AliSecurityQueryRes.Permission>();
-			for (AliSecurityQueryRes.Permission permission : intranets.getPermissions()
-					.getPermission()) {
+			for (AliSecurityQueryRes.Permission permission : intranets.getPermissions().getPermission()) {
 				if ("ingress".equals(permission.getDirection())) {
 					intranetIns.add(permission);
 				} else if ("egress".equals(permission.getDirection())) {
@@ -184,6 +182,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("security")
+	@Role({ RoleType.ADMIN })
 	public @ResponseBody Result<Boolean> authorize(HttpServletRequest request, String action) {
 		Result<Boolean> result = new Result<Boolean>();
 		if (StringUtils.isEmpty(action)) {
@@ -203,8 +202,7 @@ public class AdminController {
 			Date timeByTimeZone = DateUtil.getUtcTime();
 			req.setTimestamp(DateUtil.toChar(timeByTimeZone, DateUtil.ISO8601));
 			AliSecurityRes res = aliApiSecurityService.updateSecurityRule(req);
-			if (res != null && res.getHostId() == null & res.getCode() == null
-					&& res.getMessage() == null) {
+			if (res != null && res.getHostId() == null & res.getCode() == null && res.getMessage() == null) {
 				result.setResultStatusAndMsg(ResultType.SUCCESS, null);
 				result.setData(true);
 			} else {
@@ -227,7 +225,7 @@ public class AdminController {
 	}
 
 	@RequestMapping("rule")
-	@Role()
+	@Role({ RoleType.ADMIN })
 	public String rule(HttpServletRequest request, ModelMap map) {
 		if (!sessionService.hasLogin(request)) {
 			return "redirect:/admin/login";
@@ -243,8 +241,7 @@ public class AdminController {
 
 	@RequestMapping("save_rule")
 	@Role({ RoleType.ADMIN })
-	public @ResponseBody Result<PredictRuleEntity> saveRule(HttpServletRequest request,
-			PredictRuleEntity entity, ModelMap map) {
+	public @ResponseBody Result<PredictRuleEntity> saveRule(HttpServletRequest request, PredictRuleEntity rule, ModelMap map) {
 		Result<PredictRuleEntity> result = new Result<PredictRuleEntity>();
 		if (!sessionService.hasLogin(request)) {
 			result.setResultStatusAndMsg(ResultType.NOT_LOGIN, null);
@@ -254,14 +251,19 @@ public class AdminController {
 			result.setResultStatusAndMsg(ResultType.NO_AUTHORITY, null);
 			return result;
 		}
-		if (StringUtils.isEmpty(entity.getLotteryType())
-				|| StringUtils.isEmpty(entity.getRuleType())
-				|| StringUtils.isEmpty(entity.getTerms())) {
+		if (StringUtils.isEmpty(rule.getLotteryType()) || StringUtils.isEmpty(rule.getRuleType()) || StringUtils.isEmpty(rule.getTerms())) {
 			result.setResultStatusAndMsg(ResultType.PARAMETER_ERROR, null);
 			return result;
 		}
-		entity.setPrimaryKey(entity.getLotteryType(), entity.getRuleType(), entity.getTerms());
-		daoService.save(entity);
+		if (RuleType.MULTI.name().equals(rule.getRuleType())) {
+			if (StringUtils.isEmpty(rule.getLotteryType())) {
+				result.setResultStatusAndMsg(ResultType.PARAMETER_ERROR, "规则ID和权值mapping不能为空");
+				return result;
+			}
+		}
+		daoService.save(rule);
+		result.setResultStatusAndMsg(ResultType.SUCCESS, "保存成功！");
 		return result;
 	}
+
 }
