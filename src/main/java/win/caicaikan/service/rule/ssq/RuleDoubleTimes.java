@@ -35,7 +35,7 @@ public class RuleDoubleTimes extends RuleTemplate {
 	}
 
 	@Override
-	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity) throws Throwable {
+	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity) throws Exception {
 		Result countResult = this.countDoubleTimes(list, entity.getTerms());
 		Map<String, Integer> redMap = countResult.getRedMap();
 		Map<String, Integer> blueMap = countResult.getBlueMap();

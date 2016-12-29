@@ -44,7 +44,7 @@ public class SsqHistoryTask extends TaskTemplete {
 	private MongoTemplate mongoTemplate;
 
 	@Override
-	public void run() throws Throwable {
+	public void doInTask() {
 		LotteryReq req = new LotteryReq();
 		req.setLotteryType(LotteryType.SSQ.getValue());
 		req.setQueryType("range");
@@ -66,7 +66,7 @@ public class SsqHistoryTask extends TaskTemplete {
 
 	@Override
 	@Scheduled(cron = "${task.cron.ssq.history}")
-	protected void execute() {
+	public void execute() {
 		super.execute();
 	}
 

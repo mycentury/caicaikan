@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 import win.caicaikan.repository.mongodb.entity.BaseEntity;
 
 /**
- * @Desc
+ * @Desc 统一处理更新时间和创建时间
  * @author wewenge.yan
  * @Date 2016年12月14日
  * @ClassName BaseDaoService
@@ -37,6 +37,15 @@ public class DaoService {
 		entity.setCreateTime(createTime);
 		entity.setUpdateTime(createTime);
 		mongoTemplate.insert(entity);
+	}
+
+	public <T extends BaseEntity> void insert(List<BaseEntity> entityList, Class<T> classOfT) {
+		for (BaseEntity entity : entityList) {
+			Date createTime = new Date();
+			entity.setCreateTime(createTime);
+			entity.setUpdateTime(createTime);
+		}
+		mongoTemplate.insert(entityList, classOfT);
 	}
 
 	public void delete(BaseEntity entity) {
@@ -61,6 +70,10 @@ public class DaoService {
 	public boolean exists(Condition condition, Class<?> entityClass) {
 		Query query = this.assembleQuery(condition);
 		return mongoTemplate.exists(query, entityClass);
+	}
+
+	public <T> T queryById(String id, Class<T> entityClass) {
+		return mongoTemplate.findById(id, entityClass);
 	}
 
 	public <T> List<T> query(Condition condition, Class<T> entityClass) {

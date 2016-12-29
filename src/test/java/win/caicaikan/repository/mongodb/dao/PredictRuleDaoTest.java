@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import win.caicaikan.BaseTest;
-import win.caicaikan.constant.ExcuteStatus;
+import win.caicaikan.constant.ExecuteStatus;
 import win.caicaikan.constant.LotteryType;
 import win.caicaikan.constant.RuleType;
 import win.caicaikan.constant.StatusType;
@@ -40,7 +40,7 @@ public class PredictRuleDaoTest extends BaseTest {
 		entity.setRuleName("出次均衡");
 		entity.setTerms(2000);
 		entity.setStatus(StatusType.ACTIVE.getCode());
-		entity.setExcuteStatus(ExcuteStatus.STOP.name());
+		entity.setExecuteStatus(ExecuteStatus.SUCCESS.name());
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());
 		list.add(entity);
@@ -51,7 +51,7 @@ public class PredictRuleDaoTest extends BaseTest {
 		entity.setRuleName("遗漏均衡");
 		entity.setTerms(2000);
 		entity.setStatus(StatusType.ACTIVE.getCode());
-		entity.setExcuteStatus(ExcuteStatus.STOP.name());
+		entity.setExecuteStatus(ExecuteStatus.SUCCESS.name());
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());
 		list.add(entity);
@@ -62,7 +62,7 @@ public class PredictRuleDaoTest extends BaseTest {
 		entity.setRuleName("连出均衡");
 		entity.setTerms(2000);
 		entity.setStatus(StatusType.INACTIVE.getCode());
-		entity.setExcuteStatus(ExcuteStatus.STOP.name());
+		entity.setExecuteStatus(ExecuteStatus.SUCCESS.name());
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());
 		list.add(entity);

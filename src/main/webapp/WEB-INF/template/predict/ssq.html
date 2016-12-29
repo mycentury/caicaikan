@@ -13,7 +13,22 @@
 	<!-- END HEADER -->
 	
 	<div class="container">
-		
+		<table th:if="${not #lists.isEmpty(predictEntities)}" class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td>专家名称</td>
+					<td>红号预测（号码和权值，权值越大代表出现几率越高）</td>
+					<td>蓝号预测（号码和权值，权值越大代表出现几率越高）</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item:${predictEntities}">
+					<td th:utext="${item.ruleId}"></td>
+					<td th:utext="${item.redNumbers}"></td>
+					<td th:utext="${item.blueNumbers}"></td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
 	<!-- BEGIN CSS_JS -->

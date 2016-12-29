@@ -17,7 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import win.caicaikan.constant.ExcuteStatus;
+import win.caicaikan.constant.ExecuteStatus;
 import win.caicaikan.constant.RuleType;
 import win.caicaikan.repository.mongodb.dao.PredictRuleDao;
 import win.caicaikan.repository.mongodb.dao.ssq.SsqPredictDao;
@@ -49,27 +49,24 @@ public class SsqPredictTask extends TaskTemplete {
 	@Autowired
 	private PredictRuleDao predictRuleDao;
 
-	protected List<PredictRuleEntity> queryRule() throws Throwable {
-		return predictRuleDao.findAll();
-	}
-
-	protected void saveResult(List<SsqPredictEntity> result) throws Throwable {
-		ssqPredictDao.insert(result);
+	@Override
+	@Scheduled(cron = "${task.cron.ssq.predict}")
+	public void execute() {
+		super.execute();
 	}
 
 	@Override
-	public void run() throws Throwable {
+	public void doInTask() {
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "termNo"));
 		List<SsqResultEntity> list = ssqResultDao.findAll(sort);
-		predictByResults(list);
+		this.predictByResults(list);
 	}
 
-	public void predictByResults(List<SsqResultEntity> list) throws Throwable {
+	public void predictByResults(List<SsqResultEntity> list) {
 		Map<String, RuleTemplate> beans = SpringContextUtil.getBeans(RuleTemplate.class);
-
-		List<PredictRuleEntity> rules = queryRule();
+		List<PredictRuleEntity> rules = predictRuleDao.findAll();
 		for (PredictRuleEntity rule : rules) {
-			rule.setExcuteStatus(ExcuteStatus.START.name());
+			rule.setExecuteStatus(ExecuteStatus.REDAY.name());
 		}
 		predictRuleDao.save(rules);
 
@@ -90,10 +87,10 @@ public class SsqPredictTask extends TaskTemplete {
 			if (!RuleType.MULTI.name().equals(rule.getRuleType())) {
 				continue;
 			}
-			rule.setExcuteStatus(ExcuteStatus.RUNNING.name());
+			rule.setExecuteStatus(ExecuteStatus.RUNNING.name());
 			predictRuleDao.save(rule);
 			SsqPredictEntity entity = excuteGeneRule(rule, map, basePredicts);
-			rule.setExcuteStatus(ExcuteStatus.STOP.name());
+			rule.setExecuteStatus(ExecuteStatus.SUCCESS.name());
 			predictRuleDao.save(rule);
 			if (entity != null) {
 				result.add(entity);
@@ -123,8 +120,7 @@ public class SsqPredictTask extends TaskTemplete {
 		return result;
 	}
 
-	private List<SsqPredictEntity> excuteBaseRules(Map<String, RuleTemplate> beans, List<SsqResultEntity> list, List<PredictRuleEntity> rules)
-			throws Throwable {
+	private List<SsqPredictEntity> excuteBaseRules(Map<String, RuleTemplate> beans, List<SsqResultEntity> list, List<PredictRuleEntity> rules) {
 		List<SsqPredictEntity> result = new ArrayList<SsqPredictEntity>();
 		for (PredictRuleEntity rule : rules) {
 			if (RuleType.MULTI.name().equals(rule.getRuleType())) {
@@ -133,10 +129,10 @@ public class SsqPredictTask extends TaskTemplete {
 			for (RuleTemplate ruleExcutor : beans.values()) {
 				if (ruleExcutor.getRuleType().name().equals(rule.getRuleType())) {
 					try {
-						rule.setExcuteStatus(ExcuteStatus.RUNNING.name());
+						rule.setExecuteStatus(ExecuteStatus.RUNNING.name());
 						predictRuleDao.save(rule);
 						SsqPredictEntity predict = ruleExcutor.excute(list, rule);
-						rule.setExcuteStatus(ExcuteStatus.STOP.name());
+						rule.setExecuteStatus(ExecuteStatus.SUCCESS.name());
 						predictRuleDao.save(rule);
 						result.add(predict);
 					} catch (Exception e) {
@@ -188,11 +184,5 @@ public class SsqPredictTask extends TaskTemplete {
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());
 		return entity;
-	}
-
-	@Override
-	@Scheduled(cron = "${task.cron.ssq.predict}")
-	protected void execute() {
-		super.execute();
 	}
 }

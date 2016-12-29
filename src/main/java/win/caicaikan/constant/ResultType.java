@@ -10,6 +10,7 @@ package win.caicaikan.constant;
  * @ClassName ErrorType
  */
 public enum ResultType {
+	BLACK_LIST(110, "你已被加入黑名单"),
 	// 成功
 	SUCCESS(200, ""),
 	// 权限错误

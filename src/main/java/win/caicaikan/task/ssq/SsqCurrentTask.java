@@ -34,31 +34,26 @@ public class SsqCurrentTask extends TaskTemplete {
 	private SsqResultDao ssqResultDao;
 
 	@Override
-	public void run() throws Throwable {
+	public void doInTask() {
 		LotteryReq req = new LotteryReq();
 		req.setLotteryType(LotteryType.SSQ.getCode());
-		try {
-			// 本期同步
-			Result<List<SsqResultEntity>> result = ssqService.getSsqCurrentByLotteryReq(req);
-			if (CollectionUtils.isEmpty(result.getData())) {
-				logger.error("getSsqCurrentByLotteryReq获取数据失败");
-				return;
+		// 本期同步
+		Result<List<SsqResultEntity>> result = ssqService.getSsqCurrentByLotteryReq(req);
+		if (CollectionUtils.isEmpty(result.getData())) {
+			logger.error("getSsqCurrentByLotteryReq获取数据失败");
+			return;
+		}
+		for (SsqResultEntity entity : result.getData()) {
+			if (ssqResultDao.exists(entity.getTermNo())) {
+				continue;
 			}
-			for (SsqResultEntity entity : result.getData()) {
-				if (ssqResultDao.exists(entity.getTermNo())) {
-					continue;
-				}
-				ssqResultDao.insert(entity);
-			}
-
-		} catch (Exception e) {
-			logger.error(e);
+			ssqResultDao.insert(entity);
 		}
 	}
 
 	@Override
 	@Scheduled(cron = "${task.cron.ssq.current}")
-	protected void execute() {
+	public void execute() {
 		super.execute();
 	}
 }

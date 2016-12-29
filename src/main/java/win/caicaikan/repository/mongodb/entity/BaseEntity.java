@@ -19,7 +19,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class BaseEntity implements Serializable {
+public abstract class BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date updateTime;

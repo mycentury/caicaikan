@@ -52,7 +52,7 @@ public class PredictRuleEntity extends BaseEntity {
 	/**
 	 * 执行状态
 	 */
-	private String excuteStatus;
+	private String executeStatus;
 
 	public void setPrimaryKey(String lotteryType, String ruleType, int terms) {
 		this.lotteryType = lotteryType;

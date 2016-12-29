@@ -9,7 +9,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import win.caicaikan.BaseTest;
+import win.caicaikan.constant.ExecuteStatus;
 import win.caicaikan.repository.mongodb.entity.SysConfigEntity;
+import win.caicaikan.repository.mongodb.entity.TaskEntity;
 
 /**
  * @Desc
@@ -31,6 +33,24 @@ public class DaoServiceTest extends BaseTest {
 		entity.setStatus(1);
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());
+		daoService.insert(entity);
+	}
+
+	@Test
+	public void testInsertTasks() {
+		TaskEntity entity = new TaskEntity();
+		entity.setId("SsqCurrentTask");
+		entity.setExecuteStatus(ExecuteStatus.FAILED.name());
+		daoService.insert(entity);
+
+		entity = new TaskEntity();
+		entity.setId("SsqHistoryTask");
+		entity.setExecuteStatus(ExecuteStatus.FAILED.name());
+		daoService.insert(entity);
+
+		entity = new TaskEntity();
+		entity.setId("SsqPredictTask");
+		entity.setExecuteStatus(ExecuteStatus.FAILED.name());
 		daoService.insert(entity);
 	}
 }

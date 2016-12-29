@@ -33,7 +33,7 @@ public class RuleDisplayTimes extends RuleTemplate {
 	}
 
 	@Override
-	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity) throws Throwable {
+	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity) throws Exception {
 		Result countResult = this.countDisplayTimes(list, entity.getTerms());
 		// 处理为负数
 		Map<String, Integer> redMap = countResult.getRedMap();
@@ -49,7 +49,8 @@ public class RuleDisplayTimes extends RuleTemplate {
 		List<String> blueNumbers = MapUtil.sortMapToList(blueMap, "=", MapUtil.DESC);
 		SsqPredictEntity result = new SsqPredictEntity();
 		String ruleId = entity.getId();
-		String termNo = ruleService.getNextTermNoOfSsq(list.get(0));
+		String termNo = null;
+		termNo = ruleService.getNextTermNoOfSsq(list.get(0));
 		result.setPrimaryKey(ruleId, termNo);
 		result.setRedNumbers(redNumbers);
 		result.setBlueNumbers(blueNumbers);
