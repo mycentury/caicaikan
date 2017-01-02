@@ -68,8 +68,8 @@ public class SsqService extends BaseService {
 					.get(0).html().trim().replace("</em><em>", ",").replace("<em>", "")
 					.replace("</em>", ""));
 			entity.setBlueNumbers(row.child(2).getElementsByAttributeValue("class", "blueBalls")
-					.get(0).html().trim().replace("</em><em>", ",").replace("<em>", "")
-					.replace("</em>", ""));
+					.get(0).html().trim().replace("</em><em>", ",").replace(" ", ",")
+					.replace("<em>", "").replace("</em>", ""));
 			entity.setFirstPrizeCount(row.child(3)
 					.getElementsByAttributeValue("class", "NotNumber").get(0).ownText());
 			entity.setFirstPrizeAmount(row.child(3).getElementsByAttributeValue("class", "cash")

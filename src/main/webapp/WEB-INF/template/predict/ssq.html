@@ -6,7 +6,7 @@
 	<title>彩彩看</title>
 	<link rel="stylesheet" href="/css/common.css" />
 </head>
-<body th:with="menu='PREDICT',subMenu='PREDICT_SSQ'">
+<body th:with="menu='PREDICT',subMenu='PREDICT_SSQ'" th:inline="text">
 
 	<!-- BEGIN HEADER -->
 	<div th:include="/common/header :: header" th:remove="tag"></div>
@@ -16,9 +16,10 @@
 		<table th:if="${not #lists.isEmpty(predictEntities)}" class="table table-bordered table-hover">
 			<thead>
 				<tr>
-					<td>专家名称</td>
+					<td>规则</td>
 					<td>红号预测（号码和权值，权值越大代表出现几率越高）</td>
 					<td>蓝号预测（号码和权值，权值越大代表出现几率越高）</td>
+					<td>开奖结果</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -26,14 +27,32 @@
 					<td th:utext="${item.ruleId}"></td>
 					<td th:utext="${item.redNumbers}"></td>
 					<td th:utext="${item.blueNumbers}"></td>
+					<td th:utext="${item.rightNumbers}"></td>
 				</tr>
 			</tbody>
 		</table>
+		
+		<p th:if="${#lists.isEmpty(predictEntities)}">暂无预测！</p>
+		<nav>
+			<input id="current_page" type="hidden" th:value="${currentTermNo}" />
+			<ul class="pagination" th:if="${not #lists.isEmpty(termNos)}">
+				<li><a href="#">&laquo;</a></li>
+				<li th:each="item:${termNos}" th:class="${item eq currentTermNo ? 'active':''}"><a href="javascript:void(0);" onclick="page(this);">[[${item}]]</a></li>
+				<li><a href="javascript:;">&raquo;</a></li>
+			</ul>
+		</nav>
 	</div>
 
 	<!-- BEGIN CSS_JS -->
 	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
 	<!-- END CSS_JS -->
 	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+	
+	<script type="text/javascript">
+		function page(ele){
+			$(ele).attr("class","active");
+			window.location="/predict/ssq?termNo="+$(ele).html();
+		}
+	</script>
 </body>
 </html>

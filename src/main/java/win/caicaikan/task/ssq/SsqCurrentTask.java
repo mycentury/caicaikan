@@ -10,13 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.api.res.Result;
 import win.caicaikan.constant.LotteryType;
+import win.caicaikan.repository.mongodb.dao.ssq.SsqPredictDao;
 import win.caicaikan.repository.mongodb.dao.ssq.SsqResultDao;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.service.external.SsqService;
+import win.caicaikan.service.internal.DaoService;
 import win.caicaikan.task.TaskTemplete;
 
 /**
@@ -32,6 +36,10 @@ public class SsqCurrentTask extends TaskTemplete {
 	private SsqService ssqService;
 	@Autowired
 	private SsqResultDao ssqResultDao;
+	@Autowired
+	private SsqPredictDao ssqPredictDao;
+	@Autowired
+	private DaoService daoService;
 
 	@Override
 	public void doInTask() {
@@ -43,11 +51,38 @@ public class SsqCurrentTask extends TaskTemplete {
 			logger.error("getSsqCurrentByLotteryReq获取数据失败");
 			return;
 		}
-		for (SsqResultEntity entity : result.getData()) {
-			if (ssqResultDao.exists(entity.getTermNo())) {
+		for (SsqResultEntity ssqResult : result.getData()) {
+			if (!ssqResultDao.exists(ssqResult.getTermNo())) {
+				ssqResultDao.insert(ssqResult);
+			}
+			SsqPredictEntity ssqPredict = daoService.queryById(ssqResult.getTermNo(),
+					SsqPredictEntity.class);
+
+			if (ssqPredict == null || !StringUtils.isEmpty(ssqPredict.getRightNumbers())) {
 				continue;
 			}
-			ssqResultDao.insert(entity);
+			String[] redNumbers = ssqResult.getRedNumbers().split(",");
+			StringBuilder rightPoses = new StringBuilder();
+			for (String rightRedNumber : redNumbers) {
+				for (int i = 0; i < ssqPredict.getRedNumbers().size(); i++) {
+					String predictRedNumber = ssqPredict.getRedNumbers().get(i);
+					if (rightRedNumber.equals(predictRedNumber.split("=")[0])) {
+						rightPoses.append(",").append(i + 1);
+						break;
+					}
+				}
+			}
+			rightPoses.append("+");
+			String rightBlueNumber = ssqResult.getBlueNumbers().split(",")[0];
+			for (int i = 0; i < ssqPredict.getBlueNumbers().size(); i++) {
+				String predictBlueNumber = ssqPredict.getBlueNumbers().get(i);
+				if (rightBlueNumber.equals(predictBlueNumber.split("=")[0])) {
+					rightPoses.append(i + 1);
+					break;
+				}
+			}
+			ssqPredict.setRightNumbers(rightPoses.substring(1));
+			daoService.save(ssqPredict);
 		}
 	}
 

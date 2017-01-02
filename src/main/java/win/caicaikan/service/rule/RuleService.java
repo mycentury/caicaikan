@@ -9,20 +9,63 @@ import org.springframework.stereotype.Service;
 
 import win.caicaikan.constant.SsqConstant;
 import win.caicaikan.constant.SysConfig;
-import win.caicaikan.repository.mongodb.dao.SysConfigDao;
 import win.caicaikan.repository.mongodb.entity.SysConfigEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
+import win.caicaikan.service.internal.DaoService;
 import win.caicaikan.util.DateUtil;
 
 @Service
 public class RuleService {
 
 	@Autowired
-	private SysConfigDao sysConfigDao;
+	private DaoService daoService;
 
-	public String getNextTermNoOfSsq() throws ParseException {
-		SysConfigEntity nextTerm = sysConfigDao.findById(SysConfig.SSQ_NEXT_TERM.getId());
-		Date openDate = DateUtil._SECOND.parse(nextTerm.getKey());
+	public String getCurrentTermNoOfSsq() {
+		SysConfigEntity currentTerm = daoService.queryById(SysConfig.SSQ_CURRENT_TERM.getId(),
+				SysConfigEntity.class);
+		Date openDate;
+		try {
+			openDate = DateUtil._SECOND.parse(currentTerm.getKey());
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
+		String termNo = currentTerm.getValue();
+		while (openDate.compareTo(new Date()) < 0) {
+			int yearOfThisTerm = DateUtil.getYear(openDate);
+			int week = DateUtil.getWeek(openDate);
+
+			int daysToNextTerm = 2;
+			// 周四到下期要三天
+			if (week == Calendar.THURSDAY) {
+				daysToNextTerm++;
+			}
+			Date addDays = DateUtil.addDays(openDate, daysToNextTerm);
+			if (addDays.compareTo(new Date()) > 0) {
+				break;
+			}
+			openDate = addDays;
+			int yearOfNextTerm = DateUtil.getYear(openDate);
+			if (yearOfNextTerm != yearOfThisTerm) {
+				termNo = yearOfNextTerm + SsqConstant.START_NO;
+			} else {
+				termNo = String.valueOf(Integer.valueOf(termNo) + 1);
+			}
+		}
+		currentTerm.setKey(DateUtil._SECOND.format(openDate));
+		currentTerm.setValue(termNo);
+		daoService.save(currentTerm);
+		return termNo;
+	}
+
+	public String getNextTermNoOfSsq() {
+		SysConfigEntity nextTerm = daoService.queryById(SysConfig.SSQ_NEXT_TERM.getId(),
+				SysConfigEntity.class);
+		Date openDate;
+		try {
+			openDate = DateUtil._SECOND.parse(nextTerm.getKey());
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
 		String termNo = nextTerm.getValue();
 		while (openDate.compareTo(new Date()) < 0) {
 			int yearOfThisTerm = DateUtil.getYear(openDate);
@@ -44,6 +87,7 @@ public class RuleService {
 		}
 		nextTerm.setKey(DateUtil._SECOND.format(openDate));
 		nextTerm.setValue(termNo);
+		daoService.save(nextTerm);
 		return termNo;
 	}
 

@@ -40,7 +40,7 @@
 					<td th:utext="${item.ruleName}"></td>
 					<td th:utext="${item.ruleAndweights}"></td>
 					<td th:utext="${item.status}"></td>
-					<td th:utext="${item.excuteStatus}"></td>
+					<td th:utext="${item.executeStatus}"></td>
 				</tr>
 			</tbody>
 		</table>
@@ -62,17 +62,19 @@
 							<table id="modal_body" class="table table-bordered">
 								<tr id="id_row">
 									<td>ID:</td>
-									<td><input name="id" readonly="readonly" /></td>
+									<td><input name="id" /></td>
 								</tr>
 								<tr>
 									<td>彩种:</td>
-									<td><input name="lotteryType" readonly="readonly" /></td>
+									<td><input name="lotteryType" readonly="readonly" value="ssq" /></td>
 								</tr>
 								<tr>
 									<td>规则类型:</td>
 									<td><select name="ruleType">
-										<option></option>
-										<option></option>
+										<option value="DISPLAY_TIMES">DISPLAY_TIMES</option>
+										<option value="SKIP_TIMES">SKIP_TIMES</option>
+										<option value="DOUBLE_TIMES">DOUBLE_TIMES</option>
+										<option value="MULTI">MULTI</option>
 									</select></td>
 								</tr>
 								<tr>
@@ -85,7 +87,9 @@
 								</tr>
 								<tr>
 									<td>基本规则和权值:</td>
-									<td><input name="ruleAndweights" /></td>
+									<td><textarea name="ruleAndweights" rows="5">
+										{"DISPLAY_TIMES":0,"SKIP_TIMES":0,"DOUBLE_TIMES":0}
+									</textarea></td>
 								</tr>
 								<tr>
 									<td>状态:</td>
@@ -93,7 +97,7 @@
 								</tr>
 								<tr>
 									<td>执行状态:</td>
-									<td><input name="excuteStatus" value="STOP" type="hidden" />STOP</td>
+									<td><input name="executeStatus" value="SUCCESS" type="hidden" />SUCCESS</td>
 								</tr>
 							</table>
 						</form>
@@ -121,7 +125,15 @@
 			}
 			$(elem).attr("class","active");
 			var tds = $(elem).children();
-			var content = '<tr id="id_row">'
+			$("input[name='id']").val($(tds.get(0)).html());
+			//$("input[name='lotteryType']").val($(tds.get(1)).html());
+			$("select[name='ruleType']").val($(tds.get(2)).html());
+			$("input[name='terms']").val($(tds.get(3)).html());
+			$("input[name='ruleName']").val($(tds.get(4)).html());
+			$("textarea[name='ruleAndweights']").val($(tds.get(5)).html());
+			$("input[name='status']").val($(tds.get(6)).html());
+			//$("input[name='executeStatus']").val($(tds.get(0)).html());
+			/* var content = '<tr id="id_row">'
 				+'<td>ID:</td>'
 				+'<td><input name="id" value="'+$(tds.get(0)).html()+'" /></td>'
 				+'</tr><tr>'
@@ -140,15 +152,15 @@
 				+'<td><input name="ruleName" value="'+$(tds.get(4)).html()+'" /></td>'
 				+'</tr><tr>'
 				+'<td>基本规则和权值:</td>'
-				+'<td><input name="ruleAndweights" value="'+$(tds.get(5)).html()+'" /></td>'
+				+'<td><textarea name="ruleAndweights" value="'+$(tds.get(5)).html()+'" /></td>'
 				+'</tr><tr>'
 				+'<td>状态:</td>'
 				+'<td><input name="status" value="'+$(tds.get(6)).html()+'" /></td>'
 				+'</tr><tr>'
 				+'<td>执行状态:</td>'
-				+'<td><input name="excuteStatus" value="STOP" type="hidden" />STOP</td>'
-				+'</tr>';
-			$("#modal_body").html(content);
+				+'<td><input name="executeStatus" value="SUCCESS" type="hidden" />SUCCESS</td>'
+				+'</tr>'; */
+			//$("#modal_body").html(content);
 		}
 
 		function save_rule(){

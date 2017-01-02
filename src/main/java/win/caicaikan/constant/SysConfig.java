@@ -13,7 +13,11 @@ public enum SysConfig {
 	/**
 	 * 双色球下期信息
 	 */
-	SSQ_NEXT_TERM("SP-00-00");
+	SSQ_NEXT_TERM("SP-00-00"),
+	/**
+	 * 双色球当前期信息
+	 */
+	SSQ_CURRENT_TERM("SP-00-01");
 	private String id;
 
 	private SysConfig(String id) {

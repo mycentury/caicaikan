@@ -3,6 +3,7 @@
  */
 package win.caicaikan.service.internal;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -94,9 +95,28 @@ public class DaoService {
 					continue;
 				}
 				if (i == 0) {
-					criteria = Criteria.where(param[0]).is(param[1]);
+					criteria = Criteria.where(param[0]);
 				} else {
 					criteria = criteria.and(param[0]).is(param[1]);
+				}
+				if (param.length == 2) {
+					criteria = criteria.is(param[1]);
+				} else if (param.length == 3) {
+					if ("=".equals(param[1])) {
+						criteria = criteria.is(param[2]);
+					} else if ("<=".equals(param[1])) {
+						criteria = criteria.lte(param[2]);
+					} else if (">=".equals(param[1])) {
+						criteria = criteria.gte(param[2]);
+					} else if ("<".equals(param[1])) {
+						criteria = criteria.lt(param[2]);
+					} else if (">".equals(param[1])) {
+						criteria = criteria.gt(param[2]);
+					} else {
+						throw new RuntimeException("参数不合法：" + Arrays.toString(param));
+					}
+				} else {
+					throw new RuntimeException("参数不合法：" + Arrays.toString(param));
 				}
 			}
 			query.addCriteria(criteria);
