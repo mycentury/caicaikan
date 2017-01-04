@@ -70,7 +70,7 @@ public class RoleInterceptor implements HandlerInterceptor {
 					response.setContentType("application/json; charset=utf-8");
 					response.getWriter().write(new Gson().toJson(result));
 				} else {
-					String priUrl = request.getHeader("Referer");
+					// String priUrl = request.getHeader("Referer");
 					String url = lowestRoleType == RoleType.ADMIN ? "/admin/login" : "/user/login";
 					response.sendRedirect(url);
 				}

@@ -178,7 +178,7 @@ public class AdminController {
 			map.put("intranetIns", intranetIns);
 			map.put("intranetOuts", intranetOuts);
 		}
-		return "admin/console";
+		return "admin/console/index";
 	}
 
 	@RequestMapping("security")
@@ -236,7 +236,7 @@ public class AdminController {
 		Condition condition = new Condition();
 		List<PredictRuleEntity> rules = daoService.query(condition, PredictRuleEntity.class);
 		map.put("rules", rules);
-		return "admin/rule";
+		return "admin/console/rule";
 	}
 
 	@RequestMapping("save_rule")
