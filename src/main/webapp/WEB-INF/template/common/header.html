@@ -26,12 +26,6 @@
 					</div>
 				</form>
 				<ul th:if="${session.usertype eq 'A'}" class="nav navbar-nav navbar-right">
-					<li>
-						<a href="/admin/console">console</a>
-					</li>
-					<li>
-						<a href="/admin/rule">rule</a>
-					</li>
 					<li th:if="${session.username}" class="dropdown user">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<span th:text="${session.username}"></span>
@@ -46,6 +40,7 @@
 								<span class="badge"><a href="#" style="color:white;">3</a></span>
 								<i class="glyphicon glyphicon-tasks"></i> My Tasks
 							</li>
+							<li class="list-group-item"><a href="/admin/console"><i class="glyphicon glyphicon-th"></i> console</a></li>
 							<li class="list-group-item"><a href="#"><i class="glyphicon glyphicon-info-sign"></i> My Info</a></li>
 							<li class="list-group-item"><a href="/admin/logout"><i class="glyphicon glyphicon-log-out"></i> Log Out</a></li>
 							<li class="list-group-item"><a href="#"><i class="glyphicon glyphicon-cog"></i> Setting</a></li>

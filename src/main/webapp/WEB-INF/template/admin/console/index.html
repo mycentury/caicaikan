@@ -12,19 +12,21 @@
 	<div class="container">
 		<ol class="breadcrumb">
 			<li><a href="/">Home</a></li>
-			<li><a href="/admin/console/index">console</a></li>
+			<li><a href="/admin/console">console</a></li>
 		</ol>
 		
 		<!-- 树形菜单 -->
-		<div class="col-xs-3 col-sm-2 col-md-2">
-			<div class="collapse navbar-collapse">
-				<ul class="nav navbar-nav">
-					<li class="active"><a href="/admin/console">控制台</a></li><br />
-					<li><a href="/admin/menu">菜单</a></li><br />
-					<li><a href="/admin/rule">规则</a></li><br />
-					<li><a href="/admin/task">任务</a></li><br />
-				</ul>
-			</div>
+		<div class="col-xs-3 col-sm-2 col-md-2" style="width: 10%;">
+			<nav class="navbar navbar-default" role="navigation">
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="/admin/console">控制台</a></li><br />
+						<li><a href="/admin/menu">菜单</a></li><br />
+						<li><a href="/admin/rule">规则</a></li><br />
+						<li><a href="/admin/task">任务</a></li><br />
+					</ul>
+				</div>
+			</nav>
 		</div>
 		
 		<div class="col-xs-15 col-sm-10 col-md-10">
@@ -67,166 +69,158 @@
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="panel-1" contenteditable="false">
-						<div class="col-xs-18 col-sm-12 col-md-12">
-							<table th:if="${not #lists.isEmpty(internetIns)}" class="table table-bordered table-hover">
-								<thead>
-									<tr>
-										<td>IP协议</td>
-										<td>端口范围</td>
-										<td>源IP地址段</td>
-										<td>源安全组</td>
-										<td>账户Id</td>
-										<td>目标IP地址</td>
-										<td>目标安全组</td>
-										<td>阿里云账户Id</td>
-										<td>授权策略</td>
-										<td>网络类型</td>
-										<td>规则优先级</td>
-										<td>授权方向</td>
-										<td>描述信息</td>
-										<td>操作</td>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="item:${internetIns}">
-										<td th:utext="${item.IpProtocol}"></td>
-										<td th:utext="${item.PortRange}"></td>
-										<td th:utext="${item.SourceCidrIp}"></td>
-										<td th:utext="${item.SourceGroupId}"></td>
-										<td th:utext="${item.SourceGroupOwnerAccount}"></td>
-										<td th:utext="${item.DestCidrIp}"></td>
-										<td th:utext="${item.DestGroupId}"></td>
-										<td th:utext="${item.DestGroupOwnerAccount}"></td>
-										<td th:utext="${item.Policy}"></td>
-										<td th:utext="${item.NicType}"></td>
-										<td th:utext="${item.Priority}"></td>
-										<td th:utext="${item.Direction}"></td>
-										<td th:utext="${item.Description}"></td>
-										<td><a onclick="">删除</a></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+						<table th:if="${not #lists.isEmpty(internetIns)}" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<td>IP协议</td>
+									<td>端口范围</td>
+									<td>源IP地址段</td>
+									<td>源安全组</td>
+									<td>账户Id</td>
+									<td>目标IP地址</td>
+									<td>目标安全组</td>
+									<td>阿里云账户Id</td>
+									<td>授权策略</td>
+									<td>网络类型</td>
+									<td>规则优先级</td>
+									<td>授权方向</td>
+									<td>描述信息</td>
+									<td>操作</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item:${internetIns}">
+									<td th:utext="${item.IpProtocol}"></td>
+									<td th:utext="${item.PortRange}"></td>
+									<td th:utext="${item.SourceCidrIp}"></td>
+									<td th:utext="${item.SourceGroupId}"></td>
+									<td th:utext="${item.SourceGroupOwnerAccount}"></td>
+									<td th:utext="${item.DestCidrIp}"></td>
+									<td th:utext="${item.DestGroupId}"></td>
+									<td th:utext="${item.DestGroupOwnerAccount}"></td>
+									<td th:utext="${item.Policy}"></td>
+									<td th:utext="${item.NicType}"></td>
+									<td th:utext="${item.Priority}"></td>
+									<td th:utext="${item.Direction}"></td>
+									<td th:utext="${item.Description}"></td>
+									<td><a onclick="">删除</a></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					<div class="tab-pane" id="panel-2" contenteditable="false">
-						<div class="col-xs-18 col-sm-12 col-md-12">
-							<table th:if="${not #lists.isEmpty(internetOuts)}" class="table table-bordered table-hover">
-								<thead>
-									<tr>
-										<td>IP协议</td>
-										<td>端口范围</td>
-										<td>源IP地址段</td>
-										<td>源安全组</td>
-										<td>账户Id</td>
-										<td>目标IP地址</td>
-										<td>目标安全组</td>
-										<td>阿里云账户Id</td>
-										<td>授权策略</td>
-										<td>网络类型</td>
-										<td>规则优先级</td>
-										<td>授权方向</td>
-										<td>描述信息</td>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="item:${internetOuts}">
-										<td th:utext="${item.IpProtocol}"></td>
-										<td th:utext="${item.PortRange}"></td>
-										<td th:utext="${item.SourceCidrIp}"></td>
-										<td th:utext="${item.SourceGroupId}"></td>
-										<td th:utext="${item.SourceGroupOwnerAccount}"></td>
-										<td th:utext="${item.DestCidrIp}"></td>
-										<td th:utext="${item.DestGroupId}"></td>
-										<td th:utext="${item.DestGroupOwnerAccount}"></td>
-										<td th:utext="${item.Policy}"></td>
-										<td th:utext="${item.NicType}"></td>
-										<td th:utext="${item.Priority}"></td>
-										<td th:utext="${item.Direction}"></td>
-										<td th:utext="${item.Description}"></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+						<table th:if="${not #lists.isEmpty(internetOuts)}" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<td>IP协议</td>
+									<td>端口范围</td>
+									<td>源IP地址段</td>
+									<td>源安全组</td>
+									<td>账户Id</td>
+									<td>目标IP地址</td>
+									<td>目标安全组</td>
+									<td>阿里云账户Id</td>
+									<td>授权策略</td>
+									<td>网络类型</td>
+									<td>规则优先级</td>
+									<td>授权方向</td>
+									<td>描述信息</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item:${internetOuts}">
+									<td th:utext="${item.IpProtocol}"></td>
+									<td th:utext="${item.PortRange}"></td>
+									<td th:utext="${item.SourceCidrIp}"></td>
+									<td th:utext="${item.SourceGroupId}"></td>
+									<td th:utext="${item.SourceGroupOwnerAccount}"></td>
+									<td th:utext="${item.DestCidrIp}"></td>
+									<td th:utext="${item.DestGroupId}"></td>
+									<td th:utext="${item.DestGroupOwnerAccount}"></td>
+									<td th:utext="${item.Policy}"></td>
+									<td th:utext="${item.NicType}"></td>
+									<td th:utext="${item.Priority}"></td>
+									<td th:utext="${item.Direction}"></td>
+									<td th:utext="${item.Description}"></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					<div class="tab-pane" id="panel-3" contenteditable="false">
-						<div class="col-xs-18 col-sm-12 col-md-12">
-							<table th:if="${not #lists.isEmpty(intranetIns)}" class="table table-bordered table-hover">
-								<thead>
-									<tr>
-										<td>IP协议</td>
-										<td>端口范围</td>
-										<td>源IP地址段</td>
-										<td>源安全组</td>
-										<td>账户Id</td>
-										<td>目标IP地址</td>
-										<td>目标安全组</td>
-										<td>阿里云账户Id</td>
-										<td>授权策略</td>
-										<td>网络类型</td>
-										<td>规则优先级</td>
-										<td>授权方向</td>
-										<td>描述信息</td>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="item:${intranetIns}">
-										<td th:utext="${item.IpProtocol}"></td>
-										<td th:utext="${item.PortRange}"></td>
-										<td th:utext="${item.SourceCidrIp}"></td>
-										<td th:utext="${item.SourceGroupId}"></td>
-										<td th:utext="${item.SourceGroupOwnerAccount}"></td>
-										<td th:utext="${item.DestCidrIp}"></td>
-										<td th:utext="${item.DestGroupId}"></td>
-										<td th:utext="${item.DestGroupOwnerAccount}"></td>
-										<td th:utext="${item.Policy}"></td>
-										<td th:utext="${item.NicType}"></td>
-										<td th:utext="${item.Priority}"></td>
-										<td th:utext="${item.Direction}"></td>
-										<td th:utext="${item.Description}"></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+						<table th:if="${not #lists.isEmpty(intranetIns)}" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<td>IP协议</td>
+									<td>端口范围</td>
+									<td>源IP地址段</td>
+									<td>源安全组</td>
+									<td>账户Id</td>
+									<td>目标IP地址</td>
+									<td>目标安全组</td>
+									<td>阿里云账户Id</td>
+									<td>授权策略</td>
+									<td>网络类型</td>
+									<td>规则优先级</td>
+									<td>授权方向</td>
+									<td>描述信息</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item:${intranetIns}">
+									<td th:utext="${item.IpProtocol}"></td>
+									<td th:utext="${item.PortRange}"></td>
+									<td th:utext="${item.SourceCidrIp}"></td>
+									<td th:utext="${item.SourceGroupId}"></td>
+									<td th:utext="${item.SourceGroupOwnerAccount}"></td>
+									<td th:utext="${item.DestCidrIp}"></td>
+									<td th:utext="${item.DestGroupId}"></td>
+									<td th:utext="${item.DestGroupOwnerAccount}"></td>
+									<td th:utext="${item.Policy}"></td>
+									<td th:utext="${item.NicType}"></td>
+									<td th:utext="${item.Priority}"></td>
+									<td th:utext="${item.Direction}"></td>
+									<td th:utext="${item.Description}"></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					<div class="tab-pane" id="panel-4" contenteditable="false">
-						<div class="col-xs-18 col-sm-12 col-md-12">
-							<table th:if="${not #lists.isEmpty(intranetOuts)}" class="table table-bordered table-hover">
-								<thead>
-									<tr>
-										<td>IP协议</td>
-										<td>端口范围</td>
-										<td>源IP地址段</td>
-										<td>源安全组</td>
-										<td>账户Id</td>
-										<td>目标IP地址</td>
-										<td>目标安全组</td>
-										<td>阿里云账户Id</td>
-										<td>授权策略</td>
-										<td>网络类型</td>
-										<td>规则优先级</td>
-										<td>授权方向</td>
-										<td>描述信息</td>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="item:${intranetOuts}">
-										<td th:utext="${item.IpProtocol}"></td>
-										<td th:utext="${item.PortRange}"></td>
-										<td th:utext="${item.SourceCidrIp}"></td>
-										<td th:utext="${item.SourceGroupId}"></td>
-										<td th:utext="${item.SourceGroupOwnerAccount}"></td>
-										<td th:utext="${item.DestCidrIp}"></td>
-										<td th:utext="${item.DestGroupId}"></td>
-										<td th:utext="${item.DestGroupOwnerAccount}"></td>
-										<td th:utext="${item.Policy}"></td>
-										<td th:utext="${item.NicType}"></td>
-										<td th:utext="${item.Priority}"></td>
-										<td th:utext="${item.Direction}"></td>
-										<td th:utext="${item.Description}"></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
+						<table th:if="${not #lists.isEmpty(intranetOuts)}" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<td>IP协议</td>
+									<td>端口范围</td>
+									<td>源IP地址段</td>
+									<td>源安全组</td>
+									<td>账户Id</td>
+									<td>目标IP地址</td>
+									<td>目标安全组</td>
+									<td>阿里云账户Id</td>
+									<td>授权策略</td>
+									<td>网络类型</td>
+									<td>规则优先级</td>
+									<td>授权方向</td>
+									<td>描述信息</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item:${intranetOuts}">
+									<td th:utext="${item.IpProtocol}"></td>
+									<td th:utext="${item.PortRange}"></td>
+									<td th:utext="${item.SourceCidrIp}"></td>
+									<td th:utext="${item.SourceGroupId}"></td>
+									<td th:utext="${item.SourceGroupOwnerAccount}"></td>
+									<td th:utext="${item.DestCidrIp}"></td>
+									<td th:utext="${item.DestGroupId}"></td>
+									<td th:utext="${item.DestGroupOwnerAccount}"></td>
+									<td th:utext="${item.Policy}"></td>
+									<td th:utext="${item.NicType}"></td>
+									<td th:utext="${item.Priority}"></td>
+									<td th:utext="${item.Direction}"></td>
+									<td th:utext="${item.Description}"></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>

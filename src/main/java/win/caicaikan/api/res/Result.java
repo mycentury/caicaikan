@@ -5,7 +5,7 @@ package win.caicaikan.api.res;
 
 import java.io.Serializable;
 
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.StringUtils;
 
 import win.caicaikan.constant.ResultType;
 

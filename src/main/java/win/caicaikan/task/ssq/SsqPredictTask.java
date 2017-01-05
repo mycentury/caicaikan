@@ -19,12 +19,13 @@ import org.springframework.stereotype.Service;
 
 import win.caicaikan.constant.ExecuteStatus;
 import win.caicaikan.constant.RuleType;
-import win.caicaikan.repository.mongodb.dao.PredictRuleDao;
 import win.caicaikan.repository.mongodb.dao.ssq.SsqPredictDao;
 import win.caicaikan.repository.mongodb.dao.ssq.SsqResultDao;
 import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
+import win.caicaikan.service.internal.DaoService;
+import win.caicaikan.service.internal.DaoService.Condition;
 import win.caicaikan.service.rule.RuleTemplate;
 import win.caicaikan.task.TaskTemplete;
 import win.caicaikan.util.GsonUtil;
@@ -47,7 +48,7 @@ public class SsqPredictTask extends TaskTemplete {
 	@Autowired
 	private SsqPredictDao ssqPredictDao;
 	@Autowired
-	private PredictRuleDao predictRuleDao;
+	private DaoService daoService;
 
 	@Override
 	@Scheduled(cron = "${task.cron.ssq.predict}")
@@ -64,11 +65,11 @@ public class SsqPredictTask extends TaskTemplete {
 
 	public void predictByResults(List<SsqResultEntity> list) {
 		Map<String, RuleTemplate> beans = SpringContextUtil.getBeans(RuleTemplate.class);
-		List<PredictRuleEntity> rules = predictRuleDao.findAll();
+		List<PredictRuleEntity> rules = daoService.query(new Condition(), PredictRuleEntity.class);
 		for (PredictRuleEntity rule : rules) {
 			rule.setExecuteStatus(ExecuteStatus.REDAY.name());
+			daoService.save(rule);
 		}
-		predictRuleDao.save(rules);
 
 		List<SsqPredictEntity> predicts = excuteBaseRules(beans, list, rules);
 		ssqPredictDao.save(predicts);
@@ -88,10 +89,10 @@ public class SsqPredictTask extends TaskTemplete {
 				continue;
 			}
 			rule.setExecuteStatus(ExecuteStatus.RUNNING.name());
-			predictRuleDao.save(rule);
-			SsqPredictEntity entity = excuteGeneRule(rule, map, basePredicts);
+			daoService.save(rule);
+			SsqPredictEntity entity = this.excuteGeneRule(rule, map, basePredicts);
 			rule.setExecuteStatus(ExecuteStatus.SUCCESS.name());
-			predictRuleDao.save(rule);
+			daoService.save(rule);
 			if (entity != null) {
 				result.add(entity);
 			}
@@ -130,10 +131,10 @@ public class SsqPredictTask extends TaskTemplete {
 				if (ruleExcutor.getRuleType().name().equals(rule.getRuleType())) {
 					try {
 						rule.setExecuteStatus(ExecuteStatus.RUNNING.name());
-						predictRuleDao.save(rule);
+						daoService.save(rule);
 						SsqPredictEntity predict = ruleExcutor.excute(list, rule);
 						rule.setExecuteStatus(ExecuteStatus.SUCCESS.name());
-						predictRuleDao.save(rule);
+						daoService.save(rule);
 						result.add(predict);
 					} catch (Exception e) {
 						logger.error("rule.excuteRules() excute error");
@@ -152,9 +153,13 @@ public class SsqPredictTask extends TaskTemplete {
 		}.getType();
 		Map<String, Integer> ruleAndweights = GsonUtil.fromJson(rule.getRuleAndweights(), typeOfT);
 		for (Entry<String, Integer> entry : ruleAndweights.entrySet()) {
-			SsqPredictEntity ssqPredictEntity = map.get(entry.getKey());
+			if (entry.getValue() == null || entry.getValue() == 0) {
+				continue;
+			}
+			String ruleId = rule.getLotteryType() + "-" + entry.getKey() + "-" + rule.getTerms();
+			SsqPredictEntity ssqPredictEntity = map.get(ruleId);
 			if (ssqPredictEntity == null) {
-				logger.error("未找到该规则的预测结果：ruleId=" + entry.getKey());
+				logger.info("未找到该基础规则的预测结果，请手动创建该规则");
 				return null;
 			}
 			redNumbers = addTwoList(redNumbers, ssqPredictEntity.getRedNumbers());
