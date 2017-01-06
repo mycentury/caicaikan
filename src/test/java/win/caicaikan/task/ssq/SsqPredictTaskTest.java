@@ -15,7 +15,6 @@ import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 
 /**
  * @author yanwenge
- *
  */
 public class SsqPredictTaskTest extends BaseTest {
 
@@ -33,15 +32,13 @@ public class SsqPredictTaskTest extends BaseTest {
 	}
 
 	/**
-	 * Test method for
-	 * {@link win.caicaikan.task.ssq.SsqPredictTask#predictByResults(java.util.List)}
-	 * .
+	 * Test method for {@link win.caicaikan.task.ssq.SsqPredictTask#predictByResults(java.util.List)} .
 	 */
 	@Test
 	public void testPredictByResults() {
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "termNo"));
 		List<SsqResultEntity> list = ssqResultDao.findAll(sort);
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 100; i++) {
 			try {
 				if (i >= 1) {
 					list.remove(0);

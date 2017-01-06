@@ -85,6 +85,11 @@ public class AdminController {
 			return "redirect:/";
 		}
 		map.put("usertype", RoleType.ADMIN.getCode());
+		String errorMsg = request.getParameter("errorMsg");
+
+		if (!StringUtils.isEmpty(errorMsg)) {
+			map.put("errorMsg", errorMsg);
+		}
 		return "admin/login";
 	}
 

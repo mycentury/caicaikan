@@ -71,7 +71,7 @@ public class SsqPredictTask extends TaskTemplete {
 			daoService.save(rule);
 		}
 
-		List<SsqPredictEntity> predicts = excuteBaseRules(beans, list, rules);
+		List<SsqPredictEntity> predicts = this.excuteBaseRules(beans, list, rules);
 		ssqPredictDao.save(predicts);
 		predicts = excuteGeneRules(predicts, rules);
 		ssqPredictDao.save(predicts);
@@ -132,10 +132,12 @@ public class SsqPredictTask extends TaskTemplete {
 					try {
 						rule.setExecuteStatus(ExecuteStatus.RUNNING.name());
 						daoService.save(rule);
-						SsqPredictEntity predict = ruleExcutor.excute(list, rule);
+						if (rule.getTerms() <= list.size()) {
+							SsqPredictEntity predict = ruleExcutor.excute(list, rule);
+							result.add(predict);
+						}
 						rule.setExecuteStatus(ExecuteStatus.SUCCESS.name());
 						daoService.save(rule);
-						result.add(predict);
 					} catch (Exception e) {
 						logger.error("rule.excuteRules() excute error");
 						e.printStackTrace();

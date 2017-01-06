@@ -15,6 +15,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import win.caicaikan.annotation.Role;
+import win.caicaikan.constant.RoleType;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.service.internal.DaoService;
@@ -41,6 +43,7 @@ public class PredictController {
 	}
 
 	@RequestMapping(value = { "ssq" })
+	@Role({ RoleType.ADMIN, RoleType.USER })
 	public String queryHistoryOfSsq(HttpServletRequest request, String termNo, ModelMap map) {
 		if (StringUtils.isEmpty(termNo)) {
 			termNo = ruleService.getNextTermNoOfSsq();
@@ -50,8 +53,7 @@ public class PredictController {
 		String[] param = { "termNo", termNo };
 		params.add(param);
 		condition.setParams(params);
-		List<SsqPredictEntity> predictEntities = daoService
-				.query(condition, SsqPredictEntity.class);
+		List<SsqPredictEntity> predictEntities = daoService.query(condition, SsqPredictEntity.class);
 
 		map.put("predictEntities", predictEntities);
 
@@ -61,6 +63,7 @@ public class PredictController {
 		condition.setLimit(10);
 		List<SsqResultEntity> ssqResults = daoService.query(condition, SsqResultEntity.class);
 		List<String> termNos = new ArrayList<String>();
+		termNos.add(termNo);
 		for (SsqResultEntity ssqResultEntity : ssqResults) {
 			termNos.add(ssqResultEntity.getTermNo());
 		}

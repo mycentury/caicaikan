@@ -53,6 +53,10 @@ public class UserController {
 			return "redirect:/";
 		}
 		map.put("usertype", RoleType.USER.getCode());
+		String errorMsg = request.getParameter("errorMsg");
+		if (!StringUtils.isEmpty(errorMsg)) {
+			map.put("errorMsg", errorMsg);
+		}
 		return "user/login";
 	}
 

@@ -4,6 +4,7 @@
 package win.caicaikan.interceptor;
 
 import java.lang.reflect.Method;
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,7 +73,10 @@ public class RoleInterceptor implements HandlerInterceptor {
 				} else {
 					// String priUrl = request.getHeader("Referer");
 					String url = lowestRoleType == RoleType.ADMIN ? "/admin/login" : "/user/login";
-					response.sendRedirect(url);
+					response.setCharacterEncoding("UTF-8");
+					response.setContentType("text/html; charset=utf-8");
+					String encodeURL = URLEncoder.encode(ResultType.NO_AUTHORITY.getMsg(), "UTF-8");
+					response.sendRedirect(url + "?errorMsg=" + encodeURL);
 				}
 				return false;
 			}
