@@ -21,9 +21,10 @@ import win.caicaikan.constant.ResultType;
 import win.caicaikan.constant.RoleType;
 import win.caicaikan.repository.mongodb.entity.RecordEntity;
 import win.caicaikan.repository.mongodb.entity.UserEntity;
+import win.caicaikan.service.internal.DaoService;
+import win.caicaikan.service.internal.DaoService.Condition;
 import win.caicaikan.service.internal.RecordService;
 import win.caicaikan.service.internal.SessionService;
-import win.caicaikan.service.internal.UserService;
 import win.caicaikan.util.AddressUtil;
 
 /**
@@ -41,11 +42,11 @@ public class UserController {
 	private final static Logger logger = Logger.getLogger(UserController.class);
 
 	@Autowired
-	private UserService userService;
-	@Autowired
 	private RecordService recordService;
 	@Autowired
 	private SessionService sessionService;
+	@Autowired
+	private DaoService daoService;
 
 	@RequestMapping("login")
 	public String login(HttpServletRequest request, ModelMap map) {
@@ -61,7 +62,9 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "user_login", method = { RequestMethod.POST })
-	public String userLogin(HttpServletRequest request, UserEntity user, String checkcode, RedirectAttributes attr) {
+	public String userLogin(HttpServletRequest request, UserEntity user, String checkcode,
+			RedirectAttributes attr) {
+		attr.addFlashAttribute("user", user);
 		RecordEntity record = recordService.assembleRocordEntity(request);
 		record.setOpertype(OperType.LOGIN.name());
 		if (StringUtils.isEmpty(record.getUsername())) {
@@ -70,7 +73,6 @@ public class UserController {
 		}
 		if (!checkcode.equalsIgnoreCase(sessionService.getCheckcode(request))) {
 			attr.addFlashAttribute("errorMsg", "验证码错误！");
-			attr.addFlashAttribute("usertype", RoleType.USER.getCode());
 			record.setAfter(checkcode + "-验证码错误！");
 			recordService.insert(record);
 			return "redirect:/user/login";
@@ -83,10 +85,15 @@ public class UserController {
 			recordService.insert(record2);
 			logger.error("检测到调试攻击，IP=" + AddressUtil.getIpAddress(request));
 		}
-		if (!userService.exists(user)) {
-			attr.addFlashAttribute("usertype", RoleType.USER.getCode());
+		Condition condition = new Condition();
+		condition.addParam("usertype", "=", RoleType.USER.getCode());
+		condition.addParam("username", "=", user.getUsername());
+		condition.addParam("password", "=", user.getPassword());
+		boolean exists = daoService.exists(condition, UserEntity.class);
+		if (!exists) {
 			attr.addFlashAttribute("errorMsg", "username or password error");
-			record.setAfter(user.getUsername() + "/" + user.getPassword() + "-username or password error");
+			record.setAfter(user.getUsername() + "/" + user.getPassword()
+					+ "-username or password error");
 			recordService.insert(record);
 			return "redirect:/user/login";
 		}
@@ -112,9 +119,12 @@ public class UserController {
 	}
 
 	@RequestMapping("check_username")
-	public @ResponseBody Result<Boolean> checkUsername(HttpServletRequest request, String username, ModelMap map) {
+	public @ResponseBody Result<Boolean> checkUsername(HttpServletRequest request, String username,
+			ModelMap map) {
 		Result<Boolean> result = new Result<Boolean>();
-		if (userService.exists(RoleType.USER.getCode() + "-" + username)) {
+		String id = RoleType.USER.getCode() + "-" + username;
+		boolean exists = daoService.existsById(id, UserEntity.class);
+		if (exists) {
 			result.setResultStatusAndMsg(ResultType.USER_EXISTS, null);
 			result.setData(false);
 			return result;
@@ -126,11 +136,12 @@ public class UserController {
 
 	@RequestMapping(value = "user_register", method = { RequestMethod.POST })
 	public String register(HttpServletRequest request, UserEntity user, RedirectAttributes attr) {
+		attr.addFlashAttribute("user", user);
 		RecordEntity record = recordService.assembleRocordEntity(request);
 		record.setOpertype(OperType.REGISTER.name());
-		String password = user.getPassword();
-		user.setPassword(null);
-		if (userService.exists(user)) {
+		String id = user.getUsertype() + "-" + user.getUsername();
+		boolean exists = daoService.existsById(id, UserEntity.class);
+		if (exists) {
 			record.setAfter(user.getUsername() + "-username allready exists");
 			recordService.insert(record);
 			attr.addFlashAttribute("errorMsg", "username allready exists");
@@ -144,8 +155,8 @@ public class UserController {
 			user.setUsertype(RoleType.USER.getCode());
 			logger.error("检测到调试攻击，IP=" + AddressUtil.getIpAddress(request));
 		}
-		user.setPassword(password);
-		userService.insert(user);
+		user.setPrimaryKey(user.getUsertype(), user.getUsername());
+		daoService.insert(user);
 		sessionService.setUsername(request, user.getUsername());
 		sessionService.setUsertype(request, user.getUsertype());
 		record.setAfter(user.getUsername() + "-register successfully！");

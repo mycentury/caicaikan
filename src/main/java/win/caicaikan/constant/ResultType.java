@@ -12,7 +12,7 @@ package win.caicaikan.constant;
 public enum ResultType {
 	BLACK_LIST(110, "你已被加入黑名单"),
 	// 成功
-	SUCCESS(200, ""),
+	SUCCESS(200, "success"),
 	// 权限错误
 	NOT_LOGIN(300, "未登录不可操作！"),
 	NO_AUTHORITY(301, "无权限操作！"),

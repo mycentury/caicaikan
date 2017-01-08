@@ -3,7 +3,6 @@
  */
 package win.caicaikan.controller;
 
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -57,9 +56,10 @@ public class HistoryController {
 			try {
 				String nextTermNoOfSsq = ruleService.getNextTermNoOfSsq(ssq);
 				map.put("nextTermNoOfSsq", nextTermNoOfSsq);
-				Date nextTermOpenDateOfSsq = ruleService.getNextTermOpenDateOfSsq(ssq.getOpenTime());
+				Date nextTermOpenDateOfSsq = ruleService
+						.getNextTermOpenDateOfSsq(ssq.getOpenTime());
 				map.put("nextTermOpenDateOfSsq", DateUtil._SECOND.format(nextTermOpenDateOfSsq));
-			} catch (ParseException e) {
+			} catch (RuntimeException e) {
 				e.printStackTrace();
 			}
 			map.put("ssq", ssq);

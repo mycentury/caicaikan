@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -55,8 +56,13 @@ public class MenuInterceptor implements HandlerInterceptor {
 					if (annotation instanceof RequestMapping) {
 						RecordEntity record = recordService.assembleRocordEntity(request);
 						recordService.insert(record);
-						logger.info("拦截到来自" + request.getHeader("Referer") + "的请求："
-								+ request.getRequestURL());
+						String basePath = request.getScheme() + "://" + request.getServerName()
+								+ ":" + request.getServerPort() + "/" + request.getContextPath();
+						String before = request.getHeader("Referer");
+						if (!StringUtils.isEmpty(before)) {
+							before = before.replace(basePath, "/");
+						}
+						logger.info("拦截到来自" + before + "的请求：" + request.getRequestURI());
 						return true;
 					}
 				}

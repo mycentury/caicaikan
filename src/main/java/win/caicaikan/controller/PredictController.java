@@ -44,16 +44,14 @@ public class PredictController {
 
 	@RequestMapping(value = { "ssq" })
 	@Role({ RoleType.ADMIN, RoleType.USER })
-	public String queryHistoryOfSsq(HttpServletRequest request, String termNo, ModelMap map) {
+	public String queryPredictOfSsq(HttpServletRequest request, String termNo, ModelMap map) {
 		if (StringUtils.isEmpty(termNo)) {
 			termNo = ruleService.getNextTermNoOfSsq();
 		}
 		Condition condition = new Condition();
-		List<String[]> params = new ArrayList<String[]>();
-		String[] param = { "termNo", termNo };
-		params.add(param);
-		condition.setParams(params);
-		List<SsqPredictEntity> predictEntities = daoService.query(condition, SsqPredictEntity.class);
+		condition.addParam("termNo", "=", termNo);
+		List<SsqPredictEntity> predictEntities = daoService
+				.query(condition, SsqPredictEntity.class);
 
 		map.put("predictEntities", predictEntities);
 
@@ -74,7 +72,7 @@ public class PredictController {
 	}
 
 	@RequestMapping(value = { "dlt" })
-	public String queryHistoryOfDlt(HttpServletRequest request, ModelMap map) {
+	public String queryPredictOfDlt(HttpServletRequest request, ModelMap map) {
 		return "predict/dlt";
 	}
 }

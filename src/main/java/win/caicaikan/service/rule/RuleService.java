@@ -1,11 +1,13 @@
 package win.caicaikan.service.rule;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import win.caicaikan.constant.SsqConstant;
 import win.caicaikan.constant.SysConfig;
@@ -13,12 +15,58 @@ import win.caicaikan.repository.mongodb.entity.SysConfigEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.service.internal.DaoService;
 import win.caicaikan.util.DateUtil;
+import win.caicaikan.util.MathUtil;
 
+/**
+ * @desc 通用转换计算规则服务
+ * @author yanwenge
+ * @date 2017年1月8日
+ * @class RuleService
+ */
 @Service
 public class RuleService {
-
+	private static final BigInteger RED_MAX = new BigInteger("33");
+	private static final BigInteger BLUE_MAX = new BigInteger("16");
+	private static final BigInteger RED_VALID = new BigInteger("6");
+	private static final BigInteger BLUE_VALID = BigInteger.ONE;
+	private static final BigInteger RED_INVALID = new BigInteger("27");
+	private static final BigInteger BLUE_INVALID = new BigInteger("15");
 	@Autowired
 	private DaoService daoService;
+
+	public BigInteger countSsqAllCases() {
+		BigInteger red = MathUtil.C(RED_MAX, RED_VALID);
+		BigInteger blue = MathUtil.C(BLUE_MAX, BLUE_VALID);
+		BigInteger allCases = red.multiply(blue);
+		return allCases;
+	}
+
+	public BigInteger countSsqPrizeCases(String prizecondition) {
+		if (StringUtils.isEmpty(prizecondition)) {
+			throw new RuntimeException("参数有误：" + prizecondition);
+		}
+		String[] split = prizecondition.split(";");
+		BigInteger prizeCases = BigInteger.ZERO;
+		for (String string : split) {
+			String[] split2 = string.split("\\+");
+			if (split2.length != 2) {
+				throw new RuntimeException("参数有误：" + prizecondition);
+			}
+			BigInteger redNeeded = new BigInteger(split2[0]);
+			BigInteger blueNeeded = new BigInteger(split2[1]);
+			if (redNeeded.compareTo(BigInteger.ZERO) < 0 || redNeeded.compareTo(RED_VALID) > 0
+					|| blueNeeded.compareTo(BigInteger.ZERO) < 0
+					|| blueNeeded.compareTo(BLUE_VALID) > 0) {
+				throw new RuntimeException("参数有误：" + prizecondition);
+			}
+			BigInteger red = MathUtil.C(RED_VALID, redNeeded);
+			red = red.multiply(MathUtil.C(RED_INVALID, RED_VALID.subtract(redNeeded)));
+			BigInteger blue = MathUtil.C(BLUE_VALID, blueNeeded);
+			blue = blue.multiply(MathUtil.C(BLUE_INVALID, BLUE_VALID.subtract(blueNeeded)));
+			prizeCases = prizeCases.add(red.multiply(blue));
+		}
+		return prizeCases;
+	}
 
 	public String getCurrentTermNoOfSsq() {
 		SysConfigEntity currentTerm = daoService.queryById(SysConfig.SSQ_CURRENT_TERM.getId(),
@@ -91,8 +139,13 @@ public class RuleService {
 		return termNo;
 	}
 
-	public String getNextTermNoOfSsq(SsqResultEntity entity) throws ParseException {
-		Date thisDate = DateUtil._SECOND.parse(entity.getOpenTime());
+	public String getNextTermNoOfSsq(SsqResultEntity entity) {
+		Date thisDate = null;
+		try {
+			thisDate = DateUtil._SECOND.parse(entity.getOpenTime());
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
 		int yearOfThisTerm = DateUtil.getYear(thisDate);
 		int week = DateUtil.getWeek(thisDate);
 
@@ -110,8 +163,13 @@ public class RuleService {
 		}
 	}
 
-	public Date getNextTermOpenDateOfSsq(String openTime) throws ParseException {
-		Date thisDate = DateUtil._SECOND.parse(openTime);
+	public Date getNextTermOpenDateOfSsq(String openTime) {
+		Date thisDate = null;
+		try {
+			thisDate = DateUtil._SECOND.parse(openTime);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
 		int week = DateUtil.getWeek(thisDate);
 
 		int daysToNextTerm = 2;

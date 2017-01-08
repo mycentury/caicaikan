@@ -31,4 +31,9 @@ public class SsqResultEntity extends BaseEntity {
 	private String firstPrizeAmount;
 	private String secondPrizeCount;
 	private String secondPrizeAmount;
+
+	@Override
+	public String getId() {
+		return termNo;
+	}
 }

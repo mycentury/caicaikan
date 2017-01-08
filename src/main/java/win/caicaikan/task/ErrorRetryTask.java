@@ -3,7 +3,6 @@
  */
 package win.caicaikan.task;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -43,9 +42,7 @@ public class ErrorRetryTask extends TaskTemplete {
 	@Override
 	public void doInTask() {
 		Condition condition = new Condition();
-		List<String[]> params = new ArrayList<String[]>();
-		params.add(new String[] { "executeStatus", ExecuteStatus.FAILED.name() });
-		condition.setParams(params);
+		condition.addParam("executeStatus", "=", ExecuteStatus.FAILED.name());
 		List<TaskEntity> tasks = daoService.query(condition, TaskEntity.class);
 		if (CollectionUtils.isEmpty(tasks)) {
 			logger.info("恭喜,不存在错误任务！");

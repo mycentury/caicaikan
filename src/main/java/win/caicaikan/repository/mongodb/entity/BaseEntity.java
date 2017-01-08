@@ -25,6 +25,8 @@ public abstract class BaseEntity implements Serializable {
 	private Date updateTime;
 	private Date createTime;
 
+	public abstract String getId();
+
 	public Date getUpdateTime() {
 		return updateTime;
 	}

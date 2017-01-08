@@ -46,6 +46,7 @@ public class SessionService {
 	}
 
 	public String getCheckcode(HttpServletRequest request) {
-		return request.getSession().getAttribute("checkcode").toString();
+		Object checkcode = request.getSession().getAttribute("checkcode");
+		return checkcode == null ? null : checkcode.toString();
 	}
 }

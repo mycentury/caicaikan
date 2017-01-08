@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import win.caicaikan.repository.mongodb.dao.MenuDao;
 import win.caicaikan.repository.mongodb.entity.MenuEntity;
+import win.caicaikan.service.internal.DaoService.Condition;
 
 /**
  * @Desc
@@ -23,7 +23,7 @@ import win.caicaikan.repository.mongodb.entity.MenuEntity;
 @Service
 public class MenuService {
 	@Autowired
-	private MenuDao menuDao;
+	private DaoService daoService;
 
 	private List<MenuEntity> menuEntities = new ArrayList<MenuEntity>();
 
@@ -31,7 +31,7 @@ public class MenuService {
 		if (CollectionUtils.isEmpty(menuEntities)) {
 			synchronized (menuEntities) {
 				if (CollectionUtils.isEmpty(menuEntities)) {
-					menuEntities = menuDao.findAll();
+					menuEntities = daoService.query(new Condition(), MenuEntity.class);
 				}
 			}
 		}

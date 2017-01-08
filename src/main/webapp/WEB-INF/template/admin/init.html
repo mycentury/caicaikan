@@ -1,0 +1,55 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<div th:include="/common/meta :: meta" th:remove="tag"></div>
+	<title>控制台-初始化</title>
+</head>
+<body th:with="menu='ADMIN',subMenu='INIT'">
+
+	<!-- BEGIN HEADER -->
+	<div th:include="/common/header :: header" th:remove="tag"></div>
+	<!-- END HEADER -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="/">Home</a></li>
+			<li><a href="/admin/init">Init</a></li>
+		</ol>
+		
+		<!-- 树形菜单 -->
+		<div th:include="/common/admin_menu :: admin_menu" th:remove="tag"></div>
+		
+		<div class="col-xs-15 col-sm-10 col-md-10">
+			<div>
+				<input id="terms" value="1000" /><button class="btn" onclick="init_predicts();">init_predicts</button>
+				<button class="btn" onclick="init_positions();">init_positions</button>
+			</div>
+		</div>
+	
+	</div>
+
+	<!-- BEGIN CSS_JS -->
+	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
+	<!-- END CSS_JS -->
+	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+	
+	<script type="text/javascript">
+		function init_predicts(){
+			general_ajax("/init/predicts", "post", {terms:$("#terms").val()}, null, function(result){
+				if (get_type(result) == "[object String]") {
+					result = json_parse(result);
+				}
+				alert(result.message);
+			}, null, null);
+		}
+		
+		function init_positions(){
+			general_ajax("/admin/positions", "post", null, null, function(result){
+				if (get_type(result) == "[object String]") {
+					result = json_parse(result);
+				}
+				alert(result.message);
+			}, null, null);
+		}
+	</script>
+</body>
+</html>
