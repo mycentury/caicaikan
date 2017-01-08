@@ -11,7 +11,8 @@ package win.caicaikan.constant;
  */
 public enum ExecuteStatus {
 	REDAY("准备"), // 执行前状态，当任务比较多需分批时使用，如规则
-	RUNNING("执行中"), // 执行中状态，不允许再次执行
+	RUNNING("执行中"),
+	SKIPED("跳过"), // 执行中状态，不允许再次执行
 	SUCCESS("成功"), // 成功状态，正常任务可再次执行
 	FAILED("失败");// 失败状态，重试任务可再次执行
 

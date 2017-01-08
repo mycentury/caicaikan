@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<div th:include="/common/meta :: meta" th:remove="tag"></div>
-	<title>彩彩看-登陆</title>
+	<title>登陆</title>
 </head>
 <body th:inline="text">
 
@@ -15,71 +15,61 @@
 			<li><a href="/user/login">Login</a></li>
 		</ol>
 
-		<div class="row">
-			<div class="col-xs-7">
-				<h1 th:text="${words}" text="aaa"></h1>
-				<h2 th:text="${words}" text="aaa"></h2>
-				<h3 th:text="${words}" text="aaa"></h3>
-				<h4 th:text="${words}" text="aaa"></h4>
-				<h5 th:text="${words}" text="aaa"></h5>
-				<h6 th:text="${words}" text="aaa"></h6>
-				<h7 th:text="${words}" text="aaa"></h7>
-			</div>
-			<div class="col-xs-4">
-				<form method="post" action="/user/user_login" class="form-horizontal form-login">
-					<input type="hidden" name="usertype" th:value="${usertype}" />
-					<input type="hidden" name="token" th:value="${session.token}" />
-					<div class="form-group">
-						<label for="username">用户名：</label>
-						<div class="input-group col-lg-10">
-							<span class="input-group-addon">
-								<i class="glyphicon glyphicon-user"></i>
-							</span>
-							<input id="username" class="form-control" name="username" maxlength="20" required="required" />
-						</div>
+		<div class="col-xs-12 col-sm-8 col-md-8"></div>
+		<div class="col-xs-6 col-sm-4 col-md-4">
+			<form method="post" action="/user/user_login" class="form-horizontal form-login">
+				<input type="hidden" name="usertype" th:value="${usertype}" />
+				<input type="hidden" name="token" th:value="${session.token}" />
+				<div class="form-group">
+					<label for="username">用户名：</label>
+					<div class="input-group col-lg-10">
+						<span class="input-group-addon">
+							<i class="glyphicon glyphicon-user"></i>
+						</span>
+						<input id="username" class="form-control" name="username" th:value="${user==null?'':user.username}" maxlength="20" required="required" />
 					</div>
-					<div class="form-group">
-						<label for="password" >密码：</label>
-						<div class="input-group col-lg-10">
-							<span class="input-group-addon">
-								<i class="glyphicon glyphicon-lock"></i>
-							</span>
-							<input id="password" class="form-control" name="password" maxlength="20" required="required" type="password" />
-							<span id="switch_eye" class="input-group-addon">
-								<i id="eye" class="glyphicon glyphicon-eye-open"></i>
-							</span>
-						</div>
+				</div>
+				<div class="form-group">
+					<label for="password" >密码：</label>
+					<div class="input-group col-lg-10">
+						<span class="input-group-addon">
+							<i class="glyphicon glyphicon-lock"></i>
+						</span>
+						<input id="password" class="form-control" name="password" th:value="${user==null?'':user.password}" maxlength="20" required="required" type="password" />
+						<span id="switch_eye" class="input-group-addon">
+							<i id="eye" class="glyphicon glyphicon-eye-open"></i>
+						</span>
 					</div>
-					<div class="form-group">
-						<label for="checkcode">验证码：</label>
-						<div class="input-group col-lg-10">
-							<span class="input-group-addon">
-								<i class="glyphicon glyphicon-random"></i>
-							</span>
-							<input id="checkcode" class="form-control" name="checkcode" maxlength="10" required="required" />
-							<span class="input-group-addon">
-								<img id="checkcode_img" title="单击更换" alt="单击更换" src="/checkcode" onclick="refresh_attr(this,'src');" />
-							</span>
-						</div>
+				</div>
+				<div class="form-group">
+					<label for="checkcode">验证码：</label>
+					<div class="input-group col-lg-10">
+						<span class="input-group-addon">
+							<i class="glyphicon glyphicon-random"></i>
+						</span>
+						<input id="checkcode" class="form-control" name="checkcode" maxlength="10" required="required" />
+						<span class="input-group-addon">
+							<img id="checkcode_img" title="单击更换" alt="单击更换" src="/checkcode" onclick="refresh_attr(this,'src');" />
+						</span>
 					</div>
-					<div id="info" class="form-group" th:if="${errorMsg != null}" onclick="$(this).hide();">
-						<div class="input-group col-lg-10">
-							<span class="input-group-addon">
-								<i class="glyphicon glyphicon-info-sign"></i>
-							</span>
-							<p class="form-control">[[${errorMsg}]]</p>
-						</div>
+				</div>
+				<div id="info" class="form-group" th:if="${errorMsg != null}" onclick="$(this).hide();">
+					<div class="input-group col-lg-10">
+						<span class="input-group-addon">
+							<i class="glyphicon glyphicon-info-sign"></i>
+						</span>
+						<p class="form-control">[[${errorMsg}]]</p>
 					</div>
-					<div class="form-group">
-						<div class="input-group col-lg-10">
-							<button class="btn-default form-control" type="submit">登录</button>
-							<span class="input-group-addon">
-								<a href="#">忘记密码？</a>
-							</span>
-						</div>
+				</div>
+				<div class="form-group">
+					<div class="input-group col-lg-10">
+						<button class="btn-default form-control" type="submit">登录</button>
+						<span class="input-group-addon">
+							<a href="#">忘记密码？</a>
+						</span>
 					</div>
-				</form>
-			</div>
+				</div>
+			</form>
 		</div>
 	</div>
 

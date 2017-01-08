@@ -10,26 +10,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import win.caicaikan.constant.OperType;
-import win.caicaikan.repository.mongodb.dao.RecordDao;
 import win.caicaikan.repository.mongodb.entity.RecordEntity;
 import win.caicaikan.util.AddressUtil;
 
 @Service
 public class RecordService {
 	@Autowired
-	private RecordDao recordDao;
+	private DaoService daoService;
 
 	@Value("${log.record.open}")
 	private boolean openRecord;
 
-	public RecordEntity insert(RecordEntity record) {
+	public void insert(RecordEntity record) {
 		if (!openRecord) {
-			return record;
+			return;
 		}
 		Date createTime = new Date();
 		record.setCreateTime(createTime);
 		record.setUpdateTime(createTime);
-		return recordDao.insert(record);
+		daoService.insert(record);
 	}
 
 	/**

@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import win.caicaikan.BaseTest;
-import win.caicaikan.task.ssq.SsqHistoryTask;
 
 /**
  * @Desc
@@ -24,10 +23,4 @@ public class SsqHistoryTaskTest extends BaseTest {
 	public void testExecute() {
 		ssqHistoryTask.execute();
 	}
-
-	@Test
-	public void testSynchronizeHistoryData() {
-		ssqHistoryTask.synchronizeHistoryData();
-	}
-
 }

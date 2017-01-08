@@ -19,7 +19,7 @@ public abstract class RuleTemplate {
 	@Autowired
 	protected RuleService ruleService;
 
-	public abstract SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity) throws Exception;
+	public abstract SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity rule);
 
 	public abstract RuleType getRuleType();
 

@@ -1,0 +1,15 @@
+<div th:fragment="admin_menu">
+	<div class="col-xs-3 col-sm-2 col-md-2" style="width: 10%;">
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li th:class="${'INIT' eq subMenu?'active':''}"><a href="/admin/init">初始化</a></li><br />
+					<li th:class="${'AUTH' eq subMenu?'active':''}"><a href="/admin/auth">授权</a></li><br />
+					<li th:class="${'RULE' eq subMenu?'active':''}"><a href="/admin/rule">规则</a></li><br />
+					<li th:class="${'MENU' eq subMenu?'active':''}"><a href="#">菜单</a></li><br />
+					<li th:class="${'TASK' eq subMenu?'active':''}"><a href="#">任务</a></li><br />
+				</ul>
+			</div>
+		</nav>
+	</div>
+</div>

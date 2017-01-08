@@ -33,7 +33,7 @@ public class RuleDisplayTimes extends RuleTemplate {
 	}
 
 	@Override
-	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity) throws Exception {
+	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity) {
 		Result countResult = this.countDisplayTimes(list, entity.getTerms());
 		// 处理为负数
 		Map<String, Integer> redMap = countResult.getRedMap();
@@ -59,15 +59,15 @@ public class RuleDisplayTimes extends RuleTemplate {
 		return result;
 	}
 
-	public Result countDisplayTimes(List<SsqResultEntity> list, int count) {
-		if (count >= list.size()) {
-			count = list.size();
+	public Result countDisplayTimes(List<SsqResultEntity> list, int terms) {
+		if (terms > list.size()) {
+			terms = list.size();
 		}
-		Map<String, Integer> redMap = initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
-		Map<String, Integer> blueMap = initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, 0);
+		Map<String, Integer> redMap = this.initMapKeysWithValue(SsqConstant.RED_NUMBERS, 0);
+		Map<String, Integer> blueMap = this.initMapKeysWithValue(SsqConstant.BLUE_NUMBERS, 0);
 		int redCount = 0;
 		int blueCount = 0;
-		for (int i = 0; i < count; i++) {
+		for (int i = 0; i < terms; i++) {
 			SsqResultEntity lotterySsqEntity = list.get(i);
 			String[] redNumbers = lotterySsqEntity.getRedNumbers().split(",");
 			for (String redNumber : redNumbers) {
