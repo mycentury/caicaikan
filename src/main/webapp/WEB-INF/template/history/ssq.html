@@ -13,7 +13,7 @@
 	
 	<div class="container">
 		<p>下期[[${nextTermNoOfSsq}]],预计开奖时间：[[${nextTermOpenDateOfSsq}]]</p>
-		<p>本期[[${ssq.termNo}]],开奖时间：[[${ssq.openTime}]]</p>
+		<p>本期[[${ssq.id}]],开奖时间：[[${ssq.openTime}]]</p>
 		<p>
 			<span th:if="${not #lists.isEmpty(redBalls)}">
 				<span th:each="item:${redBalls}" class="ball redball" th:utext="${item}"></span>

@@ -23,7 +23,7 @@ import win.caicaikan.repository.mongodb.entity.BaseEntity;
 public class SsqResultEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 	@Id
-	private String termNo;
+	private String id;
 	private String openTime;
 	private String redNumbers;
 	private String blueNumbers;
@@ -31,9 +31,4 @@ public class SsqResultEntity extends BaseEntity {
 	private String firstPrizeAmount;
 	private String secondPrizeCount;
 	private String secondPrizeAmount;
-
-	@Override
-	public String getId() {
-		return termNo;
-	}
 }

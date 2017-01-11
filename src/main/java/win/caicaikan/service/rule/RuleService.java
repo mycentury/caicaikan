@@ -54,8 +54,7 @@ public class RuleService {
 			}
 			BigInteger redNeeded = new BigInteger(split2[0]);
 			BigInteger blueNeeded = new BigInteger(split2[1]);
-			if (redNeeded.compareTo(BigInteger.ZERO) < 0 || redNeeded.compareTo(RED_VALID) > 0
-					|| blueNeeded.compareTo(BigInteger.ZERO) < 0
+			if (redNeeded.compareTo(BigInteger.ZERO) < 0 || redNeeded.compareTo(RED_VALID) > 0 || blueNeeded.compareTo(BigInteger.ZERO) < 0
 					|| blueNeeded.compareTo(BLUE_VALID) > 0) {
 				throw new RuntimeException("参数有误：" + prizecondition);
 			}
@@ -69,8 +68,7 @@ public class RuleService {
 	}
 
 	public String getCurrentTermNoOfSsq() {
-		SysConfigEntity currentTerm = daoService.queryById(SysConfig.SSQ_CURRENT_TERM.getId(),
-				SysConfigEntity.class);
+		SysConfigEntity currentTerm = daoService.queryById(SysConfig.SSQ_CURRENT_TERM.getId(), SysConfigEntity.class);
 		Date openDate;
 		try {
 			openDate = DateUtil._SECOND.parse(currentTerm.getKey());
@@ -106,8 +104,7 @@ public class RuleService {
 	}
 
 	public String getNextTermNoOfSsq() {
-		SysConfigEntity nextTerm = daoService.queryById(SysConfig.SSQ_NEXT_TERM.getId(),
-				SysConfigEntity.class);
+		SysConfigEntity nextTerm = daoService.queryById(SysConfig.SSQ_NEXT_TERM.getId(), SysConfigEntity.class);
 		Date openDate;
 		try {
 			openDate = DateUtil._SECOND.parse(nextTerm.getKey());
@@ -159,7 +156,7 @@ public class RuleService {
 		if (yearOfNextTerm != yearOfThisTerm) {
 			return yearOfNextTerm + SsqConstant.START_NO;
 		} else {
-			return String.valueOf(Integer.valueOf(entity.getTermNo()) + 1);
+			return String.valueOf(Integer.valueOf(entity.getId()) + 1);
 		}
 	}
 

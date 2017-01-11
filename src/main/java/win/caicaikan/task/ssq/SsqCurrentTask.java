@@ -47,13 +47,12 @@ public class SsqCurrentTask extends TaskTemplete {
 			return;
 		}
 		for (SsqResultEntity ssqResult : result.getData()) {
-			if (!daoService.existsById(ssqResult.getTermNo(), SsqResultEntity.class)) {
+			if (!daoService.existsById(ssqResult.getId(), SsqResultEntity.class)) {
 				daoService.insert(ssqResult);
 			}
 			Condition condition = new Condition();
-			condition.addParam("termNo", "=", ssqResult.getTermNo());
-			List<SsqPredictEntity> ssqPredicts = daoService
-					.query(condition, SsqPredictEntity.class);
+			condition.addParam("termNo", "=", ssqResult.getId());
+			List<SsqPredictEntity> ssqPredicts = daoService.query(condition, SsqPredictEntity.class);
 			if (CollectionUtils.isEmpty(ssqPredicts)) {
 				continue;
 			}

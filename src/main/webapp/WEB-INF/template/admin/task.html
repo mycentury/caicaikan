@@ -1,0 +1,65 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<div th:include="/common/meta :: meta" th:remove="tag"></div>
+	<title>控制台-任务</title>
+</head>
+<body th:with="menu='ADMIN',subMenu='INIT'" th:inline="text">
+
+	<!-- BEGIN HEADER -->
+	<div th:include="/common/header :: header" th:remove="tag"></div>
+	<!-- END HEADER -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="/">Home</a></li>
+			<li><a href="/admin/init">Init</a></li>
+		</ol>
+		
+		<!-- 树形菜单 -->
+		<div th:include="/common/admin_menu :: admin_menu" th:remove="tag"></div>
+		
+		<div class="col-xs-15 col-sm-10 col-md-10">
+			<div>
+				<table th:if="${not #lists.isEmpty(tasks)}" class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<td>ID</td>
+							<td>所需参数</td>
+							<td>上次执行信息</td>
+							<td>执行状态</td>
+							<td>操作</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item:${tasks}">
+							<td th:utext="${item.id}"></td>
+							<td th:utext="${item.param}"></td>
+							<td th:utext="${item.info}"></td>
+							<td th:utext="${item.executeStatus}"></td>
+							<td><button class="btn" th:disabled="${item.executeStatus ne 'RUNNING'?'false':'true'}" th:value="${item.id }" onclick="execute_task(this,this.value);">execute</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	
+	</div>
+
+	<!-- BEGIN CSS_JS -->
+	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
+	<!-- END CSS_JS -->
+	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+	
+	<script type="text/javascript">
+		function execute_task(btn,id){
+			general_ajax("/admin/task/execute", "post", {id:id}, null, function(result){
+				if (get_type(result) == "[object String]") {
+					result = json_parse(result);
+				}
+				alert(result.message);
+				$(btn).attr("disabled","disabled"); 
+			}, null, null);
+		}
+	</script>
+</body>
+</html>

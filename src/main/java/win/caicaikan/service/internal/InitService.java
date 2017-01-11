@@ -76,8 +76,7 @@ public class InitService {
 				if (i >= 1) {
 					results.remove(0);
 				}
-				logger.info("正在预测" + ruleService.getNextTermNoOfSsq(results.get(0)) + "期,"
-						+ (i + 1) + "/" + terms);
+				logger.info("正在预测" + ruleService.getNextTermNoOfSsq(results.get(0)) + "期," + (i + 1) + "/" + terms);
 				ssqPredictTask.predictByResults(results, rules);
 			} catch (Throwable e) {
 				e.printStackTrace();
@@ -92,18 +91,15 @@ public class InitService {
 		for (PredictRuleEntity predictRule : predictRules) {
 			condition = new Condition();
 			condition.addParam("ruleId", "=", predictRule.getId());
-			List<SsqPredictEntity> ssqPredicts = daoService
-					.query(condition, SsqPredictEntity.class);
+			List<SsqPredictEntity> ssqPredicts = daoService.query(condition, SsqPredictEntity.class);
 			Double redPositionCount = 0D;
 			Double bluePositionCount = 0D;
 			Double tenRedRate = 0D;
 			Double threeBlueRate = 0D;
 			for (SsqPredictEntity ssqPredict : ssqPredicts) {
 				for (SsqResultEntity ssqResult : ssqResults) {
-					if (StringUtils.isEmpty(ssqPredict.getRightNumbers())
-							|| ssqPredict.getTermNo().equals(ssqResult.getTermNo())) {
-						String rightPositions = ssqCurrentTask.getRightNumPositions(ssqPredict,
-								ssqResult);
+					if (StringUtils.isEmpty(ssqPredict.getRightNumbers()) || ssqPredict.getTermNo().equals(ssqResult.getId())) {
+						String rightPositions = ssqCurrentTask.getRightNumPositions(ssqPredict, ssqResult);
 						String[] numPositions = rightPositions.split("\\+");
 						String[] redPositions = numPositions[0].split(",");
 						for (String red : redPositions) {
@@ -264,8 +260,7 @@ public class InitService {
 				for (int k = 0; k <= 10 && j + k < 100; k += 10) {
 					String id = j + "," + (100 - j - k) + "," + k;
 					rule = new PredictRuleEntity();
-					rule.setPrimaryKey(LotteryType.SSQ.getCode(), RuleType.MULTI.name(),
-							termCounts[i]);
+					rule.setPrimaryKey(LotteryType.SSQ.getCode(), RuleType.MULTI.name(), termCounts[i]);
 					rule.setId(rule.getId() + "-" + id);
 					rule.setRuleName(RuleType.MULTI.getDesc() + termCounts[i] + ",比例" + id);
 					rule.setStatus(1);

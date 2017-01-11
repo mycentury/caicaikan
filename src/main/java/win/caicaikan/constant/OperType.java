@@ -15,7 +15,8 @@ public enum OperType {
 	ATTACK("攻击"),
 	LOGIN("登录"),
 	REGISTER("注册"),
-	AUTHORIZE("授权");
+	AUTHORIZE("授权"),
+	EXECUTE_TASK("执行任务");
 	private String desc;
 
 	private OperType(String desc) {

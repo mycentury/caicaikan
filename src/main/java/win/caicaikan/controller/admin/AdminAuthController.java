@@ -112,7 +112,7 @@ public class AdminAuthController {
 		return "admin/auth";
 	}
 
-	@RequestMapping("security")
+	@RequestMapping("auth/security")
 	@Role({ RoleType.ADMIN })
 	public @ResponseBody Result<Boolean> authorize(HttpServletRequest request, String action) {
 		Result<Boolean> result = new Result<Boolean>();

@@ -87,10 +87,9 @@ public class AdminRuleController {
 		return "admin/rule";
 	}
 
-	@RequestMapping("save_rule")
+	@RequestMapping("rule/save")
 	@Role({ RoleType.ADMIN })
-	public @ResponseBody Result<PredictRuleEntity> saveRule(HttpServletRequest request,
-			PredictRuleEntity rule, ModelMap map) {
+	public @ResponseBody Result<PredictRuleEntity> saveRule(HttpServletRequest request, PredictRuleEntity rule, ModelMap map) {
 		Result<PredictRuleEntity> result = new Result<PredictRuleEntity>();
 		if (!sessionService.hasLogin(request)) {
 			result.setResultStatusAndMsg(ResultType.NOT_LOGIN, null);
@@ -100,8 +99,7 @@ public class AdminRuleController {
 			result.setResultStatusAndMsg(ResultType.NO_AUTHORITY, null);
 			return result;
 		}
-		if (StringUtils.isEmpty(rule.getLotteryType()) || StringUtils.isEmpty(rule.getRuleType())
-				|| StringUtils.isEmpty(rule.getTerms())) {
+		if (StringUtils.isEmpty(rule.getLotteryType()) || StringUtils.isEmpty(rule.getRuleType()) || StringUtils.isEmpty(rule.getTerms())) {
 			result.setResultStatusAndMsg(ResultType.PARAMETER_ERROR, null);
 			return result;
 		}
@@ -119,14 +117,12 @@ public class AdminRuleController {
 			if (RuleType.MULTI.name().equals(rule.getRuleType())) {
 				Type typeOfT = new TypeToken<Map<String, Integer>>() {
 				}.getType();
-				Map<String, Integer> ruleAndweights = GsonUtil.fromJson(rule.getRuleAndweights(),
-						typeOfT);
+				Map<String, Integer> ruleAndweights = GsonUtil.fromJson(rule.getRuleAndweights(), typeOfT);
 
 				for (Entry<String, Integer> entry : ruleAndweights.entrySet()) {
 					if (entry.getValue() != null && entry.getValue() != 0) {
 						PredictRuleEntity baseRule = new PredictRuleEntity();
-						baseRule.setPrimaryKey(rule.getLotteryType(), entry.getKey(),
-								rule.getTerms());
+						baseRule.setPrimaryKey(rule.getLotteryType(), entry.getKey(), rule.getTerms());
 						if (daoService.queryById(baseRule.getId(), PredictRuleEntity.class) != null) {
 							continue;
 						}
@@ -150,8 +146,7 @@ public class AdminRuleController {
 
 	@RequestMapping("delete_rule")
 	@Role({ RoleType.ADMIN })
-	public @ResponseBody Result<Boolean> deleteRule(HttpServletRequest request,
-			PredictRuleEntity rule, ModelMap map) {
+	public @ResponseBody Result<Boolean> deleteRule(HttpServletRequest request, PredictRuleEntity rule, ModelMap map) {
 		Result<Boolean> result = new Result<Boolean>();
 		if (!sessionService.hasLogin(request)) {
 			result.setResultStatusAndMsg(ResultType.NOT_LOGIN, null);

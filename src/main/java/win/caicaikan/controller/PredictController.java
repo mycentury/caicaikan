@@ -50,8 +50,7 @@ public class PredictController {
 		}
 		Condition condition = new Condition();
 		condition.addParam("termNo", "=", termNo);
-		List<SsqPredictEntity> predictEntities = daoService
-				.query(condition, SsqPredictEntity.class);
+		List<SsqPredictEntity> predictEntities = daoService.query(condition, SsqPredictEntity.class);
 
 		map.put("predictEntities", predictEntities);
 
@@ -63,7 +62,7 @@ public class PredictController {
 		List<String> termNos = new ArrayList<String>();
 		termNos.add(termNo);
 		for (SsqResultEntity ssqResultEntity : ssqResults) {
-			termNos.add(ssqResultEntity.getTermNo());
+			termNos.add(ssqResultEntity.getId());
 		}
 		map.put("conut", 10);
 		map.put("currentTermNo", termNo);

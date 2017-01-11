@@ -40,7 +40,7 @@ public abstract class TaskTemplete {
 		}
 	}
 
-	protected String getTaskName() {
+	public String getTaskName() {
 		return this.getClass().getSimpleName();
 	}
 
