@@ -20,7 +20,7 @@ import org.springframework.web.context.request.WebRequest;
 public class ExceptionController {
 	private static final Logger logger = Logger.getLogger(ExceptionController.class);
 
-	@ExceptionHandler(value = { RuntimeException.class })
+	@ExceptionHandler(value = { Exception.class })
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public String serverError(Exception exception, WebRequest request) {
 		logger.info("BAD_GATEWAY", exception);
@@ -45,7 +45,7 @@ public class ExceptionController {
 		return "error/403";
 	}
 
-	@ExceptionHandler(value = { Exception.class })
+	// @ExceptionHandler(value = { Exception.class })
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public String notFound(Exception exception, WebRequest request) {
 		logger.info("No mapping exception", exception);

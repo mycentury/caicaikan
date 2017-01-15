@@ -51,52 +51,107 @@ public class TypeConverterUtil {
 		return dest;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private static Map<String, Object> changeSourceToMap(final Object source) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (source instanceof Map) {
-			map = (HashMap<String, Object>) source;
+			Map map2 = (Map) source;
+			for (Object key : map2.keySet()) {
+				if (key == null) {
+					continue;
+				}
+				map.put(key.toString(), map2.get(key));
+			}
 		} else {
 			final Class<? extends Object> sourceClazz = source.getClass();
 			final Field[] fields = sourceClazz.getDeclaredFields();
 			for (final Field field : fields) {
-				final boolean access = field.isAccessible();
 				try {
+					final boolean access = field.isAccessible();
 					field.setAccessible(true);
 					final Object object = field.get(source);
 					field.setAccessible(access);
 					map.put(field.getName(), object);
-				} catch (final IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (final IllegalAccessException e) {
-					e.printStackTrace();
+				} catch (final IllegalArgumentException | IllegalAccessException e) {
+					throw new RuntimeException(e);
 				}
 			}
 		}
 		return map;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public static Map<String, Object> changeSourceToColMap(final Object source) {
 		final Map<String, Object> map = new HashMap<String, Object>();
+		if (source == null) {
+			return map;
+		}
+		if (source instanceof Map) {
+			Map map2 = (Map) source;
+			for (Object key : map2.keySet()) {
+				if (key == null) {
+					continue;
+				}
+				map.put(key.toString(), map2.get(key));
+			}
+			return map;
+		}
 		Class<? extends Object> sourceClazz = source.getClass();
 		while (!sourceClazz.equals(Object.class)) {
 			final Field[] fields = sourceClazz.getDeclaredFields();
 			for (final Field field : fields) {
-				final boolean access = field.isAccessible();
 				try {
+					final boolean access = field.isAccessible();
 					field.setAccessible(true);
 					final Object object = field.get(source);
 					field.setAccessible(access);
-					map.put(field.getName(), object);
-				} catch (final IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (final IllegalAccessException e) {
-					e.printStackTrace();
+					map.put(convertCamelToCol(field.getName()), object);
+				} catch (final IllegalArgumentException | IllegalAccessException e) {
+					throw new RuntimeException(e);
 				}
 			}
 			sourceClazz = sourceClazz.getSuperclass();
 		}
 
 		return map;
+	}
+
+	public static String convertColToCamel(String source) {
+		if (source == null) {
+			throw new RuntimeException("source can't be null!");
+		}
+		char[] charArray = source.toLowerCase().toCharArray();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < charArray.length; i++) {
+			if (charArray[i] == '_') {
+				if (i + 1 < charArray.length) {
+					sb.append(String.valueOf(charArray[i + 1]).toUpperCase());
+					i++;
+				}
+			} else {
+				sb.append(charArray[i]);
+			}
+		}
+		return sb.toString();
+	}
+
+	public static String convertCamelToCol(String source) {
+		if (source == null) {
+			throw new RuntimeException("source can't be null!");
+		}
+		char[] charArray = source.toCharArray();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < charArray.length; i++) {
+			if (charArray[i] > 'A' && charArray[i] < 'Z') {
+				sb.append("_");
+			}
+			sb.append(charArray[i]);
+		}
+		return sb.toString().toUpperCase();
+	}
+
+	public static void main(String[] args) {
+		System.out.println(convertCamelToCol("convertCamelToCol"));
+		System.out.println(convertColToCamel("CONVERT_CAMEL_TO_COL"));
 	}
 }

@@ -42,6 +42,10 @@ public class RecordEntity extends BaseEntity {
 	 */
 	private String ip;
 	/**
+	 * 参数
+	 */
+	private String param;
+	/**
 	 * 内容修改前
 	 */
 	private String before;

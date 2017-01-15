@@ -48,7 +48,7 @@ public class SsqHistoryTask extends TaskTemplete {
 			return;
 		}
 		for (int i = 0; i < list.size(); i++) {
-			String termNo = list.get(i).getTermNo();
+			String termNo = list.get(i).getId();
 			req.setStart(termNo);
 			req.setEnd(termNo);
 			Result<List<SsqResultEntity>> result = ssqService.getSsqHistoryByLotteryReq(req);

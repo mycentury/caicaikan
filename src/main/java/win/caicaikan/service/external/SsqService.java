@@ -36,7 +36,7 @@ public class SsqService extends BaseService {
 		List<SsqResultEntity> data = new ArrayList<SsqResultEntity>();
 		for (LotteryCurrentBo bo : currentRes.getData()) {
 			SsqResultEntity entity = new SsqResultEntity();
-			entity.setTermNo(bo.getExpect());
+			entity.setId(bo.getExpect());
 			entity.setOpenTime(bo.getOpentime());
 			String[] split = bo.getOpencode().split("\\+");
 			entity.setRedNumbers(split[0]);
@@ -62,22 +62,16 @@ public class SsqService extends BaseService {
 		Element element = elements.get(0).child(1);
 		for (Element row : element.children()) {
 			SsqResultEntity entity = new SsqResultEntity();
-			entity.setTermNo(row.child(0).child(0).ownText());
+			entity.setId(row.child(0).child(0).ownText());
 			entity.setOpenTime(row.child(1).ownText().replaceAll("（.）", "") + " 21:20:40");
-			entity.setRedNumbers(row.child(2).getElementsByAttributeValue("class", "redBalls")
-					.get(0).html().trim().replace("</em><em>", ",").replace("<em>", "")
-					.replace("</em>", ""));
-			entity.setBlueNumbers(row.child(2).getElementsByAttributeValue("class", "blueBalls")
-					.get(0).html().trim().replace("</em><em>", ",").replace(" ", ",")
+			entity.setRedNumbers(row.child(2).getElementsByAttributeValue("class", "redBalls").get(0).html().trim().replace("</em><em>", ",")
 					.replace("<em>", "").replace("</em>", ""));
-			entity.setFirstPrizeCount(row.child(3)
-					.getElementsByAttributeValue("class", "NotNumber").get(0).ownText());
-			entity.setFirstPrizeAmount(row.child(3).getElementsByAttributeValue("class", "cash")
-					.get(0).ownText());
-			entity.setSecondPrizeCount(row.child(4)
-					.getElementsByAttributeValue("class", "NotNumber").get(0).ownText());
-			entity.setSecondPrizeAmount(row.child(4).getElementsByAttributeValue("class", "cash")
-					.get(0).ownText());
+			entity.setBlueNumbers(row.child(2).getElementsByAttributeValue("class", "blueBalls").get(0).html().trim().replace("</em><em>", ",")
+					.replace(" ", ",").replace("<em>", "").replace("</em>", ""));
+			entity.setFirstPrizeCount(row.child(3).getElementsByAttributeValue("class", "NotNumber").get(0).ownText());
+			entity.setFirstPrizeAmount(row.child(3).getElementsByAttributeValue("class", "cash").get(0).ownText());
+			entity.setSecondPrizeCount(row.child(4).getElementsByAttributeValue("class", "NotNumber").get(0).ownText());
+			entity.setSecondPrizeAmount(row.child(4).getElementsByAttributeValue("class", "cash").get(0).ownText());
 			Date now = new Date();
 			entity.setCreateTime(now);
 			entity.setUpdateTime(now);
