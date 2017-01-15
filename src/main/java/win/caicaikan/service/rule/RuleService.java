@@ -31,6 +31,8 @@ public class RuleService {
 	private static final BigInteger BLUE_VALID = BigInteger.ONE;
 	private static final BigInteger RED_INVALID = new BigInteger("27");
 	private static final BigInteger BLUE_INVALID = new BigInteger("15");
+	private static final BigInteger RED_COUNT = new BigInteger("10");
+	private static final BigInteger BLUE_COUNT = new BigInteger("3");
 	@Autowired
 	private DaoService daoService;
 
@@ -39,6 +41,13 @@ public class RuleService {
 		BigInteger blue = MathUtil.C(BLUE_MAX, BLUE_VALID);
 		BigInteger allCases = red.multiply(blue);
 		return allCases;
+	}
+
+	public BigInteger countSsqPredictCases() {
+		BigInteger red = MathUtil.C(RED_COUNT, RED_VALID);
+		BigInteger blue = MathUtil.C(BLUE_COUNT, BLUE_VALID);
+		BigInteger predictCases = red.multiply(blue);
+		return predictCases;
 	}
 
 	public BigInteger countSsqPrizeCases(String prizecondition) {
@@ -54,7 +63,8 @@ public class RuleService {
 			}
 			BigInteger redNeeded = new BigInteger(split2[0]);
 			BigInteger blueNeeded = new BigInteger(split2[1]);
-			if (redNeeded.compareTo(BigInteger.ZERO) < 0 || redNeeded.compareTo(RED_VALID) > 0 || blueNeeded.compareTo(BigInteger.ZERO) < 0
+			if (redNeeded.compareTo(BigInteger.ZERO) < 0 || redNeeded.compareTo(RED_VALID) > 0
+					|| blueNeeded.compareTo(BigInteger.ZERO) < 0
 					|| blueNeeded.compareTo(BLUE_VALID) > 0) {
 				throw new RuntimeException("参数有误：" + prizecondition);
 			}
@@ -68,7 +78,8 @@ public class RuleService {
 	}
 
 	public String getCurrentTermNoOfSsq() {
-		SysConfigEntity currentTerm = daoService.queryById(SysConfig.SSQ_CURRENT_TERM.getId(), SysConfigEntity.class);
+		SysConfigEntity currentTerm = daoService.queryById(SysConfig.SSQ_CURRENT_TERM.getId(),
+				SysConfigEntity.class);
 		Date openDate;
 		try {
 			openDate = DateUtil._SECOND.parse(currentTerm.getKey());
@@ -104,7 +115,8 @@ public class RuleService {
 	}
 
 	public String getNextTermNoOfSsq() {
-		SysConfigEntity nextTerm = daoService.queryById(SysConfig.SSQ_NEXT_TERM.getId(), SysConfigEntity.class);
+		SysConfigEntity nextTerm = daoService.queryById(SysConfig.SSQ_NEXT_TERM.getId(),
+				SysConfigEntity.class);
 		Date openDate;
 		try {
 			openDate = DateUtil._SECOND.parse(nextTerm.getKey());

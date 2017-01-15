@@ -34,7 +34,7 @@
 	
 	<script type="text/javascript">
 		function init_predicts(){
-			general_ajax("/init/predicts", "post", {terms:$("#terms").val()}, null, function(result){
+			general_ajax("/admin/init/predicts", "post", {terms:$("#terms").val()}, null, function(result){
 				if (get_type(result) == "[object String]") {
 					result = json_parse(result);
 				}
@@ -43,7 +43,7 @@
 		}
 		
 		function init_positions(){
-			general_ajax("/admin/positions", "post", null, null, function(result){
+			general_ajax("/admin/init/positions", "post", null, null, function(result){
 				if (get_type(result) == "[object String]") {
 					result = json_parse(result);
 				}

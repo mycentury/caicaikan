@@ -35,7 +35,7 @@ public class AdminInitController {
 		return "admin/init";
 	}
 
-	@RequestMapping("predicts")
+	@RequestMapping("init/predicts")
 	@Role({ RoleType.ADMIN })
 	public @ResponseBody Result<Boolean> initSsqPredicts(HttpServletRequest request, Integer terms) {
 		Result<Boolean> result = new Result<Boolean>();
@@ -52,7 +52,7 @@ public class AdminInitController {
 		return result;
 	}
 
-	@RequestMapping("positions")
+	@RequestMapping("init/positions")
 	@Role({ RoleType.ADMIN })
 	public @ResponseBody Result<Boolean> initPredictRightPositions(HttpServletRequest request) {
 		Result<Boolean> result = new Result<Boolean>();

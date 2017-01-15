@@ -1,0 +1,299 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<div th:include="/common/meta :: meta" th:remove="tag"></div>
+	<title>彩彩看-规则</title>
+</head>
+<body th:with="menu='ADMIN',subMenu='RULE'">
+
+	<!-- BEGIN HEADER -->
+	<div th:include="/common/header :: header" th:remove="tag"></div>
+	<!-- END HEADER -->
+	<div class="container">
+		<ol class="breadcrumb">
+			<li><a href="/">Home</a></li>
+			<li><a href="/admin/rule">Rule</a></li>
+		</ol>
+		
+		<!-- 树形菜单 -->
+		<div th:include="/common/admin_menu :: admin_menu" th:remove="tag"></div>
+		
+		
+		<div class="col-xs-15 col-sm-10 col-md-10">
+			<div id="rule_console">
+				<button role="button" class="btn" data-toggle="modal" data-target="#modal-clone">clone</button>
+				<button class="btn" onclick="delete_rule();">delete</button>
+			</div>
+			
+			<div class="tabbable">
+				<ul id="tab_index" class="nav nav-tabs">
+					<li th:class="${'panel-1' eq tab ?'active':''}" class="active"><a href="#panel-1" onclick="history.pushState(null, null, '/admin/rule?tab=panel-1');" data-toggle="tab">出现次数</a></li>
+					<li th:class="${'panel-2' eq tab ?'active':''}"><a href="#panel-2" onclick="history.pushState(null, null, '/admin/rule?tab=panel-2');" data-toggle="tab">遗漏次数</a></li>
+					<li th:class="${'panel-3' eq tab ?'active':''}"><a href="#panel-3" onclick="history.pushState(null, null, '/admin/rule?tab=panel-3');" data-toggle="tab">综合</a></li>
+					<li th:class="${'panel-4' eq tab ?'active':''}"><a href="#panel-4" onclick="history.pushState(null, null, '/admin/rule?tab=panel-4');" data-toggle="tab">连出次数</a></li>
+				</ul>
+				<div id="tab-content" class="tab-content">
+					<div th:class="${'panel-1' eq tab ?'tab-pane active':'tab-pane'}" class="active" id="panel-1">
+						<table th:if="${not #lists.isEmpty(displayRules)}" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<td>ID</td>
+									<td>彩种</td>
+									<td>规则类型</td>
+									<td>最近期数</td>
+									<td>规则名称</td>
+									<td>基本规则和权值</td>
+									<td>状态</td>
+									<td>执行状态</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item:${displayRules}" onclick="clone(this);">
+									<td th:utext="${item.id}"></td>
+									<td th:utext="${item.lotteryType}"></td>
+									<td th:utext="${item.ruleType}"></td>
+									<td th:utext="${item.terms}"></td>
+									<td th:utext="${item.ruleName}"></td>
+									<td th:utext="${item.ruleAndweights}"></td>
+									<td th:utext="${item.status}"></td>
+									<td th:utext="${item.executeStatus}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div th:class="${'panel-2' eq tab ?'tab-pane active':'tab-pane'}" class="tab-pane" id="panel-2">
+						<table th:if="${not #lists.isEmpty(skipRules)}" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<td>ID</td>
+									<td>彩种</td>
+									<td>规则类型</td>
+									<td>最近期数</td>
+									<td>规则名称</td>
+									<td>基本规则和权值</td>
+									<td>状态</td>
+									<td>执行状态</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item:${skipRules}" onclick="clone(this);">
+									<td th:utext="${item.id}"></td>
+									<td th:utext="${item.lotteryType}"></td>
+									<td th:utext="${item.ruleType}"></td>
+									<td th:utext="${item.terms}"></td>
+									<td th:utext="${item.ruleName}"></td>
+									<td th:utext="${item.ruleAndweights}"></td>
+									<td th:utext="${item.status}"></td>
+									<td th:utext="${item.executeStatus}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div th:class="${'panel-3' eq tab ?'tab-pane active':'tab-pane'}" class="tab-pane" id="panel-3">
+						<table th:if="${not #lists.isEmpty(multiRules)}" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<td>ID</td>
+									<td>彩种</td>
+									<td>规则类型</td>
+									<td>最近期数</td>
+									<td>规则名称</td>
+									<td>基本规则和权值</td>
+									<td>状态</td>
+									<td>执行状态</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item:${multiRules}" onclick="clone(this);">
+									<td th:utext="${item.id}"></td>
+									<td th:utext="${item.lotteryType}"></td>
+									<td th:utext="${item.ruleType}"></td>
+									<td th:utext="${item.terms}"></td>
+									<td th:utext="${item.ruleName}"></td>
+									<td th:utext="${item.ruleAndweights}"></td>
+									<td th:utext="${item.status}"></td>
+									<td th:utext="${item.executeStatus}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div th:class="${'panel-4' eq tab ?'tab-pane active':'tab-pane'}" class="tab-pane" id="panel-4">
+						<table th:if="${not #lists.isEmpty(doubleRules)}" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+									<td>ID</td>
+									<td>彩种</td>
+									<td>规则类型</td>
+									<td>最近期数</td>
+									<td>规则名称</td>
+									<td>基本规则和权值</td>
+									<td>状态</td>
+									<td>执行状态</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="item:${doubleRules}" onclick="clone(this);">
+									<td th:utext="${item.id}"></td>
+									<td th:utext="${item.lotteryType}"></td>
+									<td th:utext="${item.ruleType}"></td>
+									<td th:utext="${item.terms}"></td>
+									<td th:utext="${item.ruleName}"></td>
+									<td th:utext="${item.ruleAndweights}"></td>
+									<td th:utext="${item.status}"></td>
+									<td th:utext="${item.executeStatus}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+				
+			
+			<!-- 模态框（Modal） -->
+			<div class="modal fade" id="modal-clone" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+								&times;
+							</button>
+							<h4 class="modal-title" id="modalLabel">
+								新增规则
+							</h4>
+						</div>
+						<div class="modal-body container-fluid">
+							<form id="edit-form">
+								<table id="modal_body" class="table table-bordered">
+									<tr id="id_row">
+										<td>ID:</td>
+										<td><input name="id" /></td>
+									</tr>
+									<tr>
+										<td>彩种:</td>
+										<td><input name="lotteryType" readonly="readonly" value="ssq" /></td>
+									</tr>
+									<tr>
+										<td>规则类型:</td>
+										<td><select name="ruleType">
+											<option value="DISPLAY_TIMES">DISPLAY_TIMES</option>
+											<option value="SKIP_TIMES">SKIP_TIMES</option>
+											<option value="DOUBLE_TIMES">DOUBLE_TIMES</option>
+											<option value="MULTI">MULTI</option>
+										</select></td>
+									</tr>
+									<tr>
+										<td>最近期数:</td>
+										<td><input name="terms" /></td>
+									</tr>
+									<tr>
+										<td>规则名称:</td>
+										<td><input name="ruleName" /></td>
+									</tr>
+									<tr>
+										<td>基本规则和权值:</td>
+										<td>
+											<textarea name="ruleAndweights" readonly="readonly" rows="3" cols="50">
+												{"DISPLAY_TIMES":0,"SKIP_TIMES":0,"DOUBLE_TIMES":0}
+											</textarea><br />
+											diplay:<input style="width: 50px;" id="diplay" onkeyup="generate_ruleAndweights();" onafterpaste="generate_ruleAndweights();" />
+											skip:<input style="width: 50px;" id="skip" onkeyup="generate_ruleAndweights();" onafterpaste="generate_ruleAndweights();" />
+											double:<input style="width: 50px;" id="double" onkeyup="generate_ruleAndweights();" onafterpaste="generate_ruleAndweights();" />
+										</td>
+									</tr>
+									<tr>
+										<td>状态:</td>
+										<td><input name="status" /></td>
+									</tr>
+									<tr>
+										<td>执行状态:</td>
+										<td><input name="executeStatus" value="SUCCESS" type="hidden" />SUCCESS</td>
+									</tr>
+								</table>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default btn-primary" data-dismiss="modal">关闭</button>
+							<button type="button" class="btn btn-primary" onclick="save_rule();">提交更改</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal -->
+			</div>
+		</div>
+		
+	</div>
+
+	<!-- BEGIN CSS_JS -->
+	<div th:include="/common/css_js :: css_js" th:remove="tag"></div>
+	<!-- END CSS_JS -->
+	<div th:include="/common/footer :: footer" th:remove="tag"></div>
+	
+	<script type="text/javascript">
+	/*<![CDATA[*/
+		function clone(elem){
+			var trs = $(elem).parent().children();
+			for (var i = 0; i < trs.length; i++) {
+				$(trs.get(i)).removeAttr("class");
+			}
+			$(elem).attr("class","active");
+			var tds = $(elem).children();
+			$("input[name='id']").val($(tds.get(0)).html());
+			$("select[name='ruleType']").val($(tds.get(2)).html());
+			$("input[name='terms']").val($(tds.get(3)).html());
+			$("input[name='ruleName']").val($(tds.get(4)).html());
+			//$("textarea[name='ruleAndweights']").val($(tds.get(5)).html());
+			$("input[name='status']").val($(tds.get(6)).html());
+		}
+	
+		function generate_ruleAndweights(){
+			var diplay=Number($("#diplay").val().replace(/\D/g, ""));
+			$("#diplay").val(diplay);
+			var skip=Number($("#skip").val().replace(/\D/g, ""));
+			$("#skip").val(skip);
+			var doub=Number($("#double").val().replace(/\D/g, ""));
+			$("#double").val(doub);
+			var value="{\"DISPLAY_TIMES\":"+diplay+",\"SKIP_TIMES\":"+skip+",\"DOUBLE_TIMES\":"+doub+"}";
+			$("textarea[name='ruleAndweights']").val(value);
+		}
+
+		function save_rule(){
+			var form = $("#edit-form").serialize();
+			general_ajax("/admin/save_rule", "post", form, null, function(result){
+				if (get_type(result) == "[object String]") {
+					result = json_parse(result);
+				}
+				if (result.status==200) {
+					window.parent.location.href = window.parent.location.href;
+				}else{
+					alert(result.message);
+				}
+			}, null, null);
+		}
+		
+		function delete_rule(){
+			if ($("input[name='id']").val()=="") {
+				alert("必须选中一行数据！");
+				return false;
+			}
+			var form = $("#edit-form").serialize();
+			general_ajax("/admin/rule/delete", "post", form, null, function(result){
+				if (get_type(result) == "[object String]") {
+					result = json_parse(result);
+				}
+				if (result.status==200) {
+					var tabs=$("#tab-content").children();
+					var tab_index="";
+					for (var i = 0; i < tabs.length; i++) {
+						if($(tabs.get(i)).attr("class")=="active"){
+							tab_index = "?tab="+ $(tabs.get(i)).attr("id");
+						}
+					}
+					window.parent.location.href = window.parent.location.href+tab_index;
+				}else{
+					alert(result.message);
+				}
+			}, null, null);
+		}
+	/*]]>*/
+	</script>
+</body>
+</html>

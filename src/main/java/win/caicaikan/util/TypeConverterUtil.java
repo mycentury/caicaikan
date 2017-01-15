@@ -52,36 +52,7 @@ public class TypeConverterUtil {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static Map<String, Object> changeSourceToMap(final Object source) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		if (source instanceof Map) {
-			Map map2 = (Map) source;
-			for (Object key : map2.keySet()) {
-				if (key == null) {
-					continue;
-				}
-				map.put(key.toString(), map2.get(key));
-			}
-		} else {
-			final Class<? extends Object> sourceClazz = source.getClass();
-			final Field[] fields = sourceClazz.getDeclaredFields();
-			for (final Field field : fields) {
-				try {
-					final boolean access = field.isAccessible();
-					field.setAccessible(true);
-					final Object object = field.get(source);
-					field.setAccessible(access);
-					map.put(field.getName(), object);
-				} catch (final IllegalArgumentException | IllegalAccessException e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}
-		return map;
-	}
-
-	@SuppressWarnings("rawtypes")
-	public static Map<String, Object> changeSourceToColMap(final Object source) {
+	public static Map<String, Object> changeSourceToMap(final Object source) {
 		final Map<String, Object> map = new HashMap<String, Object>();
 		if (source == null) {
 			return map;
@@ -105,7 +76,7 @@ public class TypeConverterUtil {
 					field.setAccessible(true);
 					final Object object = field.get(source);
 					field.setAccessible(access);
-					map.put(convertCamelToCol(field.getName()), object);
+					map.put(field.getName(), object);
 				} catch (final IllegalArgumentException | IllegalAccessException e) {
 					throw new RuntimeException(e);
 				}

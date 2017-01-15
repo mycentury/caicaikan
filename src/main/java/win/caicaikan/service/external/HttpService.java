@@ -38,7 +38,7 @@ public class HttpService {
 		if (StringUtils.isEmpty(obj)) {
 			return sb.toString();
 		}
-		Map<String, Object> map = TypeConverterUtil.changeSourceToColMap(obj);
+		Map<String, Object> map = TypeConverterUtil.changeSourceToMap(obj);
 		if (CollectionUtils.isEmpty(map)) {
 			return sb.toString();
 		}

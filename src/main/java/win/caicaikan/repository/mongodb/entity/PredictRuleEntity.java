@@ -46,13 +46,13 @@ public class PredictRuleEntity extends BaseEntity {
 	 */
 	private String ruleAndweights;
 	/**
-	 * 前10准确率
+	 * 一等奖准确率
 	 */
-	private Double tenRedRate;
+	private Double firstRate;
 	/**
-	 * 前3准确率
+	 * 二等奖准确率
 	 */
-	private Double threeBlueRate;
+	private Double secondRate;
 	/**
 	 * 综合准确率
 	 */
