@@ -55,7 +55,7 @@ public class SsqPredictTask extends TaskTemplete {
 		Condition condition = new Condition();
 		List<PredictRuleEntity> rules = daoService.query(condition, PredictRuleEntity.class);
 		condition.setOrder(Direction.DESC);
-		condition.setOrderBy("termNo");
+		condition.setOrderBy(daoService.getIdColName(SsqResultEntity.class));
 		List<SsqResultEntity> results = daoService.query(condition, SsqResultEntity.class);
 		this.predictByResults(results, rules);
 	}
@@ -77,8 +77,7 @@ public class SsqPredictTask extends TaskTemplete {
 		}
 	}
 
-	private List<SsqPredictEntity> excuteGeneRules(List<SsqPredictEntity> basePredicts,
-			List<PredictRuleEntity> rules, int terms) {
+	private List<SsqPredictEntity> excuteGeneRules(List<SsqPredictEntity> basePredicts, List<PredictRuleEntity> rules, int terms) {
 		List<SsqPredictEntity> result = new ArrayList<SsqPredictEntity>();
 		Map<String, SsqPredictEntity> map = new HashMap<String, SsqPredictEntity>();
 		for (SsqPredictEntity basePredict : basePredicts) {
@@ -126,8 +125,7 @@ public class SsqPredictTask extends TaskTemplete {
 		return numberList1;
 	}
 
-	private List<SsqPredictEntity> excuteBaseRules(Map<String, RuleTemplate> beans,
-			List<SsqResultEntity> list, List<PredictRuleEntity> rules) {
+	private List<SsqPredictEntity> excuteBaseRules(Map<String, RuleTemplate> beans, List<SsqResultEntity> list, List<PredictRuleEntity> rules) {
 		List<SsqPredictEntity> result = new ArrayList<SsqPredictEntity>();
 		for (PredictRuleEntity rule : rules) {
 			if (RuleType.MULTI.name().equals(rule.getRuleType()) || rule.getTerms() > list.size()) {
@@ -162,8 +160,7 @@ public class SsqPredictTask extends TaskTemplete {
 		return result;
 	}
 
-	private SsqPredictEntity excuteGeneRule(PredictRuleEntity rule,
-			Map<String, SsqPredictEntity> map, List<SsqPredictEntity> basePredicts) {
+	private SsqPredictEntity excuteGeneRule(PredictRuleEntity rule, Map<String, SsqPredictEntity> map, List<SsqPredictEntity> basePredicts) {
 		List<String> redNumbers = null;
 		List<String> blueNumbers = null;
 		Type typeOfT = new TypeToken<Map<String, Integer>>() {

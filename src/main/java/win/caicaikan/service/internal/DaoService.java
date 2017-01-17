@@ -3,6 +3,7 @@
  */
 package win.caicaikan.service.internal;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -13,6 +14,7 @@ import lombok.EqualsAndHashCode;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -120,10 +122,10 @@ public class DaoService {
 		}
 	}
 
-	public boolean existsById(String id, Class<?> entityClass) {
+	public <T> boolean existsById(String id, Class<T> entityClass) {
 		try {
 			Condition condition = new Condition();
-			condition.addParam("id", "=", id);
+			condition.addParam(this.getIdColName(entityClass), "=", id);
 			return this.exists(condition, entityClass);
 		} catch (Exception e) {
 			logger.error("existsById:" + id + ",class=" + entityClass.getSimpleName());
@@ -202,6 +204,19 @@ public class DaoService {
 			query.skip((condition.pageNo - 1) * condition.limit);
 		}
 		return query;
+	}
+
+	public <T> String getIdColName(Class<T> entityClass) {
+		while (!entityClass.equals(Object.class)) {
+			Field fields[] = entityClass.getDeclaredFields();
+			for (Field field : fields) {
+				Id[] annotations = field.getAnnotationsByType(Id.class);
+				if (annotations != null && annotations.length == 1) {
+					return field.getName();
+				}
+			}
+		}
+		throw new RuntimeException("无ID字段");
 	}
 
 	@Data

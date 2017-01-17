@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import win.caicaikan.BaseTest;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 
 /**
  * @Desc
@@ -17,31 +18,13 @@ import win.caicaikan.BaseTest;
 public class DaoServiceTest extends BaseTest {
 	@Autowired
 	private DaoService daoService;
-	@Autowired
-	private InitService initService;
 
+	/**
+	 * Test method for {@link DaoService#getIdColName(Class)}.
+	 */
 	@Test
-	public void testInitSysConfigs() {
-		initService.initSysConfigs();
-	}
-
-	@Test
-	public void testInitMenus() {
-		initService.initMenus();
-	}
-
-	@Test
-	public void testInitTasks() {
-		initService.initTasks();
-	}
-
-	@Test
-	public void testInitPredictRules() {
-		initService.initPredictRules();
-	}
-
-	@Test
-	public void testInitSsqPrizeRules() {
-		initService.initSsqPrizeRules();
+	public void testGetIdColName() {
+		String idColName = daoService.getIdColName(SsqResultEntity.class);
+		System.out.println(idColName);
 	}
 }

@@ -48,7 +48,7 @@ public class HistoryController {
 	@RequestMapping(value = { "ssq" })
 	public String queryHistoryOfSsq(HttpServletRequest request, ModelMap map) {
 		Condition condition = new Condition();
-		condition.setOrderBy("termNo");
+		condition.setOrderBy(daoService.getIdColName(SsqResultEntity.class));
 		condition.setLimit(100);
 		List<SsqResultEntity> ssqs = daoService.query(condition, SsqResultEntity.class);
 		if (!CollectionUtils.isEmpty(ssqs)) {
@@ -56,8 +56,7 @@ public class HistoryController {
 			try {
 				String nextTermNoOfSsq = ruleService.getNextTermNoOfSsq(ssq);
 				map.put("nextTermNoOfSsq", nextTermNoOfSsq);
-				Date nextTermOpenDateOfSsq = ruleService
-						.getNextTermOpenDateOfSsq(ssq.getOpenTime());
+				Date nextTermOpenDateOfSsq = ruleService.getNextTermOpenDateOfSsq(ssq.getOpenTime());
 				map.put("nextTermOpenDateOfSsq", DateUtil._SECOND.format(nextTermOpenDateOfSsq));
 			} catch (RuntimeException e) {
 				e.printStackTrace();
