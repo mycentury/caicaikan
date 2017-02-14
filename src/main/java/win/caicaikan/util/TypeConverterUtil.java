@@ -32,6 +32,9 @@ public class TypeConverterUtil {
 		while (!clazz.equals(Object.class)) {
 			Field fields[] = clazz.getDeclaredFields();
 			for (Field field : fields) {
+				if (field.getModifiers() > 4) {
+					continue;
+				}
 				final boolean access = field.isAccessible();
 				try {
 					field.setAccessible(true);
