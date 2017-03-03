@@ -257,7 +257,7 @@
 
 		function save_rule(){
 			var form = $("#edit-form").serialize();
-			general_ajax("/admin/save_rule", "post", form, null, function(result){
+			general_ajax("/admin/rule/save", "post", form, null, function(result){
 				if (get_type(result) == "[object String]") {
 					result = json_parse(result);
 				}

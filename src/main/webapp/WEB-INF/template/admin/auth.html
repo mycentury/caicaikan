@@ -225,7 +225,7 @@
 	<script type="text/javascript">
 		function auto_authorize(text){
 			var action=text=="撤权"?"RevokeSecurityGroup":"AuthorizeSecurityGroup";
-			general_ajax("/admin/security", "POST", {action:action}, null, function(result){
+			general_ajax("/admin/auth/security", "POST", {action:action}, null, function(result){
 				if (get_type(result) == "[object String]") {
 					result = json_parse(result);
 				}
