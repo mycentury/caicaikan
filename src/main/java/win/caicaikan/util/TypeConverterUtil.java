@@ -32,6 +32,7 @@ public class TypeConverterUtil {
 		while (!clazz.equals(Object.class)) {
 			Field fields[] = clazz.getDeclaredFields();
 			for (Field field : fields) {
+				//final static等修饰符过滤
 				if (field.getModifiers() > 4) {
 					continue;
 				}
