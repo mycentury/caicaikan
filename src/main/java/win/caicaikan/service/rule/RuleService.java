@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -25,6 +26,7 @@ import win.caicaikan.util.MathUtil;
  */
 @Service
 public class RuleService {
+	private static final Logger logger = Logger.getLogger(RuleService.class);
 	private static final BigInteger RED_MAX = new BigInteger("33");
 	private static final BigInteger BLUE_MAX = new BigInteger("16");
 	private static final BigInteger RED_VALID = new BigInteger("6");
@@ -63,8 +65,7 @@ public class RuleService {
 			}
 			BigInteger redNeeded = new BigInteger(split2[0]);
 			BigInteger blueNeeded = new BigInteger(split2[1]);
-			if (redNeeded.compareTo(BigInteger.ZERO) < 0 || redNeeded.compareTo(RED_VALID) > 0
-					|| blueNeeded.compareTo(BigInteger.ZERO) < 0
+			if (redNeeded.compareTo(BigInteger.ZERO) < 0 || redNeeded.compareTo(RED_VALID) > 0 || blueNeeded.compareTo(BigInteger.ZERO) < 0
 					|| blueNeeded.compareTo(BLUE_VALID) > 0) {
 				throw new RuntimeException("参数有误：" + prizecondition);
 			}
@@ -78,8 +79,7 @@ public class RuleService {
 	}
 
 	public String getCurrentTermNoOfSsq() {
-		SysConfigEntity currentTerm = daoService.queryById(SysConfig.SSQ_CURRENT_TERM.getId(),
-				SysConfigEntity.class);
+		SysConfigEntity currentTerm = daoService.queryById(SysConfig.SSQ_CURRENT_TERM.getId(), SysConfigEntity.class);
 		Date openDate;
 		try {
 			openDate = DateUtil._SECOND.parse(currentTerm.getKey());
@@ -115,8 +115,7 @@ public class RuleService {
 	}
 
 	public String getNextTermNoOfSsq() {
-		SysConfigEntity nextTerm = daoService.queryById(SysConfig.SSQ_NEXT_TERM.getId(),
-				SysConfigEntity.class);
+		SysConfigEntity nextTerm = daoService.queryById(SysConfig.SSQ_NEXT_TERM.getId(), SysConfigEntity.class);
 		Date openDate;
 		try {
 			openDate = DateUtil._SECOND.parse(nextTerm.getKey());
@@ -124,6 +123,7 @@ public class RuleService {
 			throw new RuntimeException(e);
 		}
 		String termNo = nextTerm.getValue();
+		boolean changed = false;
 		while (openDate.compareTo(new Date()) < 0) {
 			int yearOfThisTerm = DateUtil.getYear(openDate);
 			int week = DateUtil.getWeek(openDate);
@@ -141,10 +141,14 @@ public class RuleService {
 			} else {
 				termNo = String.valueOf(Integer.valueOf(termNo) + 1);
 			}
+			logger.info(termNo + "=" + DateUtil._SECOND.format(openDate));
+			changed = true;
 		}
-		nextTerm.setKey(DateUtil._SECOND.format(openDate));
-		nextTerm.setValue(termNo);
-		daoService.save(nextTerm);
+		if (changed) {
+			nextTerm.setKey(DateUtil._SECOND.format(openDate));
+			nextTerm.setValue(termNo);
+			daoService.save(nextTerm);
+		}
 		return termNo;
 	}
 
@@ -172,7 +176,7 @@ public class RuleService {
 		}
 	}
 
-	public Date getNextTermOpenDateOfSsq(String openTime) {
+	public String getNextTermOpenDateOfSsq(String openTime) {
 		Date thisDate = null;
 		try {
 			thisDate = DateUtil._SECOND.parse(openTime);
@@ -187,6 +191,6 @@ public class RuleService {
 			daysToNextTerm++;
 		}
 		Date nextDate = DateUtil.addDays(thisDate, daysToNextTerm);
-		return nextDate;
+		return DateUtil._SECOND.format(nextDate);
 	}
 }

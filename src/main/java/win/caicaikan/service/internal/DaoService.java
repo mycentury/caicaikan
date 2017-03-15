@@ -45,8 +45,7 @@ public class DaoService {
 			entity.setUpdateTime(now);
 			mongoTemplate.insert(entity);
 		} catch (Exception e) {
-			logger.error("insert:" + entity);
-			throw new RuntimeException(e);
+			logger.error("insert:" + entity, e);
 		}
 	}
 
@@ -59,8 +58,7 @@ public class DaoService {
 			}
 			mongoTemplate.insert(entityList, classOfT);
 		} catch (Exception e) {
-			logger.error("insert:" + entityList);
-			throw new RuntimeException(e);
+			logger.error("insert:" + entityList, e);
 		}
 	}
 
@@ -68,8 +66,7 @@ public class DaoService {
 		try {
 			mongoTemplate.remove(entity);
 		} catch (Exception e) {
-			logger.error("delete:" + entity);
-			throw new RuntimeException(e);
+			logger.error("delete:" + entity, e);
 		}
 	}
 
@@ -78,8 +75,7 @@ public class DaoService {
 			Query query = this.assembleQuery(condition);
 			mongoTemplate.remove(query, entityClass);
 		} catch (Exception e) {
-			logger.error("delete:" + condition + ",class=" + entityClass.getSimpleName());
-			throw new RuntimeException(e);
+			logger.error("delete:" + condition + ",class=" + entityClass.getSimpleName(), e);
 		}
 	}
 
@@ -91,8 +87,7 @@ public class DaoService {
 			}
 			mongoTemplate.save(entity);
 		} catch (Exception e) {
-			logger.error("save:" + entity);
-			throw new RuntimeException(e);
+			logger.error("save:" + entity, e);
 		}
 	}
 
@@ -107,8 +102,8 @@ public class DaoService {
 			Query query = this.assembleQuery(condition);
 			return mongoTemplate.count(query, entityClass);
 		} catch (Exception e) {
-			logger.error("count:" + condition + ",class=" + entityClass.getSimpleName());
-			throw new RuntimeException(e);
+			logger.error("count:" + condition + ",class=" + entityClass.getSimpleName(), e);
+			return -1;
 		}
 	}
 
@@ -117,8 +112,8 @@ public class DaoService {
 			Query query = this.assembleQuery(condition);
 			return mongoTemplate.exists(query, entityClass);
 		} catch (Exception e) {
-			logger.error("exists:" + condition + ",class=" + entityClass.getSimpleName());
-			throw new RuntimeException(e);
+			logger.error("exists:" + condition + ",class=" + entityClass.getSimpleName(), e);
+			return false;
 		}
 	}
 
@@ -128,8 +123,8 @@ public class DaoService {
 			condition.addParam(this.getIdColName(entityClass), "=", id);
 			return this.exists(condition, entityClass);
 		} catch (Exception e) {
-			logger.error("existsById:" + id + ",class=" + entityClass.getSimpleName());
-			throw new RuntimeException(e);
+			logger.error("existsById:" + id + ",class=" + entityClass.getSimpleName(), e);
+			return false;
 		}
 	}
 
@@ -137,8 +132,8 @@ public class DaoService {
 		try {
 			return mongoTemplate.findById(id, entityClass);
 		} catch (Exception e) {
-			logger.error("queryById:" + id + ",class=" + entityClass.getSimpleName());
-			throw new RuntimeException(e);
+			logger.error("queryById:" + id + ",class=" + entityClass.getSimpleName(), e);
+			return null;
 		}
 	}
 
@@ -147,8 +142,8 @@ public class DaoService {
 			Query query = this.assembleQuery(condition);
 			return mongoTemplate.find(query, entityClass);
 		} catch (Exception e) {
-			logger.error("query:" + condition + ",class=" + entityClass.getSimpleName());
-			throw new RuntimeException(e);
+			logger.error("query:" + condition + ",class=" + entityClass.getSimpleName(), e);
+			return null;
 		}
 	}
 

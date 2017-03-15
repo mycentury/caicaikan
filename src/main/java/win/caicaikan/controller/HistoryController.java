@@ -4,7 +4,6 @@
 package win.caicaikan.controller;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +21,6 @@ import win.caicaikan.service.internal.DaoService.Condition;
 import win.caicaikan.service.rule.RuleService;
 import win.caicaikan.service.rule.RuleTemplate.Result;
 import win.caicaikan.service.rule.ssq.RuleDisplayTimes;
-import win.caicaikan.util.DateUtil;
 
 /**
  * @Desc
@@ -56,8 +54,8 @@ public class HistoryController {
 			try {
 				String nextTermNoOfSsq = ruleService.getNextTermNoOfSsq(ssq);
 				map.put("nextTermNoOfSsq", nextTermNoOfSsq);
-				Date nextTermOpenDateOfSsq = ruleService.getNextTermOpenDateOfSsq(ssq.getOpenTime());
-				map.put("nextTermOpenDateOfSsq", DateUtil._SECOND.format(nextTermOpenDateOfSsq));
+				String nextTermOpenDateOfSsq = ruleService.getNextTermOpenDateOfSsq(ssq.getOpenTime());
+				map.put("nextTermOpenDateOfSsq", nextTermOpenDateOfSsq);
 			} catch (RuntimeException e) {
 				e.printStackTrace();
 			}

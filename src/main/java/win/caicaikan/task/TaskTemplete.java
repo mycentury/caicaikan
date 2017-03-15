@@ -63,6 +63,7 @@ public abstract class TaskTemplete {
 			// 状态更新为SUCCESS，任务成功完成
 			task.setExecuteStatus(ExecuteStatus.SUCCESS.name());
 			task.setUpdateTime(new Date());
+			task.setInfo(null);
 			daoService.save(task);
 		}
 	}

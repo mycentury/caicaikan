@@ -32,7 +32,7 @@ public class InitServiceTest extends BaseTest {
 	 */
 	@Test
 	public void testInitSsqPredicts() {
-		initService.initSsqPredicts(2000);
+		initService.initSsqPredicts(1000);
 	}
 
 	/**

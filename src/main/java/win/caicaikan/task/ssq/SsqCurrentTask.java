@@ -15,11 +15,16 @@ import org.springframework.util.StringUtils;
 import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.api.res.Result;
 import win.caicaikan.constant.LotteryType;
+import win.caicaikan.constant.SysConfig;
+import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
+import win.caicaikan.repository.mongodb.entity.SysConfigEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.service.external.SsqService;
+import win.caicaikan.service.internal.CalculateService;
 import win.caicaikan.service.internal.DaoService;
 import win.caicaikan.service.internal.DaoService.Condition;
+import win.caicaikan.service.rule.RuleService;
 import win.caicaikan.task.TaskTemplete;
 
 /**
@@ -35,6 +40,10 @@ public class SsqCurrentTask extends TaskTemplete {
 	private SsqService ssqService;
 	@Autowired
 	private DaoService daoService;
+	@Autowired
+	private RuleService ruleService;
+	@Autowired
+	private CalculateService calculateService;
 
 	@Override
 	public void doInTask() {
@@ -46,6 +55,18 @@ public class SsqCurrentTask extends TaskTemplete {
 			logger.error("getSsqCurrentByLotteryReq获取数据失败");
 			return;
 		}
+		SsqResultEntity currSsqResult = result.getData().get(0);
+		SysConfigEntity currTerm = daoService.queryById(SysConfig.SSQ_CURRENT_TERM.getId(), SysConfigEntity.class);
+		SysConfigEntity nextTerm = daoService.queryById(SysConfig.SSQ_NEXT_TERM.getId(), SysConfigEntity.class);
+		if (!currSsqResult.getId().equals(currTerm.getValue())) {
+			currTerm.setKey(currSsqResult.getOpenTime());
+			currTerm.setValue(currSsqResult.getId());
+			nextTerm.setKey(ruleService.getNextTermOpenDateOfSsq(currSsqResult.getOpenTime()));
+			nextTerm.setValue(ruleService.getNextTermNoOfSsq(currSsqResult));
+			daoService.save(currTerm);
+			daoService.save(nextTerm);
+		}
+
 		for (SsqResultEntity ssqResult : result.getData()) {
 			if (!daoService.existsById(ssqResult.getId(), SsqResultEntity.class)) {
 				daoService.insert(ssqResult);
@@ -64,6 +85,13 @@ public class SsqCurrentTask extends TaskTemplete {
 				ssqPredict.setRightNumbers(rightNumPoses);
 				daoService.save(ssqPredict);
 			}
+		}
+
+		// 计算更新概率
+		List<PredictRuleEntity> allPredictRules = daoService.query(null, PredictRuleEntity.class);
+		for (PredictRuleEntity predictRule : allPredictRules) {
+			predictRule = calculateService.countRate(predictRule, 6, 1);
+			daoService.save(predictRule);
 		}
 	}
 

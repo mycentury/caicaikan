@@ -33,6 +33,8 @@ public class PrizeRuleEntity extends BaseEntity {
 	private BigInteger prizeCases;
 	private BigInteger allCases;
 	private BigInteger rate;
+	private Long avgPrize;
+	private Integer termCount;
 	private String name;
 	private String desc;
 

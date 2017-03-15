@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import win.caicaikan.api.req.LotteryReq;
 import win.caicaikan.api.res.Result;
@@ -75,8 +76,7 @@ public class InitService {
 				if (i >= 1) {
 					results.remove(0);
 				}
-				logger.info("正在预测" + ruleService.getNextTermNoOfSsq(results.get(0)) + "期,"
-						+ (i + 1) + "/" + terms);
+				logger.info("正在预测" + ruleService.getNextTermNoOfSsq(results.get(0)) + "期," + (i + 1) + "/" + terms);
 				ssqPredictTask.predictByResults(results, rules);
 			} catch (Throwable e) {
 				e.printStackTrace();
@@ -91,15 +91,13 @@ public class InitService {
 		for (PredictRuleEntity predictRule : predictRules) {
 			condition = new Condition();
 			condition.addParam("ruleId", "=", predictRule.getId());
-			List<SsqPredictEntity> ssqPredicts = daoService
-					.query(condition, SsqPredictEntity.class);
+			List<SsqPredictEntity> ssqPredicts = daoService.query(condition, SsqPredictEntity.class);
 			Double redPositionCount = 0D;
 			Double bluePositionCount = 0D;
 			for (SsqPredictEntity ssqPredict : ssqPredicts) {
 				for (SsqResultEntity ssqResult : ssqResults) {
 					if (ssqPredict.getTermNo().equals(ssqResult.getId())) {
-						String rightPositions = ssqCurrentTask.getRightNumPositions(ssqPredict,
-								ssqResult);
+						String rightPositions = ssqCurrentTask.getRightNumPositions(ssqPredict, ssqResult);
 						String[] numPositions = rightPositions.split("\\+");
 						String[] redPositions = numPositions[0].split(",");
 						for (String red : redPositions) {
@@ -232,8 +230,9 @@ public class InitService {
 	}
 
 	public void initPredictRules() {
+		List<PredictRuleEntity> rules = new ArrayList<PredictRuleEntity>();
 		PredictRuleEntity rule = null;
-		int[] termCounts = { 2000, 1000, 500, 200, 100, 50 };
+		int[] termCounts = { 1000, 500, 200, 100 };
 		for (int i = 0; i < termCounts.length; i++) {
 			for (RuleType ruleType : RuleType.values()) {
 				if (ruleType.equals(RuleType.MULTI)) {
@@ -246,17 +245,16 @@ public class InitService {
 				rule.setExecuteStatus(ExecuteStatus.SUCCESS.name());
 				rule.setCreateTime(new Date());
 				rule.setUpdateTime(new Date());
-				daoService.save(rule);
+				rules.add(rule);
 			}
 		}
 
 		for (int i = 0; i < termCounts.length; i++) {
-			for (int j = 10; j < 90; j += 10) {
-				for (int k = 0; k <= 10 && j + k < 100; k += 10) {
-					String id = j + "," + (100 - j - k) + "," + k;
+			for (int j = 30; j < 100; j += 30) {
+				for (int k = 0; k < 2; k++) {
+					String id = j + "," + (100 - j) + "," + 10 * k;
 					rule = new PredictRuleEntity();
-					rule.setPrimaryKey(LotteryType.SSQ.getCode(), RuleType.MULTI.name(),
-							termCounts[i]);
+					rule.setPrimaryKey(LotteryType.SSQ.getCode(), RuleType.MULTI.name(), termCounts[i]);
 					rule.setId(rule.getId() + "-" + id);
 					rule.setRuleName(RuleType.MULTI.getDesc() + termCounts[i] + ",比例" + id);
 					rule.setStatus(1);
@@ -265,17 +263,36 @@ public class InitService {
 					rule.setUpdateTime(new Date());
 					Map<String, Integer> map = new HashMap<>();
 					map.put(RuleType.DISPLAY_TIMES.name(), j);
-					map.put(RuleType.SKIP_TIMES.name(), 100 - j - k);
-					map.put(RuleType.DOUBLE_TIMES.name(), k);
+					map.put(RuleType.SKIP_TIMES.name(), 100 - j);
+					map.put(RuleType.DOUBLE_TIMES.name(), 10 * k);
 					String ruleAndweights = GsonUtil.toJson(map);
 					rule.setRuleAndweights(ruleAndweights);
-					daoService.save(rule);
+					rules.add(rule);
 				}
 			}
 		}
+		daoService.delete(null, PredictRuleEntity.class);
+		daoService.insert(rules, PredictRuleEntity.class);
 	}
 
 	public void initSsqPrizeRules() {
+		List<SsqResultEntity> allResults = daoService.query(null, SsqResultEntity.class);
+		int firstPrizeCount = 0;
+		long firstPrizeAmount = 0;
+		int secondPrizeCount = 0;
+		long secondPrizeAmount = 0;
+		for (SsqResultEntity ssqResult : allResults) {
+			int tempAmount = 0;
+			if (StringUtils.hasText(ssqResult.getFirstPrizeAmount()) && (tempAmount = Integer.valueOf(ssqResult.getFirstPrizeAmount())) > 0) {
+				firstPrizeCount++;
+				firstPrizeAmount += tempAmount;
+			}
+			if (StringUtils.hasText(ssqResult.getSecondPrizeAmount()) && (tempAmount = Integer.valueOf(ssqResult.getSecondPrizeAmount())) > 0) {
+				secondPrizeCount++;
+				secondPrizeAmount += tempAmount;
+			}
+		}
+
 		List<PrizeRuleEntity> entityList = new ArrayList<PrizeRuleEntity>();
 		PrizeRuleEntity entity = null;
 		BigInteger allCases = ruleService.countSsqAllCases();
@@ -288,6 +305,8 @@ public class InitService {
 		entity.setDesc("当奖池资金低于1亿元时，奖金总额为当期高等奖奖金的75%与奖池中累积的奖金之和，单注奖金按注均分，单注最高限额封顶500万元。当奖池资金高于1亿元（含）时，奖金总额包括两部分，一部分为当期高等奖奖金的55%与奖池中累积的奖金之和，单注奖金按注均分，单注最高限额封顶500万元；另一部分为当期高等奖奖金的20%，单注奖金按注均分，单注最高限额封顶500万元。");
 		prizeCases = ruleService.countSsqPrizeCases(entity.getCondition());
 		entity.setRate(prizeCases, allCases);
+		entity.setAvgPrize(firstPrizeAmount / firstPrizeCount * 4 / 5);
+		entity.setTermCount(firstPrizeCount);
 		entityList.add(entity);
 
 		entity = new PrizeRuleEntity();
@@ -297,6 +316,8 @@ public class InitService {
 		entity.setDesc("当期高等奖奖金的25%");
 		prizeCases = ruleService.countSsqPrizeCases(entity.getCondition());
 		entity.setRate(prizeCases, allCases);
+		entity.setAvgPrize(secondPrizeAmount / secondPrizeCount * 4 / 5);
+		entity.setTermCount(secondPrizeCount);
 		entityList.add(entity);
 
 		entity = new PrizeRuleEntity();
@@ -306,6 +327,7 @@ public class InitService {
 		entity.setDesc("单注奖金额固定为3000元");
 		prizeCases = ruleService.countSsqPrizeCases(entity.getCondition());
 		entity.setRate(prizeCases, allCases);
+		entity.setAvgPrize(3000L);
 		entityList.add(entity);
 
 		entity = new PrizeRuleEntity();
@@ -315,6 +337,7 @@ public class InitService {
 		entity.setDesc("单注奖金额固定为200元");
 		prizeCases = ruleService.countSsqPrizeCases(entity.getCondition());
 		entity.setRate(prizeCases, allCases);
+		entity.setAvgPrize(200L);
 		entityList.add(entity);
 
 		entity = new PrizeRuleEntity();
@@ -324,6 +347,7 @@ public class InitService {
 		entity.setDesc("单注奖金额固定为10元");
 		prizeCases = ruleService.countSsqPrizeCases(entity.getCondition());
 		entity.setRate(prizeCases, allCases);
+		entity.setAvgPrize(10L);
 		entityList.add(entity);
 
 		entity = new PrizeRuleEntity();
@@ -333,7 +357,9 @@ public class InitService {
 		entity.setDesc("单注奖金额固定为5元");
 		prizeCases = ruleService.countSsqPrizeCases(entity.getCondition());
 		entity.setRate(prizeCases, allCases);
+		entity.setAvgPrize(5L);
 		entityList.add(entity);
-		daoService.save(entityList);
+		daoService.delete(null, PrizeRuleEntity.class);
+		daoService.insert(entityList, PrizeRuleEntity.class);
 	}
 }
