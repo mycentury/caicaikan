@@ -21,9 +21,11 @@ import win.caicaikan.constant.ExecuteStatus;
 import win.caicaikan.constant.RuleType;
 import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
+import win.caicaikan.repository.mongodb.entity.ssq.SsqRecommendEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.service.internal.DaoService;
 import win.caicaikan.service.internal.DaoService.Condition;
+import win.caicaikan.service.rule.RuleService;
 import win.caicaikan.service.rule.RuleTemplate;
 import win.caicaikan.task.TaskTemplete;
 import win.caicaikan.util.GsonUtil;
@@ -43,6 +45,8 @@ public class SsqPredictTask extends TaskTemplete {
 	private static final Logger logger = Logger.getLogger(SsqPredictTask.class);
 	@Autowired
 	private DaoService daoService;
+	@Autowired
+	private RuleService ruleService;
 
 	@Override
 	@Scheduled(cron = "${task.cron.ssq.predict}")
@@ -58,6 +62,155 @@ public class SsqPredictTask extends TaskTemplete {
 		condition.setOrderBy(daoService.getIdColName(SsqResultEntity.class));
 		List<SsqResultEntity> results = daoService.query(condition, SsqResultEntity.class);
 		this.predictByResults(results, rules);
+		// 根据预测规则的几率和预测结果计算最佳组合
+		String nextTermNo = ruleService.getNextTermNoOfSsq(results.get(0));
+		this.recommendBest(rules, nextTermNo);
+	}
+
+	/**
+	 * @param rules
+	 */
+	private void recommendBest(List<PredictRuleEntity> rules, String nextTermNo) {
+		PredictRuleEntity[][] maxRateRules = new PredictRuleEntity[7][2];
+		boolean hasInit = false;
+		for (int i = 0; i < rules.size(); i++) {
+			PredictRuleEntity rule = rules.get(i);
+			if (RuleType.DOUBLE_TIMES.equals(rule.getRuleType())) {
+				continue;
+			}
+			if (!hasInit) {
+				for (int j = 0; j < maxRateRules.length; j++) {
+					maxRateRules[j][0] = rules.get(0);
+					maxRateRules[j][1] = rules.get(0);
+				}
+				hasInit = true;
+			}
+			int number;
+			// 1
+			number = 0;
+			if (rule.getFirstRedRate() > maxRateRules[number][0].getFirstRedRate()) {
+				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+					maxRateRules[number][1] = maxRateRules[number][0];
+				}
+				maxRateRules[number][0] = rule;
+			} else if (rule.getFirstRedRate() > maxRateRules[number][1].getFirstRedRate()) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+					maxRateRules[number][1] = rule;
+				}
+			}
+			// 2
+			number = 1;
+			if (rule.getSecondRedRate() > maxRateRules[number][0].getSecondRedRate()) {
+				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+					maxRateRules[number][1] = maxRateRules[number][0];
+				}
+				maxRateRules[number][0] = rule;
+			} else if (rule.getSecondRedRate() > maxRateRules[number][1].getSecondRedRate()) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+					maxRateRules[number][1] = rule;
+				}
+			}
+			// 3
+			number = 2;
+			if (rule.getThirdRedRate() > maxRateRules[number][0].getThirdRedRate()) {
+				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+					maxRateRules[number][1] = maxRateRules[number][0];
+				}
+				maxRateRules[number][0] = rule;
+			} else if (rule.getThirdRedRate() > maxRateRules[number][1].getThirdRedRate()) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+					maxRateRules[number][1] = rule;
+				}
+			}
+			// 4
+			number = 3;
+			if (rule.getForthRedRate() > maxRateRules[number][0].getForthRedRate()) {
+				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+					maxRateRules[number][1] = maxRateRules[number][0];
+				}
+				maxRateRules[number][0] = rule;
+			} else if (rule.getForthRedRate() > maxRateRules[number][1].getForthRedRate()) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+					maxRateRules[number][1] = rule;
+				}
+			}
+			// 5
+			number = 4;
+			if (rule.getFifthRedRate() > maxRateRules[number][0].getFifthRedRate()) {
+				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+					maxRateRules[number][1] = maxRateRules[number][0];
+				}
+				maxRateRules[number][0] = rule;
+			} else if (rule.getFifthRedRate() > maxRateRules[number][1].getFifthRedRate()) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+					maxRateRules[number][1] = rule;
+				}
+			}
+			// 6
+			number = 5;
+			if (rule.getSixthRedRate() > maxRateRules[number][0].getSixthRedRate()) {
+				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+					maxRateRules[number][1] = maxRateRules[number][0];
+				}
+				maxRateRules[number][0] = rule;
+			} else if (rule.getSixthRedRate() > maxRateRules[number][1].getSixthRedRate()) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+					maxRateRules[number][1] = rule;
+				}
+			}
+			// 7
+			number = 6;
+			if (rule.getBlueRate() > maxRateRules[number][0].getBlueRate()) {
+				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+					maxRateRules[number][1] = maxRateRules[number][0];
+				}
+				maxRateRules[number][0] = rule;
+			} else if (rule.getBlueRate() > maxRateRules[number][1].getBlueRate()) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+					maxRateRules[number][1] = rule;
+				}
+			}
+		}
+		List<String> resultList = new ArrayList<String>();
+		int min = 1;
+		int max = 33 / 6 * 2;
+		String[] reds = new String[6];
+		String blue = null;
+
+		for (int i = 0; i < 6; i++) {
+			Map<String, Integer> map = new HashMap<String, Integer>();
+			for (int j = 0; j < 2; j++) {
+				String predictId = maxRateRules[i][j].getId() + "-" + nextTermNo;
+				SsqPredictEntity queryById = daoService.queryById(predictId, SsqPredictEntity.class);
+				for (int k = 0; k < 10; k++) {
+					String red = queryById.getRedNumbers().get(i).split("=")[0];
+					int number = Integer.valueOf(red);
+					if (number >= min && number <= max) {
+						int original = map.get(red) == null ? 0 : map.get(red);
+						map.put(red, original - j - k);
+					}
+				}
+			}
+			List<String> sortMapToList = MapUtil.sortMapToList(map, "=", MapUtil.DESC);
+			sortMapToList.get(0);
+		}
+		SsqRecommendEntity entity = new SsqRecommendEntity();
+		entity.setPrimaryKey("20170316", nextTermNo);
+
 	}
 
 	public void predictByResults(List<SsqResultEntity> list, List<PredictRuleEntity> rules) {

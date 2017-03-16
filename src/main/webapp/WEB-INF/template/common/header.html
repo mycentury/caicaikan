@@ -3,11 +3,17 @@
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar" aria-expanded="true" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
 				<a class="" href="/"><img alt="主页" src="/img/logo.png" /></a>
 			</div>
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse">
+			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li th:each="item:${menuList}" th:if="${#lists.isEmpty(item.subMenus)}" th:class="${item.id eq menu}?'active'"><a href="#" th:href="${item.path}" th:utext="${item.nameZh}"></a></li>
 					<li th:each="item:${menuList}" th:if="${not #lists.isEmpty(item.subMenus)}" th:class="${item.id eq menu}?'active dropdown':'dropdown'"><a href="#" th:href="${item.path}" class="dropdown-toggle"
