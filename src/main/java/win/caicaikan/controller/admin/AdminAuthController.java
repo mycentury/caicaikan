@@ -60,7 +60,7 @@ public class AdminAuthController {
 		if (!sessionService.hasLogin(request)) {
 			return "redirect:/admin/login";
 		}
-		AliSecurityQueryReq req = TypeConverterUtil.map(apiConfig, AliSecurityQueryReq.class);
+		AliSecurityQueryReq req = TypeConverterUtil.convert(apiConfig, AliSecurityQueryReq.class);
 		req.setSignatureNonce(UUID.randomUUID().toString());
 		Date timeByTimeZone = DateUtil.getUtcTime();
 		req.setTimestamp(DateUtil.toChar(timeByTimeZone, DateUtil.ISO8601));
@@ -122,7 +122,7 @@ public class AdminAuthController {
 			return result;
 		}
 		try {
-			AliSecurityReq req = TypeConverterUtil.map(apiConfig, AliSecurityReq.class);
+			AliSecurityReq req = TypeConverterUtil.convert(apiConfig, AliSecurityReq.class);
 			req.setAction(action);
 			req.setIpProtocol("all");
 			req.setPortRange("-1/-1");

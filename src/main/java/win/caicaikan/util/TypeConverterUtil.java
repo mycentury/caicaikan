@@ -8,7 +8,7 @@ public class TypeConverterUtil {
 	private TypeConverterUtil() {
 	}
 
-	public static <T> T map(final Object source, final Class<T> destClazz) {
+	public static <T> T convert(final Object source, final Class<T> destClazz) {
 		final Map<String, Object> map = changeSourceToMap(source);
 		return changeMapToDest(destClazz, map);
 	}

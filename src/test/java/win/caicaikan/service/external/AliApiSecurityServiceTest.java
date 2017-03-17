@@ -36,7 +36,7 @@ public class AliApiSecurityServiceTest extends BaseTest {
 	 */
 	@Test
 	public void testQuerySecurityRules() {
-		AliSecurityQueryReq req = TypeConverterUtil.map(apiConfig, AliSecurityQueryReq.class);
+		AliSecurityQueryReq req = TypeConverterUtil.convert(apiConfig, AliSecurityQueryReq.class);
 		req.setAction("DescribeSecurityGroupAttribute");
 		req.setSignatureNonce(UUID.randomUUID().toString());
 		req.setNicType("intranet");
@@ -52,7 +52,7 @@ public class AliApiSecurityServiceTest extends BaseTest {
 	 */
 	@Test
 	public void testUpdateSecurityRule() {
-		AliSecurityReq req = TypeConverterUtil.map(apiConfig, AliSecurityReq.class);
+		AliSecurityReq req = TypeConverterUtil.convert(apiConfig, AliSecurityReq.class);
 		req.setAction("AuthorizeSecurityGroup");
 		req.setIpProtocol("all");
 		req.setPortRange("-1/-1");
@@ -70,7 +70,7 @@ public class AliApiSecurityServiceTest extends BaseTest {
 	 */
 	@Test
 	public void testDeleteSecurityRule() {
-		AliSecurityReq req = TypeConverterUtil.map(apiConfig, AliSecurityReq.class);
+		AliSecurityReq req = TypeConverterUtil.convert(apiConfig, AliSecurityReq.class);
 		req.setAction("RevokeSecurityGroup");
 		req.setIpProtocol("all");
 		req.setPortRange("-1/-1");

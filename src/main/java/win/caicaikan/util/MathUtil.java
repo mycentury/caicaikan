@@ -60,5 +60,6 @@ public class MathUtil {
 		System.out.println("h=" + h);
 		System.out.println("i=" + i);
 		System.out.println(b.divide(c));
+		System.out.println(C(new BigInteger("14"), new BigInteger("6")));
 	}
 }

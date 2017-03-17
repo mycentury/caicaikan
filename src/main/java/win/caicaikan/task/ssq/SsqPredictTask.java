@@ -64,18 +64,18 @@ public class SsqPredictTask extends TaskTemplete {
 		this.predictByResults(results, rules);
 		// 根据预测规则的几率和预测结果计算最佳组合
 		String nextTermNo = ruleService.getNextTermNoOfSsq(results.get(0));
-		this.recommendBest(rules, nextTermNo);
+		this.recommendBest(rules, nextTermNo, 10, 5);
 	}
 
 	/**
 	 * @param rules
 	 */
-	private void recommendBest(List<PredictRuleEntity> rules, String nextTermNo) {
+	public void recommendBest(List<PredictRuleEntity> rules, String nextTermNo, int redCount, int blueCount) {
 		PredictRuleEntity[][] maxRateRules = new PredictRuleEntity[7][2];
 		boolean hasInit = false;
 		for (int i = 0; i < rules.size(); i++) {
 			PredictRuleEntity rule = rules.get(i);
-			if (RuleType.DOUBLE_TIMES.equals(rule.getRuleType())) {
+			if (RuleType.DOUBLE_TIMES.name().equals(rule.getRuleType())) {
 				continue;
 			}
 			if (!hasInit) {
@@ -185,32 +185,68 @@ public class SsqPredictTask extends TaskTemplete {
 				}
 			}
 		}
-		List<String> resultList = new ArrayList<String>();
 		int min = 1;
 		int max = 33 / 6 * 2;
-		String[] reds = new String[6];
-		String blue = null;
+		StringBuilder sb = new StringBuilder();
 
+		Map<String, Integer> allRedMap = new HashMap<String, Integer>();
 		for (int i = 0; i < 6; i++) {
-			Map<String, Integer> map = new HashMap<String, Integer>();
+			Map<String, Integer> redmap = new HashMap<String, Integer>();
 			for (int j = 0; j < 2; j++) {
 				String predictId = maxRateRules[i][j].getId() + "-" + nextTermNo;
 				SsqPredictEntity queryById = daoService.queryById(predictId, SsqPredictEntity.class);
-				for (int k = 0; k < 10; k++) {
-					String red = queryById.getRedNumbers().get(i).split("=")[0];
+				for (int k = 0; k < redCount; k++) {
+					String red = queryById.getRedNumbers().get(k).split("=")[0];
 					int number = Integer.valueOf(red);
 					if (number >= min && number <= max) {
-						int original = map.get(red) == null ? 0 : map.get(red);
-						map.put(red, original - j - k);
+						int original = redmap.get(red) == null ? 0 : redmap.get(red);
+						redmap.put(red, original + 2 - j + redCount - k);
+						original = allRedMap.get(red) == null ? 0 : allRedMap.get(red);
+						allRedMap.put(red, original + 2 - j + redCount - k);
 					}
 				}
 			}
-			List<String> sortMapToList = MapUtil.sortMapToList(map, "=", MapUtil.DESC);
-			sortMapToList.get(0);
+			List<String> sortMapToList = MapUtil.sortMapToList(redmap, "=", MapUtil.DESC);
+			String red = sortMapToList.get(0).split("=")[0];
+			min = Math.max(Integer.valueOf(red), i) + 1;
+			max = Math.min(33 / 6 * (i + 3), 33 - i + 1);
+			sb.append(i == 0 ? "" : ",").append(red);
+		}
+
+		Map<String, Integer> blueMap = new HashMap<String, Integer>();
+		for (int j = 0; j < 2; j++) {
+			String predictId = maxRateRules[6][j].getId() + "-" + nextTermNo;
+			SsqPredictEntity queryById = daoService.queryById(predictId, SsqPredictEntity.class);
+			for (int k = 0; k < blueCount; k++) {
+				String blue = queryById.getBlueNumbers().get(k).split("=")[0];
+				int original = blueMap.get(blue) == null ? 0 : blueMap.get(blue);
+				blueMap.put(blue, original + 2 - j + blueCount - k);
+			}
+		}
+		sb.append("/");
+		List<String> redList = MapUtil.sortMapToList(allRedMap, "=", MapUtil.DESC);
+		min = 1;
+		max = 33 / 6 * 2;
+		for (int i = 0; i < 6 && i < redList.size(); i++) {
+			String red = redList.get(i).split("=")[0];
+			min = Math.max(Integer.valueOf(red), i) + 1;
+			max = Math.min(33 / 6 * (i + 3), 33 - i + 1);
+			sb.append(i == 0 ? "" : ",").append(red);
+		}
+
+		List<String> blueList = MapUtil.sortMapToList(blueMap, "=", MapUtil.DESC);
+		sb.append("+");
+		for (int i = 0; i < blueCount && i < blueList.size(); i++) {
+			String blue = blueList.get(i).split("=")[0];
+			sb.append(i == 0 ? "" : ",").append(blue);
 		}
 		SsqRecommendEntity entity = new SsqRecommendEntity();
 		entity.setPrimaryKey("20170316", nextTermNo);
+		entity.setRecommendNumbers(sb.toString());
+		entity.setRedNumbers(redList);
+		entity.setBlueNumbers(blueList);
 
+		daoService.save(entity);
 	}
 
 	public void predictByResults(List<SsqResultEntity> list, List<PredictRuleEntity> rules) {
@@ -221,13 +257,9 @@ public class SsqPredictTask extends TaskTemplete {
 		}
 
 		List<SsqPredictEntity> predicts = this.excuteBaseRules(beans, list, rules);
-		for (SsqPredictEntity ssqPredictEntity : predicts) {
-			daoService.save(ssqPredictEntity);
-		}
+		daoService.save(predicts);
 		predicts = this.excuteGeneRules(predicts, rules, list.size());
-		for (SsqPredictEntity ssqPredictEntity : predicts) {
-			daoService.save(ssqPredictEntity);
-		}
+		daoService.save(predicts);
 	}
 
 	private List<SsqPredictEntity> excuteGeneRules(List<SsqPredictEntity> basePredicts, List<PredictRuleEntity> rules, int terms) {
