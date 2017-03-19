@@ -48,8 +48,10 @@ public class MockService {
 		daoService.delete(null, MockResultEntity.class);
 		List<MockResultEntity> list = new ArrayList<MockResultEntity>();
 		for (int termNo = START_NO; termNo <= END_NO; termNo++) {
-			String[] redNumbers = Arrays.copyOf(SsqConstant.RED_NUMBERS, SsqConstant.RED_NUMBERS.length);
-			String[] blueNumbers = Arrays.copyOf(SsqConstant.BLUE_NUMBERS, SsqConstant.BLUE_NUMBERS.length);
+			String[] redNumbers = Arrays.copyOf(SsqConstant.RED_NUMBERS,
+					SsqConstant.RED_NUMBERS.length);
+			String[] blueNumbers = Arrays.copyOf(SsqConstant.BLUE_NUMBERS,
+					SsqConstant.BLUE_NUMBERS.length);
 			Random random = new Random();
 			List<String> redList = new ArrayList<String>();
 			while (redList.size() < 6) {
@@ -85,11 +87,15 @@ public class MockService {
 		condition.addParam(idColName, "<=", String.valueOf(endNo - 1));
 		condition.setLimit(SIZE);
 		List<MockResultEntity> results = daoService.query(condition, MockResultEntity.class);
+		logger.info("result from " + results.get(0) + " to " + results.get(results.size() - 1));
 		for (; endNo < END_NO; endNo++) {
 			// 预测
+			logger.info("predict for term " + endNo);
 			this.predictByResults(results, rules);
 			// 填充正确位置
-			MockResultEntity nextTerm = daoService.queryById(String.valueOf(endNo), MockResultEntity.class);
+			logger.info("calculate right positions of term " + endNo);
+			MockResultEntity nextTerm = daoService.queryById(String.valueOf(endNo),
+					MockResultEntity.class);
 			condition = new Condition();
 			condition.addParam("termNo", "=", String.valueOf(endNo));
 			List<MockPredictEntity> list = daoService.query(condition, MockPredictEntity.class);
@@ -101,15 +107,18 @@ public class MockService {
 			results.add(0, nextTerm);
 			results.remove(results.size() - 1);
 		}
+		logger.info("calculate rate");
 		// 计算概率
 		for (MockRuleEntity rule : rules) {
 			rule = this.countRate(rule, 6, 1);
 			daoService.save(rule);
 		}
+		logger.info("calculate rate end");
 		endNo = startNo + SIZE;
 		for (; endNo < END_NO; endNo++) {
 			// 根据预测规则的几率和预测结果计算最佳组合
-			String nextTermNo = String.valueOf(Integer.valueOf(results.get(0).getId()));
+			String nextTermNo = String.valueOf(endNo);
+			logger.info("recommend best of nextTermNo");
 			this.recommendBest(rules, nextTermNo, 10, 5);
 		}
 	}
@@ -121,7 +130,8 @@ public class MockService {
 		for (MockRuleEntity mockRule : mockRules) {
 			condition = new Condition();
 			condition.addParam("ruleId", "=", mockRule.getId());
-			List<MockPredictEntity> mockPredicts = daoService.query(condition, MockPredictEntity.class);
+			List<MockPredictEntity> mockPredicts = daoService.query(condition,
+					MockPredictEntity.class);
 			Double redPositionCount = 0D;
 			Double bluePositionCount = 0D;
 			for (MockPredictEntity mockPredict : mockPredicts) {
@@ -135,6 +145,10 @@ public class MockService {
 						}
 						Integer bluePosition = Integer.valueOf(numPositions[1].split(",")[0]);
 						bluePositionCount += bluePosition;
+						if (StringUtils.isEmpty(rightPositions)) {
+							logger.error("rightPositions null");
+						}
+						System.out.println();
 						mockPredict.setRightNumbers(rightPositions);
 						daoService.save(mockPredict);
 						break;
@@ -176,7 +190,8 @@ public class MockService {
 				for (int k = 0; k < 2; k++) {
 					String id = j + "," + (100 - j) + "," + 10 * k;
 					rule = new MockRuleEntity();
-					rule.setPrimaryKey(LotteryType.SSQ.getCode(), RuleType.MULTI.name(), termCounts[i]);
+					rule.setPrimaryKey(LotteryType.SSQ.getCode(), RuleType.MULTI.name(),
+							termCounts[i]);
 					rule.setId(rule.getId() + "-" + id);
 					rule.setRuleName(RuleType.MULTI.getDesc() + termCounts[i] + ",比例" + id);
 					rule.setStatus(1);
@@ -200,7 +215,8 @@ public class MockService {
 	/**
 	 * @param rules
 	 */
-	private void recommendBest(List<MockRuleEntity> rules, String nextTermNo, int redCount, int blueCount) {
+	private void recommendBest(List<MockRuleEntity> rules, String nextTermNo, int redCount,
+			int blueCount) {
 		MockRuleEntity[][] maxRateRules = new MockRuleEntity[7][2];
 		boolean hasInit = false;
 		for (int i = 0; i < rules.size(); i++) {
@@ -220,13 +236,16 @@ public class MockService {
 			number = 0;
 			if (rule.getFirstRedRate() > maxRateRules[number][0].getFirstRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getFirstRedRate() > maxRateRules[number][1].getFirstRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -234,13 +253,16 @@ public class MockService {
 			number = 1;
 			if (rule.getSecondRedRate() > maxRateRules[number][0].getSecondRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getSecondRedRate() > maxRateRules[number][1].getSecondRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -248,13 +270,16 @@ public class MockService {
 			number = 2;
 			if (rule.getThirdRedRate() > maxRateRules[number][0].getThirdRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getThirdRedRate() > maxRateRules[number][1].getThirdRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -262,13 +287,16 @@ public class MockService {
 			number = 3;
 			if (rule.getForthRedRate() > maxRateRules[number][0].getForthRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getForthRedRate() > maxRateRules[number][1].getForthRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -276,13 +304,16 @@ public class MockService {
 			number = 4;
 			if (rule.getFifthRedRate() > maxRateRules[number][0].getFifthRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getFifthRedRate() > maxRateRules[number][1].getFifthRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -290,13 +321,16 @@ public class MockService {
 			number = 5;
 			if (rule.getSixthRedRate() > maxRateRules[number][0].getSixthRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getSixthRedRate() > maxRateRules[number][1].getSixthRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -304,13 +338,16 @@ public class MockService {
 			number = 6;
 			if (rule.getBlueRate() > maxRateRules[number][0].getBlueRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getBlueRate() > maxRateRules[number][1].getBlueRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -324,7 +361,8 @@ public class MockService {
 			Map<String, Integer> redmap = new HashMap<String, Integer>();
 			for (int j = 0; j < 2; j++) {
 				String predictId = maxRateRules[i][j].getId() + "-" + nextTermNo;
-				MockPredictEntity queryById = daoService.queryById(predictId, MockPredictEntity.class);
+				MockPredictEntity queryById = daoService.queryById(predictId,
+						MockPredictEntity.class);
 				for (int k = 0; k < redCount; k++) {
 					String red = queryById.getRedNumbers().get(k).split("=")[0];
 					int number = Integer.valueOf(red);
@@ -391,7 +429,8 @@ public class MockService {
 		daoService.save(predicts);
 	}
 
-	private List<MockPredictEntity> excuteGeneRules(List<MockPredictEntity> basePredicts, List<MockRuleEntity> rules, int terms) {
+	private List<MockPredictEntity> excuteGeneRules(List<MockPredictEntity> basePredicts,
+			List<MockRuleEntity> rules, int terms) {
 		List<MockPredictEntity> result = new ArrayList<MockPredictEntity>();
 		Map<String, MockPredictEntity> map = new HashMap<String, MockPredictEntity>();
 		for (MockPredictEntity basePredict : basePredicts) {
@@ -439,22 +478,26 @@ public class MockService {
 		return numberList1;
 	}
 
-	private List<MockPredictEntity> excuteBaseRules(List<MockResultEntity> list, List<MockRuleEntity> rules) {
+	private List<MockPredictEntity> excuteBaseRules(List<MockResultEntity> list,
+			List<MockRuleEntity> rules) {
 		List<MockPredictEntity> result = new ArrayList<MockPredictEntity>();
 		for (MockRuleEntity rule : rules) {
-			if (rule.getTerms() <= list.size() && RuleType.DISPLAY_TIMES.name().equals(rule.getRuleType())) {
+			if (rule.getTerms() <= list.size()
+					&& RuleType.DISPLAY_TIMES.name().equals(rule.getRuleType())) {
 				rule.setExecuteStatus(ExecuteStatus.RUNNING.name());
 				daoService.save(rule);
 				MockPredictEntity predict = this.excuteDisplayTimes(list, rule);
 				result.add(predict);
 				rule.setExecuteStatus(ExecuteStatus.SUCCESS.name());
 				daoService.save(rule);
-			} else if (rule.getTerms() <= list.size() && RuleType.SKIP_TIMES.name().equals(rule.getRuleType())) {
+			} else if (rule.getTerms() <= list.size()
+					&& RuleType.SKIP_TIMES.name().equals(rule.getRuleType())) {
 				rule.setExecuteStatus(ExecuteStatus.RUNNING.name());
 				daoService.save(rule);
 				MockPredictEntity predict = this.excuteSkipTimes(list, rule);
 				result.add(predict);
-			} else if (rule.getTerms() <= list.size() && RuleType.DOUBLE_TIMES.name().equals(rule.getRuleType())) {
+			} else if (rule.getTerms() <= list.size()
+					&& RuleType.DOUBLE_TIMES.name().equals(rule.getRuleType())) {
 				rule.setExecuteStatus(ExecuteStatus.RUNNING.name());
 				daoService.save(rule);
 				MockPredictEntity predict = this.excuteDoubleTimes(list, rule);
@@ -464,7 +507,8 @@ public class MockService {
 		return result;
 	}
 
-	private MockPredictEntity excuteGeneRule(MockRuleEntity rule, Map<String, MockPredictEntity> map, List<MockPredictEntity> basePredicts) {
+	private MockPredictEntity excuteGeneRule(MockRuleEntity rule,
+			Map<String, MockPredictEntity> map, List<MockPredictEntity> basePredicts) {
 		List<String> redNumbers = null;
 		List<String> blueNumbers = null;
 		Type typeOfT = new TypeToken<Map<String, Integer>>() {
@@ -525,7 +569,7 @@ public class MockService {
 		List<String> blueNumbers = MapUtil.sortMapToList(blueMap, "=", MapUtil.DESC);
 		MockPredictEntity result = new MockPredictEntity();
 		String ruleId = entity.getId();
-		String termNo = String.valueOf(Integer.valueOf(list.get(0).getId()));
+		String termNo = String.valueOf(Integer.valueOf(list.get(0).getId()) + 1);
 		result.setPrimaryKey(ruleId, termNo);
 		result.setRedNumbers(redNumbers);
 		result.setBlueNumbers(blueNumbers);
@@ -590,7 +634,7 @@ public class MockService {
 
 		MockPredictEntity result = new MockPredictEntity();
 		String ruleId = entity.getId();
-		String termNo = String.valueOf(Integer.valueOf(list.get(0).getId()));
+		String termNo = String.valueOf(Integer.valueOf(list.get(0).getId()) + 1);
 		result.setPrimaryKey(ruleId, termNo);
 		result.setRedNumbers(redNumbers);
 		result.setBlueNumbers(blueNumbers);
@@ -638,11 +682,12 @@ public class MockService {
 	public MockPredictEntity excuteSkipTimes(List<MockResultEntity> list, MockRuleEntity entity) {
 		Result countResult = this.countSkipTimes(list, entity.getTerms());
 		List<String> redNumbers = MapUtil.sortMapToList(countResult.getRedMap(), "=", MapUtil.DESC);
-		List<String> blueNumbers = MapUtil.sortMapToList(countResult.getBlueMap(), "=", MapUtil.DESC);
+		List<String> blueNumbers = MapUtil.sortMapToList(countResult.getBlueMap(), "=",
+				MapUtil.DESC);
 
 		MockPredictEntity result = new MockPredictEntity();
 		String ruleId = entity.getId();
-		String termNo = String.valueOf(Integer.valueOf(list.get(0).getId()));
+		String termNo = String.valueOf(Integer.valueOf(list.get(0).getId()) + 1);
 		result.setPrimaryKey(ruleId, termNo);
 		result.setRedNumbers(redNumbers);
 		result.setBlueNumbers(blueNumbers);
@@ -767,7 +812,8 @@ public class MockService {
 			}
 		}
 		// 注数
-		BigInteger number = MathUtil.C(new BigInteger(String.valueOf(redCount)), new BigInteger("6")).multiply(
+		BigInteger number = MathUtil.C(new BigInteger(String.valueOf(redCount)),
+				new BigInteger("6")).multiply(
 				MathUtil.C(new BigInteger(String.valueOf(redCount)), new BigInteger("6")));
 		mockRule.setFirstRate(firstRate / count / number.intValue());
 		mockRule.setSecondRate(secondRate / count / number.intValue());
