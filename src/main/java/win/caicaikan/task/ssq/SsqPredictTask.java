@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import win.caicaikan.constant.ExecuteStatus;
 import win.caicaikan.constant.RuleType;
@@ -64,7 +65,7 @@ public class SsqPredictTask extends TaskTemplete {
 		this.predictByResults(results, rules);
 		// 根据预测规则的几率和预测结果计算最佳组合
 		String nextTermNo = ruleService.getNextTermNoOfSsq(results.get(0));
-		this.recommendBest(rules, nextTermNo, 10, 5);
+		this.recommendBest(rules, nextTermNo, 12, 5);
 	}
 
 	/**
@@ -206,10 +207,14 @@ public class SsqPredictTask extends TaskTemplete {
 					}
 				}
 			}
+			if (CollectionUtils.isEmpty(redmap)) {
+				recommendBest(rules, nextTermNo, redCount + 1, blueCount);
+				return;
+			}
 			List<String> sortMapToList = MapUtil.sortMapToList(redmap, "=", MapUtil.DESC);
 			String red = sortMapToList.get(0).split("=")[0];
 			min = Math.max(Integer.valueOf(red), i) + 1;
-			max = Math.min(33 / 6 * (i + 3), 33 - i + 1);
+			max = Math.min(33 / 6 * (i + 3), 28 + i);
 			sb.append(i == 0 ? "" : ",").append(red);
 		}
 
@@ -222,6 +227,11 @@ public class SsqPredictTask extends TaskTemplete {
 				int original = blueMap.get(blue) == null ? 0 : blueMap.get(blue);
 				blueMap.put(blue, original + 2 - j + blueCount - k);
 			}
+		}
+
+		if (CollectionUtils.isEmpty(blueMap)) {
+			recommendBest(rules, nextTermNo, redCount, blueCount + 1);
+			return;
 		}
 		sb.append("/");
 		List<String> redList = MapUtil.sortMapToList(allRedMap, "=", MapUtil.DESC);
