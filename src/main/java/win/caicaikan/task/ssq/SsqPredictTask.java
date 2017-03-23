@@ -211,7 +211,7 @@ public class SsqPredictTask extends TaskTemplete {
 				recommendBest(rules, nextTermNo, redCount + 1, blueCount);
 				return;
 			}
-			List<String> sortMapToList = MapUtil.sortMapToList(redmap, "=", MapUtil.DESC);
+			List<String> sortMapToList = MapUtil.sortMapToListByValue(redmap, "=", MapUtil.DESC);
 			String red = sortMapToList.get(0).split("=")[0];
 			min = Math.max(Integer.valueOf(red), i) + 1;
 			max = Math.min(33 / 6 * (i + 3), 28 + i);
@@ -234,7 +234,7 @@ public class SsqPredictTask extends TaskTemplete {
 			return;
 		}
 		sb.append("/");
-		List<String> redList = MapUtil.sortMapToList(allRedMap, "=", MapUtil.DESC);
+		List<String> redList = MapUtil.sortMapToListByValue(allRedMap, "=", MapUtil.DESC);
 		min = 1;
 		max = 33 / 6 * 2;
 		for (int i = 0; i < 6 && i < redList.size(); i++) {
@@ -244,7 +244,7 @@ public class SsqPredictTask extends TaskTemplete {
 			sb.append(i == 0 ? "" : ",").append(red);
 		}
 
-		List<String> blueList = MapUtil.sortMapToList(blueMap, "=", MapUtil.DESC);
+		List<String> blueList = MapUtil.sortMapToListByValue(blueMap, "=", MapUtil.DESC);
 		sb.append("+");
 		for (int i = 0; i < blueCount && i < blueList.size(); i++) {
 			String blue = blueList.get(i).split("=")[0];
@@ -380,14 +380,14 @@ public class SsqPredictTask extends TaskTemplete {
 			String[] split = redNumber.split("=");
 			redMap.put(split[0], Integer.parseInt(split[1]));
 		}
-		redNumbers = MapUtil.sortMapToList(redMap, "=", MapUtil.DESC);
+		redNumbers = MapUtil.sortMapToListByValue(redMap, "=", MapUtil.DESC);
 
 		Map<String, Integer> blueMap = new HashMap<String, Integer>();
 		for (String blueNumber : blueNumbers) {
 			String[] split = blueNumber.split("=");
 			blueMap.put(split[0], Integer.parseInt(split[1]));
 		}
-		blueNumbers = MapUtil.sortMapToList(blueMap, "=", MapUtil.DESC);
+		blueNumbers = MapUtil.sortMapToListByValue(blueMap, "=", MapUtil.DESC);
 
 		SsqPredictEntity entity = new SsqPredictEntity();
 		String ruleId = rule.getId();

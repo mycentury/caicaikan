@@ -17,7 +17,11 @@ public enum SysConfig {
 	/**
 	 * 双色球当前期信息
 	 */
-	SSQ_CURRENT_TERM("SP-00-01");
+	SSQ_CURRENT_TERM("SP-00-01"),
+	/**
+	 * 红球总数高斯分布参数
+	 */
+	SSQ_REDSUM_PARAM("SP-00-02");
 	private String id;
 
 	private SysConfig(String id) {

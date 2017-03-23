@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,13 @@ import win.caicaikan.api.res.Result;
 import win.caicaikan.constant.ExecuteStatus;
 import win.caicaikan.constant.LotteryType;
 import win.caicaikan.constant.RuleType;
+import win.caicaikan.constant.SysConfig;
 import win.caicaikan.repository.mongodb.entity.MenuEntity;
 import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
 import win.caicaikan.repository.mongodb.entity.PrizeRuleEntity;
 import win.caicaikan.repository.mongodb.entity.SysConfigEntity;
 import win.caicaikan.repository.mongodb.entity.TaskEntity;
+import win.caicaikan.repository.mongodb.entity.ssq.GsCountEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.service.external.SsqService;
@@ -32,6 +35,8 @@ import win.caicaikan.task.ssq.SsqCurrentTask;
 import win.caicaikan.task.ssq.SsqPredictTask;
 import win.caicaikan.util.DateUtil;
 import win.caicaikan.util.GsonUtil;
+import win.caicaikan.util.MathUtil;
+import win.caicaikan.util.MathUtil.GaussianParam;
 
 @Service
 public class InitService {
@@ -46,6 +51,8 @@ public class InitService {
 	private SsqPredictTask ssqPredictTask;
 	@Autowired
 	private SsqCurrentTask ssqCurrentTask;
+	@Autowired
+	private CalculateService calculateService;
 
 	public void initSsqResults() {
 		LotteryReq req = new LotteryReq();
@@ -58,6 +65,49 @@ public class InitService {
 			Result<List<SsqResultEntity>> result = ssqService.getSsqHistoryByLotteryReq(req);
 			daoService.save(result.getData());
 		}
+	}
+
+	public void initSsqGsParam() {
+		int n = 33;
+		int m = 6;
+		List<String> numbers = calculateService.getNumberList(null, null, 1, m, n);
+		int size = numbers.size();
+		GaussianParam gaussianParam = MathUtil.calculateGaussianParam(numbers.toArray(new String[size]));
+		SysConfigEntity redsumParam = daoService.queryById(SysConfig.SSQ_REDSUM_PARAM.getId(), SysConfigEntity.class);
+		redsumParam.setKey(String.valueOf(gaussianParam.getMean()));
+		redsumParam.setValue(String.valueOf(gaussianParam.getVariance()));
+		daoService.save(redsumParam);
+		Map<String, Integer> rateMap = new HashMap<String, Integer>();
+		for (String number : numbers) {
+			Integer value = rateMap.get(number);
+			rateMap.put(number, (value == null ? 0 : value) + 1);
+		}
+		Map<Integer, Integer> countMap = new HashMap<Integer, Integer>();
+		List<SsqResultEntity> ssqResults = daoService.query(null, SsqResultEntity.class);
+		for (SsqResultEntity ssqResult : ssqResults) {
+			Integer count = 0;
+			String[] reds = ssqResult.getRedNumbers().split(",");
+			for (String red : reds) {
+				count += Integer.valueOf(red);
+			}
+			Integer value = countMap.get(count) == null ? 0 : countMap.get(count);
+			countMap.put(count, value + 1);
+		}
+
+		List<GsCountEntity> entities = new ArrayList<GsCountEntity>();
+		GsCountEntity entity = null;
+		for (Entry<String, Integer> entry : rateMap.entrySet()) {
+			entity = new GsCountEntity();
+			Integer key = Integer.valueOf(entry.getKey());
+			Integer rate = entry.getValue();
+			Integer count = countMap.get(key) == null ? 0 : countMap.get(key);
+			entity.setPrimaryKey("RED_SUM", key);
+			entity.setRate(rate);
+			entity.setCount(count);
+			entities.add(entity);
+		}
+		daoService.delete(null, GsCountEntity.class);
+		daoService.insert(entities, GsCountEntity.class);
 	}
 
 	public void initSsqPredicts(int terms) {
@@ -200,11 +250,20 @@ public class InitService {
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());
 		daoService.save(entity);
+
 		entity = new SysConfigEntity();
 		entity.setPrimaryKey("SP", "00", "01");
 		entity.setName("双色球本期期号");
 		entity.setKey("2016-12-25 21:20:40");
 		entity.setValue("2016151");
+		entity.setStatus(1);
+		entity.setCreateTime(new Date());
+		entity.setUpdateTime(new Date());
+		daoService.save(entity);
+
+		entity = new SysConfigEntity();
+		entity.setPrimaryKey("SP", "00", "02");
+		entity.setName("红球总数高斯分布参数");
 		entity.setStatus(1);
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());

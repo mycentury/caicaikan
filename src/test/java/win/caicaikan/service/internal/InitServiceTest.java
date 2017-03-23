@@ -3,10 +3,13 @@
  */
 package win.caicaikan.service.internal;
 
+import java.util.Date;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import win.caicaikan.BaseTest;
+import win.caicaikan.repository.mongodb.entity.SysConfigEntity;
 
 /**
  * @desc
@@ -18,6 +21,8 @@ public class InitServiceTest extends BaseTest {
 
 	@Autowired
 	private InitService initService;
+	@Autowired
+	private DaoService daoService;
 
 	/**
 	 * Test method for {@link InitService#initSsqResults()}.
@@ -25,6 +30,14 @@ public class InitServiceTest extends BaseTest {
 	@Test
 	public void testInitSsqResults() {
 		initService.initSsqResults();
+	}
+
+	/**
+	 * Test method for {@link InitService#initSsqGsParam()}.
+	 */
+	@Test
+	public void testInitSsqGsParam() {
+		initService.initSsqGsParam();
 	}
 
 	/**
@@ -57,6 +70,17 @@ public class InitServiceTest extends BaseTest {
 	@Test
 	public void testInitSysConfigs() {
 		initService.initSysConfigs();
+	}
+
+	@Test
+	public void testInitSysConfigs2() {
+		SysConfigEntity entity = new SysConfigEntity();
+		entity.setPrimaryKey("SP", "00", "02");
+		entity.setName("红球总数高斯分布参数");
+		entity.setStatus(1);
+		entity.setCreateTime(new Date());
+		entity.setUpdateTime(new Date());
+		daoService.save(entity);
 	}
 
 	/**

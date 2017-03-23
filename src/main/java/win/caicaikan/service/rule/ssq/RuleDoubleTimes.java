@@ -60,8 +60,8 @@ public class RuleDoubleTimes extends RuleTemplate {
 			}
 		}
 
-		List<String> redNumbers = MapUtil.sortMapToList(redMap, "=", MapUtil.DESC);
-		List<String> blueNumbers = MapUtil.sortMapToList(blueMap, "=", MapUtil.DESC);
+		List<String> redNumbers = MapUtil.sortMapToListByValue(redMap, "=", MapUtil.DESC);
+		List<String> blueNumbers = MapUtil.sortMapToListByValue(blueMap, "=", MapUtil.DESC);
 
 		SsqPredictEntity result = new SsqPredictEntity();
 		String ruleId = entity.getId();

@@ -37,8 +37,8 @@ public class RuleSkipTimes extends RuleTemplate {
 	@Override
 	public SsqPredictEntity excute(List<SsqResultEntity> list, PredictRuleEntity entity) {
 		Result countResult = this.countSkipTimes(list, entity.getTerms());
-		List<String> redNumbers = MapUtil.sortMapToList(countResult.getRedMap(), "=", MapUtil.DESC);
-		List<String> blueNumbers = MapUtil.sortMapToList(countResult.getBlueMap(), "=",
+		List<String> redNumbers = MapUtil.sortMapToListByValue(countResult.getRedMap(), "=", MapUtil.DESC);
+		List<String> blueNumbers = MapUtil.sortMapToListByValue(countResult.getBlueMap(), "=",
 				MapUtil.DESC);
 
 		SsqPredictEntity result = new SsqPredictEntity();
