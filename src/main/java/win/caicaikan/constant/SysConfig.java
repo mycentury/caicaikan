@@ -21,7 +21,11 @@ public enum SysConfig {
 	/**
 	 * 红球总数高斯分布参数
 	 */
-	SSQ_REDSUM_PARAM("SP-00-02");
+	SSQ_REDSUM_PARAM("SP-00-02"),
+	/**
+	 * 红球总数可能情况总数
+	 */
+	SSQ_REDSUM_COUNT("SP-00-03");
 	private String id;
 
 	private SysConfig(String id) {

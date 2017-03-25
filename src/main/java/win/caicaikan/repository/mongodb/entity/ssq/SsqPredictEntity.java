@@ -30,6 +30,7 @@ public class SsqPredictEntity extends BaseEntity {
 	private String termNo;
 	private List<String> redNumbers;
 	private List<String> blueNumbers;
+	private List<String> redGsNumbers;
 	private String rightNumbers;
 
 	public void setPrimaryKey(String ruleNo, String termNo) {

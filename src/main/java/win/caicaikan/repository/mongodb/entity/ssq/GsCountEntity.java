@@ -28,6 +28,7 @@ public class GsCountEntity extends BaseEntity {
 	private Integer key;
 	private Integer rate;
 	private Integer count;
+	private Integer weight;
 
 	public void setPrimaryKey(String type, Integer key) {
 		this.type = type;

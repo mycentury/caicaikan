@@ -72,11 +72,21 @@ public class InitService {
 		int m = 6;
 		List<String> numbers = calculateService.getNumberList(null, null, 1, m, n);
 		int size = numbers.size();
-		GaussianParam gaussianParam = MathUtil.calculateGaussianParam(numbers.toArray(new String[size]));
-		SysConfigEntity redsumParam = daoService.queryById(SysConfig.SSQ_REDSUM_PARAM.getId(), SysConfigEntity.class);
+		GaussianParam gaussianParam = MathUtil.calculateGaussianParam(numbers
+				.toArray(new String[size]));
+
+		// 保存高斯参数
+		SysConfigEntity redsumParam = daoService.queryById(SysConfig.SSQ_REDSUM_PARAM.getId(),
+				SysConfigEntity.class);
 		redsumParam.setKey(String.valueOf(gaussianParam.getMean()));
 		redsumParam.setValue(String.valueOf(gaussianParam.getVariance()));
 		daoService.save(redsumParam);
+		// 保存高斯总数
+		SysConfigEntity redsumCount = daoService.queryById(SysConfig.SSQ_REDSUM_COUNT.getId(),
+				SysConfigEntity.class);
+		redsumCount.setValue(String.valueOf(size));
+		daoService.save(redsumCount);
+
 		Map<String, Integer> rateMap = new HashMap<String, Integer>();
 		for (String number : numbers) {
 			Integer value = rateMap.get(number);
@@ -101,9 +111,11 @@ public class InitService {
 			Integer key = Integer.valueOf(entry.getKey());
 			Integer rate = entry.getValue();
 			Integer count = countMap.get(key) == null ? 0 : countMap.get(key);
+			Integer weight = ssqResults.size() * rate / size - count;
 			entity.setPrimaryKey("RED_SUM", key);
 			entity.setRate(rate);
 			entity.setCount(count);
+			entity.setWeight(weight);
 			entities.add(entity);
 		}
 		daoService.delete(null, GsCountEntity.class);
@@ -126,7 +138,8 @@ public class InitService {
 				if (i >= 1) {
 					results.remove(0);
 				}
-				logger.info("正在预测" + ruleService.getNextTermNoOfSsq(results.get(0)) + "期," + (i + 1) + "/" + terms);
+				logger.info("正在预测" + ruleService.getNextTermNoOfSsq(results.get(0)) + "期,"
+						+ (i + 1) + "/" + terms);
 				ssqPredictTask.predictByResults(results, rules);
 			} catch (Throwable e) {
 				e.printStackTrace();
@@ -141,13 +154,15 @@ public class InitService {
 		for (PredictRuleEntity predictRule : predictRules) {
 			condition = new Condition();
 			condition.addParam("ruleId", "=", predictRule.getId());
-			List<SsqPredictEntity> ssqPredicts = daoService.query(condition, SsqPredictEntity.class);
+			List<SsqPredictEntity> ssqPredicts = daoService
+					.query(condition, SsqPredictEntity.class);
 			Double redPositionCount = 0D;
 			Double bluePositionCount = 0D;
 			for (SsqPredictEntity ssqPredict : ssqPredicts) {
 				for (SsqResultEntity ssqResult : ssqResults) {
 					if (ssqPredict.getTermNo().equals(ssqResult.getId())) {
-						String rightPositions = ssqCurrentTask.getRightNumPositions(ssqPredict, ssqResult);
+						String rightPositions = ssqCurrentTask.getRightNumPositions(ssqPredict,
+								ssqResult);
 						String[] numPositions = rightPositions.split("\\+");
 						String[] redPositions = numPositions[0].split(",");
 						for (String red : redPositions) {
@@ -268,6 +283,14 @@ public class InitService {
 		entity.setCreateTime(new Date());
 		entity.setUpdateTime(new Date());
 		daoService.save(entity);
+
+		entity = new SysConfigEntity();
+		entity.setPrimaryKey("SP", "00", "03");
+		entity.setName("红球总数高斯总数");
+		entity.setStatus(1);
+		entity.setCreateTime(new Date());
+		entity.setUpdateTime(new Date());
+		daoService.save(entity);
 	}
 
 	public void initTasks() {
@@ -313,7 +336,8 @@ public class InitService {
 				for (int k = 0; k < 2; k++) {
 					String id = j + "," + (100 - j) + "," + 10 * k;
 					rule = new PredictRuleEntity();
-					rule.setPrimaryKey(LotteryType.SSQ.getCode(), RuleType.MULTI.name(), termCounts[i]);
+					rule.setPrimaryKey(LotteryType.SSQ.getCode(), RuleType.MULTI.name(),
+							termCounts[i]);
 					rule.setId(rule.getId() + "-" + id);
 					rule.setRuleName(RuleType.MULTI.getDesc() + termCounts[i] + ",比例" + id);
 					rule.setStatus(1);
@@ -342,11 +366,13 @@ public class InitService {
 		long secondPrizeAmount = 0;
 		for (SsqResultEntity ssqResult : allResults) {
 			int tempAmount = 0;
-			if (StringUtils.hasText(ssqResult.getFirstPrizeAmount()) && (tempAmount = Integer.valueOf(ssqResult.getFirstPrizeAmount())) > 0) {
+			if (StringUtils.hasText(ssqResult.getFirstPrizeAmount())
+					&& (tempAmount = Integer.valueOf(ssqResult.getFirstPrizeAmount())) > 0) {
 				firstPrizeCount++;
 				firstPrizeAmount += tempAmount;
 			}
-			if (StringUtils.hasText(ssqResult.getSecondPrizeAmount()) && (tempAmount = Integer.valueOf(ssqResult.getSecondPrizeAmount())) > 0) {
+			if (StringUtils.hasText(ssqResult.getSecondPrizeAmount())
+					&& (tempAmount = Integer.valueOf(ssqResult.getSecondPrizeAmount())) > 0) {
 				secondPrizeCount++;
 				secondPrizeAmount += tempAmount;
 			}

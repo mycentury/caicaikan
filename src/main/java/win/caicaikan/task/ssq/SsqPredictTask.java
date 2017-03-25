@@ -62,7 +62,18 @@ public class SsqPredictTask extends TaskTemplete {
 		condition.setOrder(Direction.DESC);
 		condition.setOrderBy(daoService.getIdColName(SsqResultEntity.class));
 		List<SsqResultEntity> results = daoService.query(condition, SsqResultEntity.class);
+		// 根据当前结果和规则预测
 		this.predictByResults(results, rules);
+		// // 根据高斯权值前5名推荐
+		// condition = new Condition();
+		// condition.setOrderBy("weight");
+		// condition.setOrder(Direction.DESC);
+		// condition.setLimit(5);
+		// daoService.query(condition, GsCountEntity.class);
+		//
+		// for (SsqPredictEntity predict : predicts) {
+		// List<String> redNumbers = predict.getRedNumbers();
+		// }
 		// 根据预测规则的几率和预测结果计算最佳组合
 		String nextTermNo = ruleService.getNextTermNoOfSsq(results.get(0));
 		this.recommendBest(rules, nextTermNo, 12, 5);
@@ -71,7 +82,8 @@ public class SsqPredictTask extends TaskTemplete {
 	/**
 	 * @param rules
 	 */
-	public void recommendBest(List<PredictRuleEntity> rules, String nextTermNo, int redCount, int blueCount) {
+	public void recommendBest(List<PredictRuleEntity> rules, String nextTermNo, int redCount,
+			int blueCount) {
 		PredictRuleEntity[][] maxRateRules = new PredictRuleEntity[7][2];
 		boolean hasInit = false;
 		for (int i = 0; i < rules.size(); i++) {
@@ -91,13 +103,16 @@ public class SsqPredictTask extends TaskTemplete {
 			number = 0;
 			if (rule.getFirstRedRate() > maxRateRules[number][0].getFirstRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getFirstRedRate() > maxRateRules[number][1].getFirstRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -105,13 +120,16 @@ public class SsqPredictTask extends TaskTemplete {
 			number = 1;
 			if (rule.getSecondRedRate() > maxRateRules[number][0].getSecondRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getSecondRedRate() > maxRateRules[number][1].getSecondRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -119,13 +137,16 @@ public class SsqPredictTask extends TaskTemplete {
 			number = 2;
 			if (rule.getThirdRedRate() > maxRateRules[number][0].getThirdRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getThirdRedRate() > maxRateRules[number][1].getThirdRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -133,13 +154,16 @@ public class SsqPredictTask extends TaskTemplete {
 			number = 3;
 			if (rule.getForthRedRate() > maxRateRules[number][0].getForthRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getForthRedRate() > maxRateRules[number][1].getForthRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -147,13 +171,16 @@ public class SsqPredictTask extends TaskTemplete {
 			number = 4;
 			if (rule.getFifthRedRate() > maxRateRules[number][0].getFifthRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getFifthRedRate() > maxRateRules[number][1].getFifthRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -161,13 +188,16 @@ public class SsqPredictTask extends TaskTemplete {
 			number = 5;
 			if (rule.getSixthRedRate() > maxRateRules[number][0].getSixthRedRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getSixthRedRate() > maxRateRules[number][1].getSixthRedRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -175,13 +205,16 @@ public class SsqPredictTask extends TaskTemplete {
 			number = 6;
 			if (rule.getBlueRate() > maxRateRules[number][0].getBlueRate()) {
 				// 第一与第二相同，或者与第二相同，或者与第一第二都不同
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || rule.getRuleType().equals(maxRateRules[number][0])
-						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule.getRuleType().equals(maxRateRules[number][1]))) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| rule.getRuleType().equals(maxRateRules[number][0])
+						|| (!rule.getRuleType().equals(maxRateRules[number][0]) && !rule
+								.getRuleType().equals(maxRateRules[number][1]))) {
 					maxRateRules[number][1] = maxRateRules[number][0];
 				}
 				maxRateRules[number][0] = rule;
 			} else if (rule.getBlueRate() > maxRateRules[number][1].getBlueRate()) {
-				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1]) || !rule.getRuleType().equals(maxRateRules[number][0])) {
+				if (maxRateRules[number][0].getRuleType().equals(maxRateRules[number][1])
+						|| !rule.getRuleType().equals(maxRateRules[number][0])) {
 					maxRateRules[number][1] = rule;
 				}
 			}
@@ -195,7 +228,8 @@ public class SsqPredictTask extends TaskTemplete {
 			Map<String, Integer> redmap = new HashMap<String, Integer>();
 			for (int j = 0; j < 2; j++) {
 				String predictId = maxRateRules[i][j].getId() + "-" + nextTermNo;
-				SsqPredictEntity queryById = daoService.queryById(predictId, SsqPredictEntity.class);
+				SsqPredictEntity queryById = daoService
+						.queryById(predictId, SsqPredictEntity.class);
 				for (int k = 0; k < redCount; k++) {
 					String red = queryById.getRedNumbers().get(k).split("=")[0];
 					int number = Integer.valueOf(red);
@@ -259,20 +293,27 @@ public class SsqPredictTask extends TaskTemplete {
 		daoService.save(entity);
 	}
 
-	public void predictByResults(List<SsqResultEntity> list, List<PredictRuleEntity> rules) {
+	public List<SsqPredictEntity> predictByResults(List<SsqResultEntity> list,
+			List<PredictRuleEntity> rules) {
 		Map<String, RuleTemplate> beans = SpringContextUtil.getBeans(RuleTemplate.class);
 		for (PredictRuleEntity rule : rules) {
 			rule.setExecuteStatus(ExecuteStatus.REDAY.name());
 			daoService.save(rule);
 		}
 
-		List<SsqPredictEntity> predicts = this.excuteBaseRules(beans, list, rules);
+		List<SsqPredictEntity> basePredicts = this.excuteBaseRules(beans, list, rules);
+		List<SsqPredictEntity> genePredicts = this
+				.excuteGeneRules(basePredicts, rules, list.size());
+
+		List<SsqPredictEntity> predicts = new ArrayList<SsqPredictEntity>();
+		predicts.addAll(basePredicts);
+		predicts.addAll(genePredicts);
 		daoService.save(predicts);
-		predicts = this.excuteGeneRules(predicts, rules, list.size());
-		daoService.save(predicts);
+		return predicts;
 	}
 
-	private List<SsqPredictEntity> excuteGeneRules(List<SsqPredictEntity> basePredicts, List<PredictRuleEntity> rules, int terms) {
+	private List<SsqPredictEntity> excuteGeneRules(List<SsqPredictEntity> basePredicts,
+			List<PredictRuleEntity> rules, int terms) {
 		List<SsqPredictEntity> result = new ArrayList<SsqPredictEntity>();
 		Map<String, SsqPredictEntity> map = new HashMap<String, SsqPredictEntity>();
 		for (SsqPredictEntity basePredict : basePredicts) {
@@ -320,7 +361,8 @@ public class SsqPredictTask extends TaskTemplete {
 		return numberList1;
 	}
 
-	private List<SsqPredictEntity> excuteBaseRules(Map<String, RuleTemplate> beans, List<SsqResultEntity> list, List<PredictRuleEntity> rules) {
+	private List<SsqPredictEntity> excuteBaseRules(Map<String, RuleTemplate> beans,
+			List<SsqResultEntity> list, List<PredictRuleEntity> rules) {
 		List<SsqPredictEntity> result = new ArrayList<SsqPredictEntity>();
 		for (PredictRuleEntity rule : rules) {
 			if (RuleType.MULTI.name().equals(rule.getRuleType()) || rule.getTerms() > list.size()) {
@@ -355,7 +397,8 @@ public class SsqPredictTask extends TaskTemplete {
 		return result;
 	}
 
-	private SsqPredictEntity excuteGeneRule(PredictRuleEntity rule, Map<String, SsqPredictEntity> map, List<SsqPredictEntity> basePredicts) {
+	private SsqPredictEntity excuteGeneRule(PredictRuleEntity rule,
+			Map<String, SsqPredictEntity> map, List<SsqPredictEntity> basePredicts) {
 		List<String> redNumbers = null;
 		List<String> blueNumbers = null;
 		Type typeOfT = new TypeToken<Map<String, Integer>>() {

@@ -18,6 +18,7 @@ import win.caicaikan.constant.LotteryType;
 import win.caicaikan.constant.SysConfig;
 import win.caicaikan.repository.mongodb.entity.PredictRuleEntity;
 import win.caicaikan.repository.mongodb.entity.SysConfigEntity;
+import win.caicaikan.repository.mongodb.entity.ssq.GsCountEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqPredictEntity;
 import win.caicaikan.repository.mongodb.entity.ssq.SsqResultEntity;
 import win.caicaikan.service.external.SsqService;
@@ -56,8 +57,10 @@ public class SsqCurrentTask extends TaskTemplete {
 			return;
 		}
 		SsqResultEntity currSsqResult = result.getData().get(0);
-		SysConfigEntity currTerm = daoService.queryById(SysConfig.SSQ_CURRENT_TERM.getId(), SysConfigEntity.class);
-		SysConfigEntity nextTerm = daoService.queryById(SysConfig.SSQ_NEXT_TERM.getId(), SysConfigEntity.class);
+		SysConfigEntity currTerm = daoService.queryById(SysConfig.SSQ_CURRENT_TERM.getId(),
+				SysConfigEntity.class);
+		SysConfigEntity nextTerm = daoService.queryById(SysConfig.SSQ_NEXT_TERM.getId(),
+				SysConfigEntity.class);
 		if (!currSsqResult.getId().equals(currTerm.getValue())) {
 			currTerm.setKey(currSsqResult.getOpenTime());
 			currTerm.setValue(currSsqResult.getId());
@@ -70,10 +73,12 @@ public class SsqCurrentTask extends TaskTemplete {
 		for (SsqResultEntity ssqResult : result.getData()) {
 			if (!daoService.existsById(ssqResult.getId(), SsqResultEntity.class)) {
 				daoService.insert(ssqResult);
+				this.updateGsCount(ssqResult);
 			}
 			Condition condition = new Condition();
 			condition.addParam("termNo", "=", ssqResult.getId());
-			List<SsqPredictEntity> ssqPredicts = daoService.query(condition, SsqPredictEntity.class);
+			List<SsqPredictEntity> ssqPredicts = daoService
+					.query(condition, SsqPredictEntity.class);
 			if (CollectionUtils.isEmpty(ssqPredicts)) {
 				continue;
 			}
@@ -93,6 +98,28 @@ public class SsqCurrentTask extends TaskTemplete {
 			predictRule = calculateService.countRate(predictRule, 6, 1);
 			daoService.save(predictRule);
 		}
+	}
+
+	private void updateGsCount(SsqResultEntity ssqResult) {
+		Integer key = 0;
+		String[] reds = ssqResult.getRedNumbers().split(",");
+		for (String red : reds) {
+			key += Integer.valueOf(red);
+		}
+		long terms = daoService.count(null, SsqResultEntity.class);
+		SysConfigEntity redsumCount = daoService.queryById(SysConfig.SSQ_REDSUM_COUNT.getId(),
+				SysConfigEntity.class);
+		Integer size = Integer.valueOf(redsumCount.getValue());
+		List<GsCountEntity> gsCounts = daoService.query(null, GsCountEntity.class);
+		for (GsCountEntity gsCount : gsCounts) {
+			Integer count = gsCount.getCount();
+			if (key == gsCount.getKey()) {
+				gsCount.setCount(++count);
+			}
+			Integer weight = (int) terms * gsCount.getRate() / size - count;
+			gsCount.setWeight(weight);
+		}
+		daoService.save(gsCounts);
 	}
 
 	public String getRightNumPositions(SsqPredictEntity ssqPredict, SsqResultEntity ssqResult) {
