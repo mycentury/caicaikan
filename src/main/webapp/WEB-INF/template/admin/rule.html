@@ -38,11 +38,6 @@
 							<thead>
 								<tr>
 									<td>ID</td>
-									<td>彩种</td>
-									<td>规则类型</td>
-									<td>最近期数</td>
-									<td>规则名称</td>
-									<td>基本规则和权值</td>
 									<td>状态</td>
 									<td>执行状态</td>
 									<td>一等奖</td>
@@ -61,11 +56,6 @@
 							<tbody>
 								<tr th:each="item:${displayRules}" onclick="clone(this);">
 									<td th:utext="${item.id}"></td>
-									<td th:utext="${item.lotteryType}"></td>
-									<td th:utext="${item.ruleType}"></td>
-									<td th:utext="${item.terms}"></td>
-									<td th:utext="${item.ruleName}"></td>
-									<td th:utext="${item.ruleAndweights}"></td>
 									<td th:utext="${item.status}"></td>
 									<td th:utext="${item.executeStatus}"></td>
 									<td th:utext="${item.firstRate}"></td>
@@ -88,11 +78,6 @@
 							<thead>
 								<tr>
 									<td>ID</td>
-									<td>彩种</td>
-									<td>规则类型</td>
-									<td>最近期数</td>
-									<td>规则名称</td>
-									<td>基本规则和权值</td>
 									<td>状态</td>
 									<td>执行状态</td>
 									<td>一等奖</td>
@@ -111,11 +96,6 @@
 							<tbody>
 								<tr th:each="item:${skipRules}" onclick="clone(this);">
 									<td th:utext="${item.id}"></td>
-									<td th:utext="${item.lotteryType}"></td>
-									<td th:utext="${item.ruleType}"></td>
-									<td th:utext="${item.terms}"></td>
-									<td th:utext="${item.ruleName}"></td>
-									<td th:utext="${item.ruleAndweights}"></td>
 									<td th:utext="${item.status}"></td>
 									<td th:utext="${item.executeStatus}"></td>
 									<td th:utext="${item.firstRate}"></td>
@@ -138,11 +118,6 @@
 							<thead>
 								<tr>
 									<td>ID</td>
-									<td>彩种</td>
-									<td>规则类型</td>
-									<td>最近期数</td>
-									<td>规则名称</td>
-									<td>基本规则和权值</td>
 									<td>状态</td>
 									<td>执行状态</td>
 									<td>一等奖</td>
@@ -161,11 +136,6 @@
 							<tbody>
 								<tr th:each="item:${multiRules}" onclick="clone(this);">
 									<td th:utext="${item.id}"></td>
-									<td th:utext="${item.lotteryType}"></td>
-									<td th:utext="${item.ruleType}"></td>
-									<td th:utext="${item.terms}"></td>
-									<td th:utext="${item.ruleName}"></td>
-									<td th:utext="${item.ruleAndweights}"></td>
 									<td th:utext="${item.status}"></td>
 									<td th:utext="${item.executeStatus}"></td>
 									<td th:utext="${item.firstRate}"></td>
@@ -188,11 +158,6 @@
 							<thead>
 								<tr>
 									<td>ID</td>
-									<td>彩种</td>
-									<td>规则类型</td>
-									<td>最近期数</td>
-									<td>规则名称</td>
-									<td>基本规则和权值</td>
 									<td>状态</td>
 									<td>执行状态</td>
 									<td>一等奖</td>
@@ -211,11 +176,6 @@
 							<tbody>
 								<tr th:each="item:${doubleRules}" onclick="clone(this);">
 									<td th:utext="${item.id}"></td>
-									<td th:utext="${item.lotteryType}"></td>
-									<td th:utext="${item.ruleType}"></td>
-									<td th:utext="${item.terms}"></td>
-									<td th:utext="${item.ruleName}"></td>
-									<td th:utext="${item.ruleAndweights}"></td>
 									<td th:utext="${item.status}"></td>
 									<td th:utext="${item.executeStatus}"></td>
 									<td th:utext="${item.firstRate}"></td>
