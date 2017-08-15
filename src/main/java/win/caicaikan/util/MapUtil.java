@@ -13,7 +13,7 @@ public class MapUtil {
 	public static final String ASC = "ASC";
 	public static final String DESC = "DESC";
 
-	public static <K, V extends Comparable<V>> Map<K, V> sortMapToMapByValue(Map<K, V> map, String sort) {
+	public static <K, V extends Comparable<V>> Map<K, V> sortMapToMapByValue(Map<K, V> map, final String sort) {
 		Comparator<Map.Entry<K, V>> comparator = new Comparator<Map.Entry<K, V>>() {
 			@Override
 			public int compare(Entry<K, V> o1, Entry<K, V> o2) {
@@ -33,7 +33,7 @@ public class MapUtil {
 		return result;
 	}
 
-	public static <K extends Comparable<K>, V extends Comparable<V>> List<Map.Entry<K, V>> sortMapToEntryListBykey(Map<K, V> map, String sort) {
+	public static <K extends Comparable<K>, V extends Comparable<V>> List<Map.Entry<K, V>> sortMapToEntryListBykey(Map<K, V> map, final String sort) {
 		Comparator<Map.Entry<K, V>> comparator = new Comparator<Map.Entry<K, V>>() {
 			@Override
 			public int compare(Entry<K, V> o1, Entry<K, V> o2) {
@@ -51,7 +51,7 @@ public class MapUtil {
 		return list;
 	}
 
-	public static <K extends Comparable<K>, V extends Comparable<V>> List<Map.Entry<K, V>> sortMapToEntryListByValue(Map<K, V> map, String sort) {
+	public static <K extends Comparable<K>, V extends Comparable<V>> List<Map.Entry<K, V>> sortMapToEntryListByValue(Map<K, V> map, final String sort) {
 		Comparator<Map.Entry<K, V>> comparator = new Comparator<Map.Entry<K, V>>() {
 			@Override
 			public int compare(Entry<K, V> o1, Entry<K, V> o2) {
